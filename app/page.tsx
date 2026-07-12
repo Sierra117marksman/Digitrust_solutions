@@ -4,60 +4,101 @@ import { ContactForm } from "./components/ContactForm";
 const services = [
   {
     number: "01",
-    title: "Web Development",
+    title: "Website Design & Development",
     description:
-      "Fast, responsive websites designed around clear journeys, strong credibility, and measurable business goals.",
-    tags: ["Corporate websites", "Landing pages", "Performance"],
+      "Fast, responsive business websites designed around clear journeys, strong credibility, and measurable goals.",
+    tags: ["Corporate websites", "Landing pages", "Next.js"],
   },
   {
     number: "02",
-    title: "Social Media Management",
+    title: "Shopify Development",
     description:
-      "Consistent planning, publishing, and community management that keeps your brand active and relevant.",
-    tags: ["Content calendars", "Publishing", "Community"],
+      "Conversion-focused storefronts, theme customisation, catalogue setup, and practical integrations for growing brands.",
+    tags: ["Store builds", "Liquid", "Conversion UX"],
   },
   {
     number: "03",
-    title: "Social Media Marketing",
+    title: "WordPress Development",
     description:
-      "Channel-specific campaigns that turn creative ideas into reach, engagement, and qualified conversations.",
-    tags: ["Campaign strategy", "Creative direction", "Reporting"],
+      "Flexible, easy-to-manage websites built with clean structure, strong SEO foundations, and dependable performance.",
+    tags: ["Business websites", "WooCommerce", "Custom themes"],
   },
   {
     number: "04",
-    title: "Search Engine Optimisation",
+    title: "Full-Stack Development",
     description:
-      "Practical SEO foundations that improve discoverability, search relevance, and long-term organic growth.",
-    tags: ["Technical SEO", "On-page SEO", "Local visibility"],
+      "End-to-end digital products with dependable frontends, secure APIs, dashboards, and scalable data architecture.",
+    tags: ["Web applications", "APIs", "CRM systems"],
   },
   {
     number: "05",
-    title: "Meta Ads Specialty",
+    title: "Search Engine Optimisation",
     description:
-      "Focused Facebook and Instagram advertising built around the right audience, message, and conversion path.",
-    tags: ["Audience strategy", "Lead campaigns", "Optimisation"],
+      "Practical technical, on-page, content, and local SEO that builds discoverability and sustainable organic growth.",
+    tags: ["Technical SEO", "Content SEO", "Local visibility"],
   },
   {
     number: "06",
-    title: "Full-Stack Development",
+    title: "Meta Ads Specialty",
     description:
-      "End-to-end digital products with dependable frontends, secure backends, and scalable data architecture.",
-    tags: ["Web applications", "APIs", "Database systems"],
+      "Focused Facebook and Instagram campaigns built around the right audience, creative, offer, and conversion path.",
+    tags: ["Lead campaigns", "Retargeting", "Optimisation"],
+  },
+  {
+    number: "07",
+    title: "Social Media Management",
+    description:
+      "Consistent planning, publishing, community management, and reporting that keeps your brand active and relevant.",
+    tags: ["Content calendars", "Publishing", "Community"],
+  },
+  {
+    number: "08",
+    title: "Social Media Marketing",
+    description:
+      "Channel-specific strategy and creative campaigns that turn attention into engagement and qualified conversations.",
+    tags: ["Campaign strategy", "Creative direction", "Reporting"],
+  },
+];
+
+const stackGroups = [
+  {
+    label: "Frontend",
+    items: ["Next.js", "React", "TypeScript", "HTML", "CSS", "Tailwind CSS"],
+  },
+  {
+    label: "Backend & Data",
+    items: ["Node.js", "REST APIs", "MongoDB", "PostgreSQL", "Authentication", "Integrations"],
+  },
+  {
+    label: "Commerce & CMS",
+    items: ["Shopify", "Liquid", "WordPress", "WooCommerce", "Headless CMS", "Content Systems"],
+  },
+  {
+    label: "Growth & Delivery",
+    items: ["Technical SEO", "Meta Ads", "Analytics", "Vercel", "Cloud Deployment", "Performance"],
   },
 ];
 
 const process = [
   {
-    step: "Discover",
-    copy: "We clarify your audience, goals, current challenges, and the result that matters most.",
+    step: "Discover & audit",
+    copy: "We clarify your audience, goals, current challenges, existing systems, and the result that matters most.",
   },
   {
-    step: "Design",
-    copy: "We shape the strategy, experience, content direction, and delivery roadmap around your business.",
+    step: "Plan & design",
+    copy: "We shape the strategy, user experience, content direction, technical architecture, and delivery roadmap.",
   },
   {
-    step: "Deliver",
-    copy: "We build, launch, measure, and refine with clear communication at every important milestone.",
+    step: "Build & create",
+    copy: "Development, content, campaigns, and integrations move together with visible milestone reviews.",
+  },
+  {
+    step: "Launch & optimise",
+    copy: "We test the experience, performance, tracking, and conversion paths before a carefully managed launch.",
+  },
+  {
+    step: "Grow & report",
+    copy: "We monitor the right signals, share clear reporting, and improve the system as your business evolves.",
   },
 ];
 
@@ -78,6 +119,7 @@ export default function Home() {
 
           <nav className="desktop-nav" aria-label="Primary navigation">
             <a href="#services">Services</a>
+            <a href="#technology">Technology</a>
             <a href="#approach">Approach</a>
             <a href="#about">Why us</a>
             <a href="#contact" className="nav-cta">
@@ -89,6 +131,7 @@ export default function Home() {
             <summary aria-label="Open navigation">Menu</summary>
             <nav aria-label="Mobile navigation">
               <a href="#services">Services</a>
+              <a href="#technology">Technology</a>
               <a href="#approach">Approach</a>
               <a href="#about">Why us</a>
               <a href="#contact">Start a project</a>
@@ -122,7 +165,7 @@ export default function Home() {
             </div>
             <div className="hero-proof" aria-label="Key business strengths">
               <div>
-                <strong>6</strong>
+                <strong>8</strong>
                 <span>Core services</span>
               </div>
               <div>
@@ -212,6 +255,39 @@ export default function Home() {
                 </ul>
               </article>
             ))}
+          </div>
+        </div>
+      </section>
+
+      <section className="section stack-section" id="technology">
+        <div className="container">
+          <div className="section-heading stack-heading">
+            <p className="eyebrow"><span /> Platforms & technology</p>
+            <h2>The right stack for the job—not a one-size-fits-all build.</h2>
+            <p>
+              From marketing websites and online stores to custom applications,
+              we select dependable tools around your goals, team, budget, and
+              long-term ownership.
+            </p>
+          </div>
+
+          <div className="stack-grid">
+            {stackGroups.map((group, index) => (
+              <article className="stack-card" key={group.label}>
+                <div className="stack-card-head">
+                  <span>0{index + 1}</span>
+                  <h3>{group.label}</h3>
+                </div>
+                <ul aria-label={`${group.label} technologies`}>
+                  {group.items.map((item) => <li key={item}>{item}</li>)}
+                </ul>
+              </article>
+            ))}
+          </div>
+
+          <div className="stack-note">
+            <strong>Technology follows the business need.</strong>
+            <p>We recommend a practical architecture after discovery, with security, maintainability, and performance considered from day one.</p>
           </div>
         </div>
       </section>
@@ -313,6 +389,7 @@ export default function Home() {
           <p>Strategy, creative marketing, and technology for confident digital growth.</p>
           <div className="footer-links">
             <a href="#services">Services</a>
+            <a href="#technology">Technology</a>
             <a href="#approach">Approach</a>
             <a href="#about">Why us</a>
             <a href="#contact">Contact</a>
