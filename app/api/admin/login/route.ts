@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { ObjectId } from "mongodb";
+import QRCode from "qrcode";
 import { getMongoClient } from "@/lib/mongodb";
 import { verifyPassword } from "@/lib/password";
 import {
@@ -67,6 +68,12 @@ export async function POST(request: Request) {
         setupRequired: true,
         setupSecret,
         otpAuthUrl: createOtpAuthUrl(setupSecret, email),
+        qrCodeDataUrl: await QRCode.toDataURL(createOtpAuthUrl(setupSecret, email), {
+          errorCorrectionLevel: "M",
+          margin: 2,
+          scale: 6,
+          type: "image/png",
+        }),
         message: "Set up Google Authenticator before entering the CRM.",
       });
       response.cookies.set(MFA_CHALLENGE_COOKIE, createMfaChallengeToken(adminId, "setup"), challengeCookieOptions());

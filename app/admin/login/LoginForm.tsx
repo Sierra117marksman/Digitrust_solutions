@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import { useState } from "react";
 
 type LoginState = {
@@ -8,6 +9,7 @@ type LoginState = {
   password: string;
   setupSecret?: string;
   otpAuthUrl?: string;
+  qrCodeDataUrl?: string;
   message?: string;
   error?: string;
   loading: boolean;
@@ -47,6 +49,7 @@ export function LoginForm() {
         password,
         setupSecret: result.setupSecret,
         otpAuthUrl: result.otpAuthUrl,
+        qrCodeDataUrl: result.qrCodeDataUrl,
         message: result.message,
         loading: false,
       });
@@ -112,10 +115,23 @@ export function LoginForm() {
       {state.mode === "setup" ? (
         <form action={submitSetup} className="admin-form">
           <div className="setup-box">
-            <span>Authenticator setup key</span>
+            <span>Scan QR code</span>
+            {state.qrCodeDataUrl && (
+              <Image
+                className="auth-qr-code"
+                src={state.qrCodeDataUrl}
+                alt="Google Authenticator setup QR code"
+                width={220}
+                height={220}
+                unoptimized
+              />
+            )}
+            <p>Open Google Authenticator, tap add account, and scan this QR code.</p>
+          </div>
+          <div className="setup-box setup-key-box">
+            <span>Manual setup key</span>
             <strong>{state.setupSecret}</strong>
-            <p>Open Google Authenticator, add a new account, choose setup key, and enter this key.</p>
-            <small>{state.otpAuthUrl}</small>
+            <p>If scan does not work, choose setup key and enter this manually.</p>
           </div>
           <label>
             <span>6 digit code</span>

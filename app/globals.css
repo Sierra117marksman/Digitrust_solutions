@@ -2386,6 +2386,19 @@ a {
   font-size: 17px;
 }
 
+.auth-qr-code {
+  width: min(100%, 220px);
+  aspect-ratio: 1;
+  justify-self: center;
+  border: 10px solid var(--white);
+  border-radius: 12px;
+  background: var(--white);
+}
+
+.setup-key-box {
+  gap: 8px;
+}
+
 .setup-box p,
 .setup-box small {
   margin: 0;
