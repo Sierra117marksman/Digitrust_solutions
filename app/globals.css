@@ -3392,6 +3392,14 @@ a {
   color: var(--navy);
   margin-bottom: 8px;
 }
+.team-role {
+  font-size: 14px;
+  color: var(--slate);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-bottom: 8px;
+}
 .team-focus {
   font-size: 13px;
   color: var(--blue-dark);

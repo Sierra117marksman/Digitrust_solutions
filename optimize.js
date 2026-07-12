@@ -6,8 +6,8 @@ import { fileURLToPath } from 'url';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-const inputPath = 'C:\\Users\\Ravi\\Downloads\\tarunyadav pic.png';
-const outputPath = path.join(__dirname, 'public', 'team-ceo.webp');
+const inputPath = 'C:\\Users\\Ravi\\.gemini\\antigravity\\brain\\9f6bc6c4-3cc5-4e99-b90f-777b88633e0d\\media__1783877318436.jpg';
+const outputPath = path.join(__dirname, 'public', 'team-dev.webp');
 
 async function optimizeImage() {
   try {

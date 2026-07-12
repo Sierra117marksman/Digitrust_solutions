@@ -20,7 +20,8 @@ export default function TeamSection() {
               <div className="team-accent founder-accent">★ Founder</div>
             </div>
             <div className="team-content">
-              <h3>CEO &amp; Founder</h3>
+              <h3>Tarun Yadav</h3>
+              <p className="team-role">CEO &amp; Founder</p>
               <p className="team-focus">Vision, business strategy, and client relationships.</p>
               <p className="team-bio">&quot;Leading DigiTrust with a commitment to delivering innovative digital solutions and long-term client success.&quot;</p>
               <ul className="team-highlights">
@@ -35,11 +36,12 @@ export default function TeamSection() {
           {/* Developer Card */}
           <article className="team-card">
             <div className="team-photo-wrap">
-              <div className="team-photo placeholder">DEV</div>
+              <Image src="/team-dev.webp" alt="Ajay Thakkar - Lead Developer" fill className="team-photo" />
               <div className="team-accent code-accent">&lt;/&gt;</div>
             </div>
             <div className="team-content">
-              <h3>Lead Developer</h3>
+              <h3>Ajay Thakkar</h3>
+              <p className="team-role">Lead Developer</p>
               <p className="team-focus">Building fast, secure, scalable websites and applications.</p>
               <p className="team-bio">&quot;Specialized in modern web technologies, performance optimization, and secure application development.&quot;</p>
               <ul className="team-highlights">
@@ -60,6 +62,7 @@ export default function TeamSection() {
             </div>
             <div className="team-content">
               <h3>Project Manager</h3>
+              <p className="team-role">Delivery & Client Success</p>
               <p className="team-focus">Your dedicated point of contact, ensuring smooth communication, timely delivery, and solutions aligned with your business goals.</p>
               <p className="team-bio">&quot;Working closely with you to understand your goals, coordinate the team, and keep every project on schedule.&quot;</p>
               <ul className="team-highlights">
