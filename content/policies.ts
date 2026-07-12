@@ -35,7 +35,7 @@ export const policies: Policy[] = [
       {
         title: "Who we are",
         paragraphs: [
-          "Digitrust Solutions is a digital services business located at 142B1, Dharam Colony, Palam Vihar, Gurugram, Haryana - 122017, India. GSTIN: 06DUYPD9228L1ZT.",
+          "Digitrust Solutions is a digital services business located at Palam Vihar, Gurugram, Haryana - 122017, India. GSTIN: 06DUYPD9228L1ZT.",
           "For applicable data-protection purposes, Digitrust Solutions determines why and how personal information submitted directly to us is processed, unless a written client agreement states that we process particular data only on a client's instructions.",
         ],
       },
@@ -121,7 +121,7 @@ export const policies: Policy[] = [
       {
         title: "Privacy contact and grievance requests",
         items: [
-          "Privacy, correction, deletion, consent, and grievance requests may be submitted through the contact form on this website or sent by post to Digitrust Solutions, 142B1, Dharam Colony, Palam Vihar, Gurugram, Haryana - 122017, India.",
+          "Privacy, correction, deletion, consent, and grievance requests may be submitted through the contact form on this website or sent by post to Digitrust Solutions, Palam Vihar, Gurugram, Haryana - 122017, India.",
           "Please include your name, contact details, relationship with us, and a clear description of the request. We may ask for information reasonably needed to verify identity and locate the relevant record.",
           "This policy is intended to operate with the Digital Personal Data Protection Act, 2023, the Information Technology Act, 2000, and related rules or provisions as they are brought into force or amended from time to time.",
         ],

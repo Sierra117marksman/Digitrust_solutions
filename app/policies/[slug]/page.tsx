@@ -85,7 +85,7 @@ export default async function PolicyPage({ params }: PolicyPageProps) {
                 <Link className={item.slug === policy.slug ? "active" : ""} href={`/policies/${item.slug}`} key={item.slug}>{item.shortTitle}</Link>
               ))}
             </nav>
-            <div className="policy-business-card"><span>Digitrust Solutions</span><p>142B1, Dharam Colony, Palam Vihar, Gurugram, Haryana - 122017</p><strong>GSTIN: 06DUYPD9228L1ZT</strong></div>
+            <div className="policy-business-card"><span>Digitrust Solutions</span><p>Palam Vihar, Gurugram, Haryana - 122017</p><strong>GSTIN: 06DUYPD9228L1ZT</strong></div>
           </aside>
 
           <article className="policy-document">

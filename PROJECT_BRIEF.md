@@ -3,7 +3,7 @@
 ## Official business details
 
 - **Business name:** DIGITRUST SOLUTIONS
-- **Address:** 142B1, Dharam Colony, Palam Vihar, Gurugram, Haryana - 122017
+- **Address:** Palam Vihar, Gurugram, Haryana - 122017
 - **GSTIN:** 06DUYPD9228L1ZT
 
 ## Brand direction

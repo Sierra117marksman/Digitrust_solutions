@@ -4,9 +4,12 @@ import { ContactForm } from "./components/ContactForm";
 import { ScrollLink } from "./components/ScrollLink";
 import { Testimonials } from "./components/Testimonials";
 import TeamSection from "./components/TeamSection";
+import { Navbar } from "./components/Navbar";
+import { Footer } from "./components/Footer";
+import { StickyCTA } from "./components/StickyCTA";
+import { ScrollProgress } from "./components/ScrollProgress";
 import { featuredTestimonials } from "../content/testimonials";
 import { services } from "../content/services";
-import { policies } from "../content/policies";
 import { contactInfo } from "../content/contact";
 
 const stackGroups = [
@@ -54,40 +57,8 @@ const process = [
 export default function Home() {
   return (
     <main>
-      <header className="site-header">
-        <div className="container nav-wrap">
-          <ScrollLink className="brand" targetId="top" aria-label="Digitrust Solutions home">
-            <Image
-              src="/brand/logo.svg"
-              alt="Digitrust Solutions"
-              width={500}
-              height={500}
-              priority
-            />
-          </ScrollLink>
-
-          <nav className="desktop-nav" aria-label="Primary navigation">
-            <ScrollLink targetId="services">Services</ScrollLink>
-            <ScrollLink targetId="technology">Technology</ScrollLink>
-            <ScrollLink targetId="approach">Approach</ScrollLink>
-            <ScrollLink targetId="about">Why us</ScrollLink>
-            <ScrollLink targetId="contact" className="nav-cta">
-              Start a project
-            </ScrollLink>
-          </nav>
-
-          <details className="mobile-menu">
-            <summary aria-label="Open navigation">Menu</summary>
-            <nav aria-label="Mobile navigation">
-              <ScrollLink targetId="services">Services</ScrollLink>
-              <ScrollLink targetId="technology">Technology</ScrollLink>
-              <ScrollLink targetId="approach">Approach</ScrollLink>
-              <ScrollLink targetId="about">Why us</ScrollLink>
-              <ScrollLink targetId="contact">Start a project</ScrollLink>
-            </nav>
-          </details>
-        </div>
-      </header>
+      <ScrollProgress />
+      <Navbar />
 
       <section className="hero" id="top">
         <div className="hero-orbit hero-orbit-one" aria-hidden="true" />
@@ -402,27 +373,8 @@ export default function Home() {
         </div>
       </section>
 
-      <footer className="site-footer">
-        <div className="container footer-main">
-
-          <p>Strategy, creative marketing, and technology for confident digital growth.</p>
-          <div className="footer-links">
-            <ScrollLink targetId="services">Services</ScrollLink>
-            <ScrollLink targetId="technology">Technology</ScrollLink>
-            <ScrollLink targetId="approach">Approach</ScrollLink>
-            <ScrollLink targetId="about">Why us</ScrollLink>
-            <ScrollLink targetId="testimonials">Reviews</ScrollLink>
-            <ScrollLink targetId="contact">Contact</ScrollLink>
-            <Link href={contactInfo.instagram.href}>Instagram</Link>
-          </div>
-        </div>
-        <div className="container footer-bottom policy-footer-bottom">
-          <span>© {new Date().getFullYear()} Digitrust Solutions. All rights reserved.</span>
-          <nav aria-label="Legal links">
-            {policies.map((policy) => <Link href={`/policies/${policy.slug}`} key={policy.slug}>{policy.shortTitle}</Link>)}
-          </nav>
-        </div>
-      </footer>
+      <Footer />
+      <StickyCTA />
     </main>
   );
 }

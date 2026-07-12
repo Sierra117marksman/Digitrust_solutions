@@ -1,5 +1,5 @@
 export const contactInfo = {
-  addressLines: ["142B1, Dharam Colony, Palam Vihar", "Gurugram, Haryana - 122017"],
+  addressLines: ["Palam Vihar", "Gurugram, Haryana - 122017"],
   gstin: "06DUYPD9228L1ZT",
   phones: [
     { label: "Primary", display: "+91 92117 34699", href: "tel:+919211734699" },
