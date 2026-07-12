@@ -56,9 +56,10 @@ a {
 }
 
 .site-header {
-  position: sticky;
-  top: 0;
+  position: fixed;
+  inset: 0 0 auto;
   z-index: 50;
+  width: 100%;
   height: 84px;
   border-bottom: 1px solid rgba(207, 232, 241, 0.82);
   background: rgba(247, 250, 252, 0.9);
@@ -88,6 +89,14 @@ a {
   width: 100%;
   height: 100%;
   object-fit: contain;
+}
+
+.brand img {
+  transform: scale(2.05);
+}
+
+.footer-brand img {
+  transform: scale(1.7);
 }
 
 .desktop-nav {
@@ -167,6 +176,7 @@ a {
 .hero {
   position: relative;
   overflow: hidden;
+  margin-top: 84px;
   padding: 82px 0 88px;
   background:
     radial-gradient(circle at 80% 15%, rgba(33, 157, 197, 0.15), transparent 28%),
@@ -181,12 +191,14 @@ a {
   background-image: radial-gradient(rgba(11, 31, 51, 0.1) 0.8px, transparent 0.8px);
   background-size: 24px 24px;
   mask-image: linear-gradient(to right, transparent 0%, black 55%, black 100%);
+  pointer-events: none;
 }
 
 .hero-orbit {
   position: absolute;
   border: 1px solid rgba(33, 157, 197, 0.18);
   border-radius: 50%;
+  pointer-events: none;
 }
 
 .hero-orbit-one {
@@ -210,6 +222,18 @@ a {
   grid-template-columns: 1.04fr 0.96fr;
   align-items: center;
   gap: 64px;
+}
+
+.hero-copy {
+  position: relative;
+  z-index: 5;
+}
+
+.hero-actions,
+.hero-actions a {
+  position: relative;
+  z-index: 10;
+  pointer-events: auto;
 }
 
 .eyebrow {
@@ -347,6 +371,7 @@ a {
   min-height: 540px;
   display: grid;
   place-items: center;
+  pointer-events: none;
 }
 
 .growth-panel {
@@ -412,35 +437,31 @@ a {
 
 .chart-line {
   position: absolute;
-  inset: 25px 24px 25px;
+  inset: 24px;
+  width: calc(100% - 48px);
+  height: calc(100% - 48px);
+  overflow: visible;
 }
 
-.chart-line::before {
-  position: absolute;
-  content: "";
-  left: 0;
-  bottom: 36px;
-  width: 100%;
-  height: 155px;
-  background: linear-gradient(145deg, transparent 0 11%, var(--blue) 11.5% 13%, transparent 13.5% 28%, var(--blue) 28.5% 30%, transparent 30.5% 50%, var(--blue) 50.5% 52%, transparent 52.5% 67%, var(--blue) 67.5% 69%, transparent 69.5% 83%, var(--blue) 83.5% 85%, transparent 85.5%);
-  clip-path: polygon(0 88%, 12% 69%, 29% 74%, 51% 43%, 68% 53%, 84% 23%, 100% 2%, 100% 17%, 84% 38%, 69% 68%, 52% 58%, 30% 88%, 12% 83%, 0 100%);
+.chart-area {
+  fill: url(#growth-fill);
 }
 
-.chart-line i {
-  position: absolute;
-  width: 10px;
-  height: 10px;
-  border: 3px solid var(--white);
-  border-radius: 50%;
-  background: var(--blue-dark);
-  box-shadow: 0 0 0 2px var(--blue-dark);
+.chart-path {
+  fill: none;
+  stroke: var(--blue);
+  stroke-width: 6;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  vector-effect: non-scaling-stroke;
 }
 
-.chart-line i:nth-child(1) { left: 9%; bottom: 61px; }
-.chart-line i:nth-child(2) { left: 28%; bottom: 68px; }
-.chart-line i:nth-child(3) { left: 50%; bottom: 113px; }
-.chart-line i:nth-child(4) { left: 68%; bottom: 99px; }
-.chart-line i:nth-child(5) { right: 0; top: 15px; }
+.chart-line circle {
+  fill: var(--blue-dark);
+  stroke: var(--white);
+  stroke-width: 4;
+  vector-effect: non-scaling-stroke;
+}
 
 .panel-services {
   display: grid;
@@ -1177,6 +1198,16 @@ a {
   letter-spacing: 0.04em;
 }
 
+@media (min-width: 1200px) and (max-height: 850px) {
+  .hero { padding: 46px 0 58px; }
+  .hero h1 { font-size: clamp(58px, 4.5vw, 74px); }
+  .hero-lead { margin-top: 22px; }
+  .hero-actions { margin-top: 27px; }
+  .hero-proof { margin-top: 36px; }
+  .hero-visual { min-height: 470px; }
+  .growth-chart { height: 205px; }
+}
+
 @media (max-width: 1024px) {
   .hero-grid { grid-template-columns: 1fr 0.9fr; gap: 30px; }
   .hero h1 { font-size: clamp(52px, 7vw, 72px); }
@@ -1214,6 +1245,7 @@ a {
 @media (max-width: 600px) {
   .container { width: min(100% - 30px, 1180px); }
   .site-header { height: 74px; }
+  .hero { margin-top: 74px; }
   .brand { width: 125px; height: 57px; }
   .hero { padding: 54px 0 65px; }
   .hero h1 { font-size: clamp(47px, 14vw, 64px); }

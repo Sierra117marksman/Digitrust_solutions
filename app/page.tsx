@@ -1,5 +1,6 @@
 import Image from "next/image";
 import { ContactForm } from "./components/ContactForm";
+import { ScrollLink } from "./components/ScrollLink";
 
 const services = [
   {
@@ -107,7 +108,7 @@ export default function Home() {
     <main>
       <header className="site-header">
         <div className="container nav-wrap">
-          <a className="brand" href="#top" aria-label="Digitrust Solutions home">
+          <ScrollLink className="brand" targetId="top" aria-label="Digitrust Solutions home">
             <Image
               src="/brand/logo.svg"
               alt="Digitrust Solutions"
@@ -115,26 +116,26 @@ export default function Home() {
               height={500}
               priority
             />
-          </a>
+          </ScrollLink>
 
           <nav className="desktop-nav" aria-label="Primary navigation">
-            <a href="#services">Services</a>
-            <a href="#technology">Technology</a>
-            <a href="#approach">Approach</a>
-            <a href="#about">Why us</a>
-            <a href="#contact" className="nav-cta">
+            <ScrollLink targetId="services">Services</ScrollLink>
+            <ScrollLink targetId="technology">Technology</ScrollLink>
+            <ScrollLink targetId="approach">Approach</ScrollLink>
+            <ScrollLink targetId="about">Why us</ScrollLink>
+            <ScrollLink targetId="contact" className="nav-cta">
               Start a project
-            </a>
+            </ScrollLink>
           </nav>
 
           <details className="mobile-menu">
             <summary aria-label="Open navigation">Menu</summary>
             <nav aria-label="Mobile navigation">
-              <a href="#services">Services</a>
-              <a href="#technology">Technology</a>
-              <a href="#approach">Approach</a>
-              <a href="#about">Why us</a>
-              <a href="#contact">Start a project</a>
+              <ScrollLink targetId="services">Services</ScrollLink>
+              <ScrollLink targetId="technology">Technology</ScrollLink>
+              <ScrollLink targetId="approach">Approach</ScrollLink>
+              <ScrollLink targetId="about">Why us</ScrollLink>
+              <ScrollLink targetId="contact">Start a project</ScrollLink>
             </nav>
           </details>
         </div>
@@ -156,12 +157,12 @@ export default function Home() {
               with confidence.
             </p>
             <div className="hero-actions">
-              <a className="button button-primary" href="#contact">
+              <ScrollLink className="button button-primary" targetId="contact">
                 Discuss your project <span aria-hidden="true">↗</span>
-              </a>
-              <a className="text-link" href="#services">
+              </ScrollLink>
+              <ScrollLink className="text-link" targetId="services">
                 Explore our services <span aria-hidden="true">↓</span>
-              </a>
+              </ScrollLink>
             </div>
             <div className="hero-proof" aria-label="Key business strengths">
               <div>
@@ -195,9 +196,20 @@ export default function Home() {
               </div>
               <div className="growth-chart" aria-hidden="true">
                 <div className="chart-grid" />
-                <div className="chart-line">
-                  <i /><i /><i /><i /><i />
-                </div>
+                <svg className="chart-line" viewBox="0 0 420 190" preserveAspectRatio="none">
+                  <defs>
+                    <linearGradient id="growth-fill" x1="0" y1="0" x2="0" y2="1">
+                      <stop offset="0%" stopColor="#219dc5" stopOpacity="0.24" />
+                      <stop offset="100%" stopColor="#219dc5" stopOpacity="0" />
+                    </linearGradient>
+                  </defs>
+                  <path className="chart-area" d="M12 160 L92 133 L168 142 L247 91 L324 106 L408 34 L408 190 L12 190 Z" />
+                  <polyline className="chart-path" points="12,160 92,133 168,142 247,91 324,106 408,34" />
+                  {["12,160", "92,133", "168,142", "247,91", "324,106", "408,34"].map((point) => {
+                    const [cx, cy] = point.split(",");
+                    return <circle key={point} cx={cx} cy={cy} r="5" />;
+                  })}
+                </svg>
               </div>
               <div className="panel-services">
                 <span>Web</span>
@@ -301,9 +313,9 @@ export default function Home() {
               No confusing handoffs or disconnected teams. We keep strategy,
               communication, and delivery moving in the same direction.
             </p>
-            <a href="#contact" className="button button-light">
+            <ScrollLink targetId="contact" className="button button-light">
               Build with us <span aria-hidden="true">↗</span>
-            </a>
+            </ScrollLink>
           </div>
 
           <div className="process-list">
@@ -383,16 +395,16 @@ export default function Home() {
 
       <footer className="site-footer">
         <div className="container footer-main">
-          <a className="footer-brand" href="#top">
+          <ScrollLink className="footer-brand" targetId="top">
             <Image src="/brand/logo.svg" alt="Digitrust Solutions" width={500} height={500} />
-          </a>
+          </ScrollLink>
           <p>Strategy, creative marketing, and technology for confident digital growth.</p>
           <div className="footer-links">
-            <a href="#services">Services</a>
-            <a href="#technology">Technology</a>
-            <a href="#approach">Approach</a>
-            <a href="#about">Why us</a>
-            <a href="#contact">Contact</a>
+            <ScrollLink targetId="services">Services</ScrollLink>
+            <ScrollLink targetId="technology">Technology</ScrollLink>
+            <ScrollLink targetId="approach">Approach</ScrollLink>
+            <ScrollLink targetId="about">Why us</ScrollLink>
+            <ScrollLink targetId="contact">Contact</ScrollLink>
           </div>
         </div>
         <div className="container footer-bottom">
