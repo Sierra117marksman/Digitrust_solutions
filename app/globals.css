@@ -1958,6 +1958,7 @@ a {
   color: var(--navy);
   font-size: 12px;
   font-weight: 750;
+  align-content: start;
 }
 
 .contact-form label .required-asterisk {
