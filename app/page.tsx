@@ -3,6 +3,7 @@ import Link from "next/link";
 import { ContactForm } from "./components/ContactForm";
 import { ScrollLink } from "./components/ScrollLink";
 import { Testimonials } from "./components/Testimonials";
+import TeamSection from "./components/TeamSection";
 import { featuredTestimonials } from "../content/testimonials";
 import { services } from "../content/services";
 import { policies } from "../content/policies";
@@ -331,6 +332,8 @@ export default function Home() {
           </div>
         </div>
       </section>
+
+      <TeamSection />
 
       <Testimonials items={featuredTestimonials} />
 
