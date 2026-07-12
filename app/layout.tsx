@@ -7,7 +7,7 @@ export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
   title: {
     default: "Digitrust Solutions | Digital Growth & Full-Stack Development",
-    template: "%s | Digitrust Solutions",
+    template: "%s | Digitrust Solutions", //git comment
   },
   description:
     "Digitrust Solutions is a Gurugram-based digital agency specialising in web development, social media, SEO, Meta ads, and full-stack development.",
