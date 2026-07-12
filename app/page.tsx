@@ -295,13 +295,9 @@ export default function Home() {
           <div className="why-visual" aria-hidden="true">
             <div className="why-ring">
               <div className="why-core">
-                <svg width="64" height="64" viewBox="0 0 120 120" fill="none" xmlns="http://www.w3.org/2000/svg">
-                  <circle cx="60" cy="60" r="50" fill="#fbfdfe" stroke="#147a9c" strokeWidth="6" />
-                  <circle cx="60" cy="60" r="32" fill="#147a9c" />
-                  <circle cx="60" cy="60" r="16" fill="#fbfdfe" />
-                  <circle cx="60" cy="60" r="6" fill="#f79009" />
-                  <path d="M85 35 L60 60" stroke="#0b1f33" strokeWidth="4" strokeLinecap="round" />
-                  <path d="M85 35 L95 25 M85 35 L92 42 M85 35 L78 28" stroke="#f79009" strokeWidth="4" strokeLinecap="round" />
+                <svg width="48" height="48" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg" style={{ position: 'absolute', top: 0, left: 0 }}>
+                  <path d="M38 10 L24 24" stroke="#ffffff" strokeWidth="3" strokeLinecap="round" />
+                  <path d="M38 10 L44 4 M38 10 L41 17 M38 10 L31 7" stroke="#ffffff" strokeWidth="3" strokeLinecap="round" />
                 </svg>
               </div>
               <span className="orbit-node node-one">01</span>
