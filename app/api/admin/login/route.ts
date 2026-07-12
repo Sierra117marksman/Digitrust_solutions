@@ -18,6 +18,17 @@ function clean(value: unknown, maxLength: number) {
   return typeof value === "string" ? value.trim().slice(0, maxLength) : "";
 }
 
+function isMongoConnectionError(error: unknown) {
+  if (!(error instanceof Error)) return false;
+  return (
+    error.name === "MongoServerSelectionError" ||
+    error.name === "MongoNetworkError" ||
+    error.message.includes("SSL routines") ||
+    error.message.includes("ReplicaSetNoPrimary") ||
+    error.message.includes("server selection")
+  );
+}
+
 export async function POST(request: Request) {
   try {
     const body = (await request.json()) as Record<string, unknown>;
@@ -93,6 +104,16 @@ export async function POST(request: Request) {
     return response;
   } catch (error) {
     console.error("Admin login failed", error);
+    if (isMongoConnectionError(error)) {
+      return NextResponse.json(
+        {
+          message:
+            "CRM database connection failed. Check MongoDB Atlas Network Access and the Vercel MONGODB_URI environment variable.",
+        },
+        { status: 503 },
+      );
+    }
+
     return NextResponse.json({ message: "Login failed. Please try again." }, { status: 500 });
   }
 }
