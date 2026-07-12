@@ -1,6 +1,8 @@
 import Image from "next/image";
 import { ContactForm } from "./components/ContactForm";
 import { ScrollLink } from "./components/ScrollLink";
+import { Testimonials } from "./components/Testimonials";
+import { featuredTestimonials } from "../content/testimonials";
 
 const services = [
   {
@@ -369,6 +371,8 @@ export default function Home() {
         </div>
       </section>
 
+      <Testimonials items={featuredTestimonials} />
+
       <section className="section contact-section" id="contact">
         <div className="container contact-shell">
           <div className="contact-copy">
@@ -404,6 +408,7 @@ export default function Home() {
             <ScrollLink targetId="technology">Technology</ScrollLink>
             <ScrollLink targetId="approach">Approach</ScrollLink>
             <ScrollLink targetId="about">Why us</ScrollLink>
+            <ScrollLink targetId="testimonials">Reviews</ScrollLink>
             <ScrollLink targetId="contact">Contact</ScrollLink>
           </div>
         </div>
