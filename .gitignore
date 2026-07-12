@@ -41,3 +41,5 @@ Thumbs.db
 
 # Temporary working files
 work/
+
+.vercel
