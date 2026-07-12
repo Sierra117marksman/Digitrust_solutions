@@ -21,6 +21,7 @@ export type Service = {
   faqs: ServiceFaq[];
   seoTitle: string;
   seoDescription: string;
+  featured?: boolean;
 };
 
 export const services: Service[] = [
@@ -62,6 +63,7 @@ export const services: Service[] = [
     ],
     seoTitle: "Meta Ads Management for Facebook & Instagram",
     seoDescription: "Meta Ads strategy, campaign management, tracking, retargeting, creative testing, landing pages, optimisation, and reporting.",
+    featured: true,
   },
   {
     slug: "full-stack-development",
@@ -101,6 +103,7 @@ export const services: Service[] = [
     ],
     seoTitle: "Full-Stack Development & Custom CRM Systems",
     seoDescription: "Custom web applications, CRM systems, portals, dashboards, APIs, MongoDB, PostgreSQL, Next.js, and Node.js development.",
+    featured: true,
   },
   {
     slug: "web-development",

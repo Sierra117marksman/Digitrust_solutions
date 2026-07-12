@@ -175,11 +175,14 @@ export default function Home() {
           <div className="service-grid">
             {services.map((service) => (
               <article
-                className="service-card"
+                className={`service-card ${service.featured ? "service-card-featured" : ""}`}
                 key={service.number}
               >
                 <div className="service-topline">
-                  <span>{service.number}</span>
+                  <div className="service-badge-group">
+                    <span>{service.number}</span>
+                    {service.featured && <span className="featured-badge">Featured</span>}
+                  </div>
                   <span className="service-arrow" aria-hidden="true">↗</span>
                 </div>
                 <h3>

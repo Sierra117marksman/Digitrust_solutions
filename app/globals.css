@@ -696,6 +696,33 @@ a {
   letter-spacing: 0.12em;
 }
 
+.service-badge-group {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.featured-badge {
+  background: var(--blue);
+  color: var(--white);
+  padding: 4px 10px;
+  border-radius: 99px;
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+/* Featured card highlight styling */
+.service-card-featured {
+  background: linear-gradient(180deg, rgba(234, 246, 250, 0.4) 0%, var(--white) 100%);
+  border-top: 3px solid var(--blue) !important;
+}
+
+.service-card-featured:hover {
+  background: linear-gradient(180deg, var(--ice) 0%, var(--ice) 100%);
+}
+
 .service-arrow {
   width: 37px;
   height: 37px;
