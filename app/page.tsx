@@ -318,16 +318,13 @@ export default function Home() {
                 <line x1="150" y1="15" x2="150" y2="285" stroke="rgba(11,31,51,0.06)" strokeWidth="0.8" />
                 <line x1="15" y1="150" x2="285" y2="150" stroke="rgba(11,31,51,0.06)" strokeWidth="0.8" />
 
-                {/* Dart hitting bullseye */}
-                {/* Dart body/barrel */}
-                <line x1="150" y1="150" x2="210" y2="82" stroke="#0b1f33" strokeWidth="3.5" strokeLinecap="round" />
-                {/* Dart shaft */}
-                <line x1="210" y1="82" x2="230" y2="58" stroke="#555" strokeWidth="2" strokeLinecap="round" />
-                {/* Dart flight (feathers) */}
-                <path d="M230 58 L248 48 L238 68 Z" fill="#f79009" />
-                <path d="M230 58 L222 40 L240 50 Z" fill="#e06800" />
-                {/* Impact glow */}
-                <circle cx="150" cy="150" r="20" fill="none" stroke="#f79009" strokeWidth="1.5" opacity="0.35" />
+                {/* Dart hitting bullseye — sleek & small */}
+                <line x1="150" y1="150" x2="178" y2="118" stroke="#0b1f33" strokeWidth="2" strokeLinecap="round" />
+                <line x1="178" y1="118" x2="192" y2="102" stroke="#666" strokeWidth="1.2" strokeLinecap="round" />
+                <path d="M192 102 L200 96 L196 107 Z" fill="#f79009" />
+                <path d="M192 102 L186 94 L196 98 Z" fill="#e06800" />
+                {/* Subtle impact ring */}
+                <circle cx="150" cy="150" r="18" fill="none" stroke="#f79009" strokeWidth="0.8" opacity="0.25" />
               </svg>
               <span className="orbit-node node-one">01</span>
               <span className="orbit-node node-two">02</span>
