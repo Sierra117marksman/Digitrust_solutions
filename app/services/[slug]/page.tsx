@@ -276,7 +276,6 @@ export default async function ServicePage({ params }: ServicePageProps) {
 
       <footer className="site-footer">
         <div className="container footer-main">
-          <Link className="footer-brand" href="/"><Image src="/brand/logo.svg" alt="Digitrust Solutions" width={500} height={500} /></Link>
           <p>Strategy, creative marketing, and technology for confident digital growth.</p>
           <div className="footer-links"><Link href="/#services">Services</Link><Link href="/#technology">Technology</Link><Link href="/#testimonials">Reviews</Link><a href="#service-contact">Contact</a><Link href={contactInfo.instagram.href}>Instagram</Link></div>
         </div>

@@ -109,7 +109,6 @@ export default async function PolicyPage({ params }: PolicyPageProps) {
 
       <footer className="site-footer">
         <div className="container footer-main">
-          <Link className="footer-brand" href="/"><Image src="/brand/logo.svg" alt="Digitrust Solutions" width={500} height={500} /></Link>
           <p>Strategy, creative marketing, and technology for confident digital growth.</p>
           <div className="footer-links"><Link href="/#services">Services</Link><Link href="/#testimonials">Reviews</Link><Link href="/#contact">Contact</Link></div>
         </div>

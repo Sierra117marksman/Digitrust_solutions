@@ -294,7 +294,7 @@ export default function Home() {
         <div className="container why-grid">
           <div className="why-visual" aria-hidden="true">
             <div className="why-ring">
-              <div className="why-core">D</div>
+              <div className="why-core">🎯</div>
               <span className="orbit-node node-one">01</span>
               <span className="orbit-node node-two">02</span>
               <span className="orbit-node node-three">03</span>
@@ -371,9 +371,7 @@ export default function Home() {
 
       <footer className="site-footer">
         <div className="container footer-main">
-          <ScrollLink className="footer-brand" targetId="top">
-            <Image src="/brand/logo.svg" alt="Digitrust Solutions" width={500} height={500} />
-          </ScrollLink>
+
           <p>Strategy, creative marketing, and technology for confident digital growth.</p>
           <div className="footer-links">
             <ScrollLink targetId="services">Services</ScrollLink>

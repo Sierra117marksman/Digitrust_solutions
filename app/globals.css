@@ -910,16 +910,23 @@ a {
   height: 315px;
   display: grid;
   place-items: center;
-  border: 1px solid rgba(20, 122, 156, 0.3);
   border-radius: 50%;
-  box-shadow: 0 0 0 42px rgba(255, 255, 255, 0.42), 0 0 0 43px rgba(20, 122, 156, 0.1);
+  background: radial-gradient(
+    circle,
+    var(--blue-deep) 0, var(--blue-deep) 35px,
+    var(--ice) 35px, var(--ice) 70px,
+    var(--blue-deep) 70px, var(--blue-deep) 105px,
+    var(--ice) 105px, var(--ice) 140px,
+    var(--navy) 140px, var(--navy) 100%
+  );
+  box-shadow: 0 20px 50px rgba(11, 31, 51, 0.1);
 }
 
 .why-ring::before,
 .why-ring::after {
   position: absolute;
   content: "";
-  background: rgba(20, 122, 156, 0.25);
+  background: rgba(255, 255, 255, 0.3);
 }
 
 .why-ring::before { width: 1px; height: 100%; }
@@ -928,16 +935,15 @@ a {
 .why-core {
   position: relative;
   z-index: 2;
-  width: 118px;
-  height: 118px;
+  width: 48px;
+  height: 48px;
   display: grid;
   place-items: center;
-  border-radius: 34px;
-  background: var(--navy);
+  border-radius: 50%;
+  background: #f79009; /* Orange bullseye */
   color: var(--white);
-  font-size: 56px;
-  font-weight: 850;
-  box-shadow: 0 20px 40px rgba(11, 31, 51, 0.22);
+  font-size: 24px;
+  box-shadow: 0 4px 12px rgba(247, 144, 9, 0.4);
 }
 
 .orbit-node {
