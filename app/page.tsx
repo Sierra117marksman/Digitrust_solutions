@@ -296,7 +296,7 @@ export default function Home() {
           <div className="why-visual" aria-hidden="true">
             <div className="why-ring">
               <div className="why-core">
-                <svg width="48" height="48" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg" style={{ position: 'absolute', top: 0, left: 0 }}>
+                <svg width="48" height="48" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
                   <path d="M38 10 L24 24" stroke="#ffffff" strokeWidth="3" strokeLinecap="round" />
                   <path d="M38 10 L44 4 M38 10 L41 17 M38 10 L31 7" stroke="#ffffff" strokeWidth="3" strokeLinecap="round" />
                 </svg>

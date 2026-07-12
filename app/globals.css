@@ -936,13 +936,17 @@ a {
 .why-ring::after { width: 100%; height: 1px; }
 
 .why-core {
-  position: relative;
+  position: absolute;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
+  margin: auto;
   z-index: 2;
   width: 48px;
   height: 48px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
+  display: grid;
+  place-items: center;
   border-radius: 50%;
   background: #f79009; /* Orange bullseye */
   box-shadow: 0 4px 12px rgba(247, 144, 9, 0.4);
