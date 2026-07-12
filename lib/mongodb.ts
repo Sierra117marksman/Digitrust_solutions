@@ -10,9 +10,15 @@ const globalForMongo = globalThis as typeof globalThis & {
   mongoClientPromise?: Promise<MongoClient>;
 };
 
-export const mongoClientPromise =
-  globalForMongo.mongoClientPromise ?? new MongoClient(uri).connect();
+export function getMongoClient() {
+  if (!globalForMongo.mongoClientPromise) {
+    globalForMongo.mongoClientPromise = new MongoClient(uri as string)
+      .connect()
+      .catch((error) => {
+        globalForMongo.mongoClientPromise = undefined;
+        throw error;
+      });
+  }
 
-if (process.env.NODE_ENV !== "production") {
-  globalForMongo.mongoClientPromise = mongoClientPromise;
+  return globalForMongo.mongoClientPromise;
 }

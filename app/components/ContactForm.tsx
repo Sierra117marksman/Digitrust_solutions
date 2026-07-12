@@ -4,7 +4,13 @@ import { FormEvent, useState } from "react";
 
 type FormStatus = "idle" | "submitting" | "success" | "error";
 
-export function ContactForm({ services }: { services: string[] }) {
+export function ContactForm({
+  services,
+  defaultService = "",
+}: {
+  services: string[];
+  defaultService?: string;
+}) {
   const [status, setStatus] = useState<FormStatus>("idle");
   const [message, setMessage] = useState("");
 
@@ -66,7 +72,7 @@ export function ContactForm({ services }: { services: string[] }) {
       </div>
       <label>
         Service you are interested in <span>*</span>
-        <select name="service" defaultValue="" required>
+        <select name="service" defaultValue={defaultService} required>
           <option value="" disabled>Select a service</option>
           {services.map((service) => <option value={service} key={service}>{service}</option>)}
         </select>

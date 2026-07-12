@@ -1,67 +1,10 @@
 import Image from "next/image";
+import Link from "next/link";
 import { ContactForm } from "./components/ContactForm";
 import { ScrollLink } from "./components/ScrollLink";
 import { Testimonials } from "./components/Testimonials";
 import { featuredTestimonials } from "../content/testimonials";
-
-const services = [
-  {
-    number: "01",
-    title: "Website Design & Development",
-    description:
-      "Fast, responsive business websites designed around clear journeys, strong credibility, and measurable goals.",
-    tags: ["Corporate websites", "Landing pages", "Next.js"],
-  },
-  {
-    number: "02",
-    title: "Shopify Development",
-    description:
-      "Conversion-focused storefronts, theme customisation, catalogue setup, and practical integrations for growing brands.",
-    tags: ["Store builds", "Liquid", "Conversion UX"],
-  },
-  {
-    number: "03",
-    title: "WordPress Development",
-    description:
-      "Flexible, easy-to-manage websites built with clean structure, strong SEO foundations, and dependable performance.",
-    tags: ["Business websites", "WooCommerce", "Custom themes"],
-  },
-  {
-    number: "04",
-    title: "Full-Stack Development",
-    description:
-      "End-to-end digital products with dependable frontends, secure APIs, dashboards, and scalable data architecture.",
-    tags: ["Web applications", "APIs", "CRM systems"],
-  },
-  {
-    number: "05",
-    title: "Search Engine Optimisation",
-    description:
-      "Practical technical, on-page, content, and local SEO that builds discoverability and sustainable organic growth.",
-    tags: ["Technical SEO", "Content SEO", "Local visibility"],
-  },
-  {
-    number: "06",
-    title: "Meta Ads Specialty",
-    description:
-      "Focused Facebook and Instagram campaigns built around the right audience, creative, offer, and conversion path.",
-    tags: ["Lead campaigns", "Retargeting", "Optimisation"],
-  },
-  {
-    number: "07",
-    title: "Social Media Management",
-    description:
-      "Consistent planning, publishing, community management, and reporting that keeps your brand active and relevant.",
-    tags: ["Content calendars", "Publishing", "Community"],
-  },
-  {
-    number: "08",
-    title: "Social Media Marketing",
-    description:
-      "Channel-specific strategy and creative campaigns that turn attention into engagement and qualified conversations.",
-    tags: ["Campaign strategy", "Creative direction", "Reporting"],
-  },
-];
+import { services } from "../content/services";
 
 const stackGroups = [
   {
@@ -257,17 +200,22 @@ export default function Home() {
 
           <div className="service-grid">
             {services.map((service) => (
-              <article className="service-card" key={service.number}>
+              <Link
+                className="service-card"
+                href={`/services/${service.slug}`}
+                key={service.number}
+                aria-label={`Explore ${service.title}`}
+              >
                 <div className="service-topline">
                   <span>{service.number}</span>
                   <span className="service-arrow" aria-hidden="true">↗</span>
                 </div>
                 <h3>{service.title}</h3>
-                <p>{service.description}</p>
+                <p>{service.cardDescription}</p>
                 <ul aria-label={`${service.title} capabilities`}>
                   {service.tags.map((tag) => <li key={tag}>{tag}</li>)}
                 </ul>
-              </article>
+              </Link>
             ))}
           </div>
         </div>

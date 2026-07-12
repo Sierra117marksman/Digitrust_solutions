@@ -1,16 +1,10 @@
 import { NextResponse } from "next/server";
-import { mongoClientPromise } from "@/lib/mongodb";
+import { getMongoClient } from "@/lib/mongodb";
+import { serviceTitles } from "@/content/services";
 
 export const runtime = "nodejs";
 
-const allowedServices = new Set([
-  "Web Development",
-  "Social Media Management",
-  "Social Media Marketing",
-  "Search Engine Optimisation",
-  "Meta Ads Specialty",
-  "Full-Stack Development",
-]);
+const allowedServices = new Set(serviceTitles);
 
 function clean(value: unknown, maxLength: number) {
   return typeof value === "string" ? value.trim().slice(0, maxLength) : "";
@@ -51,7 +45,7 @@ export async function POST(request: Request) {
       );
     }
 
-    const client = await mongoClientPromise;
+    const client = await getMongoClient();
     const database = client.db(process.env.MONGODB_DB || "adybabacrm");
     await database.collection("website_enquiries").insertOne({
       ...enquiry,
