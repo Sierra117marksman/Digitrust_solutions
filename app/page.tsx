@@ -294,19 +294,41 @@ export default function Home() {
       <section className="section why-section" id="about">
         <div className="container why-grid">
           <div className="why-visual" aria-hidden="true">
-            <div className="why-orbit">
-              <div className="orbit-ring orbit-ring--outer" />
-              <div className="orbit-ring orbit-ring--mid" />
-              <div className="orbit-ring orbit-ring--inner" />
-              <div className="why-core">
-                <svg width="28" height="28" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                  <path d="M12 22C17.5228 22 22 17.5228 22 12C22 6.47715 17.5228 2 12 2C6.47715 2 2 6.47715 2 12C2 17.5228 6.47715 22 12 22Z" stroke="#ffffff" strokeWidth="1.5" />
-                  <path d="M12 16C14.2091 16 16 14.2091 16 12C16 9.79086 14.2091 8 12 8C9.79086 8 8 9.79086 8 12C8 14.2091 9.79086 16 12 16Z" stroke="#ffffff" strokeWidth="1.5" />
-                  <circle cx="12" cy="12" r="2" fill="#ffffff" />
-                  <path d="M22 2L17 7" stroke="#ffffff" strokeWidth="1.5" strokeLinecap="round" />
-                  <path d="M18 2H22V6" stroke="#ffffff" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
-                </svg>
-              </div>
+            <div className="why-dartboard">
+              <svg viewBox="0 0 300 300" fill="none" xmlns="http://www.w3.org/2000/svg" className="dartboard-svg">
+                {/* Outer shadow ring */}
+                <circle cx="150" cy="150" r="140" fill="#0b1f33" opacity="0.06" />
+                {/* Board base */}
+                <circle cx="150" cy="150" r="135" fill="#0f2a3d" />
+                {/* Ring 5 - outer */}
+                <circle cx="150" cy="150" r="125" fill="#e8eff4" />
+                {/* Ring 4 */}
+                <circle cx="150" cy="150" r="105" fill="#147a9c" />
+                {/* Ring 3 */}
+                <circle cx="150" cy="150" r="80" fill="#e8eff4" />
+                {/* Ring 2 */}
+                <circle cx="150" cy="150" r="55" fill="#147a9c" />
+                {/* Ring 1 - inner */}
+                <circle cx="150" cy="150" r="30" fill="#e8eff4" />
+                {/* Bullseye */}
+                <circle cx="150" cy="150" r="14" fill="#f79009" />
+                <circle cx="150" cy="150" r="5" fill="#0b1f33" />
+
+                {/* Crosshair lines */}
+                <line x1="150" y1="15" x2="150" y2="285" stroke="rgba(11,31,51,0.06)" strokeWidth="0.8" />
+                <line x1="15" y1="150" x2="285" y2="150" stroke="rgba(11,31,51,0.06)" strokeWidth="0.8" />
+
+                {/* Dart hitting bullseye */}
+                {/* Dart body/barrel */}
+                <line x1="150" y1="150" x2="210" y2="82" stroke="#0b1f33" strokeWidth="3.5" strokeLinecap="round" />
+                {/* Dart shaft */}
+                <line x1="210" y1="82" x2="230" y2="58" stroke="#555" strokeWidth="2" strokeLinecap="round" />
+                {/* Dart flight (feathers) */}
+                <path d="M230 58 L248 48 L238 68 Z" fill="#f79009" />
+                <path d="M230 58 L222 40 L240 50 Z" fill="#e06800" />
+                {/* Impact glow */}
+                <circle cx="150" cy="150" r="20" fill="none" stroke="#f79009" strokeWidth="1.5" opacity="0.35" />
+              </svg>
               <span className="orbit-node node-one">01</span>
               <span className="orbit-node node-two">02</span>
               <span className="orbit-node node-three">03</span>
