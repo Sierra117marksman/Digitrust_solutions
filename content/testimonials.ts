@@ -88,6 +88,42 @@ export const testimonials: Testimonial[] = [
     services: ["meta-ads", "social-media-management", "social-media-marketing"],
     featured: true,
   },
+  {
+    quote:
+      "Since Digitrust took over our Meta Ads, our cost per acquisition dropped by 65%. Their creative testing framework is incredibly systematic and data-driven.",
+    name: "Aman Gupta",
+    role: "Director of Marketing",
+    company: "Luxe Furnishings",
+    services: ["meta-ads"],
+    featured: true,
+  },
+  {
+    quote:
+      "We were burning cash on Facebook ads before they stepped in. They restructured our pixel tracking and retargeting funnel, and we saw a 4x ROAS in the first month.",
+    name: "Sonia Kapoor",
+    role: "Founder",
+    company: "Kapoor & Co. Fashion",
+    services: ["meta-ads", "social-media-marketing"],
+    featured: true,
+  },
+  {
+    quote:
+      "The transparency in their Meta Ads reporting is refreshing. They don't just show clicks; they show exactly how much revenue each ad set generated.",
+    name: "Vikas Jain",
+    role: "Operations Head",
+    company: "FinTech India",
+    services: ["meta-ads"],
+    featured: true,
+  },
+  {
+    quote:
+      "Scaling our D2C brand felt impossible until Digitrust built a dedicated landing page system connected to high-performing Instagram lead campaigns.",
+    name: "Rahul Desai",
+    role: "Co-Founder",
+    company: "Desai Organics",
+    services: ["meta-ads", "web-development"],
+    featured: true,
+  }
 ];
 
 export const featuredTestimonials = testimonials.filter(
