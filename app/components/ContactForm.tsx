@@ -142,7 +142,7 @@ export function ContactForm({
         
         <div className="form-row">
           <label>
-            Your name <span>*</span>
+            <span className="label-text">Your name <span className="required-asterisk">*</span></span>
             <input 
               name="name" 
               type="text" 
@@ -163,7 +163,7 @@ export function ContactForm({
           </label>
           
           <label>
-            Company
+            <span className="label-text">Company</span>
             <input 
               name="company" 
               type="text" 
@@ -181,7 +181,7 @@ export function ContactForm({
 
         <div className="form-row">
           <label>
-            Email address <span>*</span>
+            <span className="label-text">Email address <span className="required-asterisk">*</span></span>
             <input 
               name="email" 
               type="email" 
@@ -202,7 +202,7 @@ export function ContactForm({
           </label>
           
           <label>
-            Phone number <span>*</span>
+            <span className="label-text">Phone number <span className="required-asterisk">*</span></span>
             <input 
               name="phone" 
               type="tel" 
@@ -225,7 +225,7 @@ export function ContactForm({
         </div>
 
         <label>
-          Service you are interested in <span>*</span>
+          <span className="label-text">Service you are interested in <span className="required-asterisk">*</span></span>
           <select 
             name="service" 
             value={fields.service.value}
@@ -245,7 +245,7 @@ export function ContactForm({
         </label>
 
         <label>
-          Tell us about your project <span>*</span>
+          <span className="label-text">Tell us about your project <span className="required-asterisk">*</span></span>
           <textarea 
             name="message" 
             maxLength={2000} 

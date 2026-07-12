@@ -1960,7 +1960,7 @@ a {
   font-weight: 750;
 }
 
-.contact-form label > span {
+.contact-form label .required-asterisk {
   color: var(--blue-dark);
 }
 
