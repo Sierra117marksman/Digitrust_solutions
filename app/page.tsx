@@ -202,22 +202,28 @@ export default function Home() {
 
           <div className="service-grid">
             {services.map((service) => (
-              <Link
+              <article
                 className="service-card"
-                href={`/services/${service.slug}`}
                 key={service.number}
-                aria-label={`Explore ${service.title}`}
               >
                 <div className="service-topline">
                   <span>{service.number}</span>
                   <span className="service-arrow" aria-hidden="true">↗</span>
                 </div>
-                <h3>{service.title}</h3>
+                <h3>
+                  <Link 
+                    href={`/services/${service.slug}`}
+                    className="service-card-link"
+                    aria-label={`Explore ${service.title}`}
+                  >
+                    {service.title}
+                  </Link>
+                </h3>
                 <p>{service.cardDescription}</p>
                 <ul aria-label={`${service.title} capabilities`}>
                   {service.tags.map((tag) => <li key={tag}>{tag}</li>)}
                 </ul>
-              </Link>
+              </article>
             ))}
           </div>
         </div>

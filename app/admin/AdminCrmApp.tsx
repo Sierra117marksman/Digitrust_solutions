@@ -1,7 +1,9 @@
 "use client";
 
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState, useRef } from "react";
+import toast from "react-hot-toast";
 import { contactInfo } from "@/content/contact";
+import { logError } from "../../utils/logger";
 
 const statuses = ["New", "Contacted", "Qualified", "Proposal Sent", "Won", "Lost"];
 const priorities = ["High", "Medium", "Low"];
@@ -150,8 +152,37 @@ export function AdminCrmApp({ admin }: { admin: Admin }) {
   const [activeLead, setActiveLead] = useState<Lead | null>(null);
   const [note, setNote] = useState("");
 
-  const loadLeads = useCallback(async () => {
-    setLoading(true);
+  const originalLeadRef = useRef<Lead | null>(null);
+  const isSavingRef = useRef(false);
+  const abortControllerRef = useRef<AbortController | null>(null);
+
+  const hasUnsavedChanges = useMemo(() => {
+    if (!activeLead || !originalLeadRef.current) return false;
+    if (note.trim().length > 0) return true;
+    const editableFields = ["status", "priority", "leadTemperature", "budgetRange", "followUpDate", "wonValue", "lostReason", "company"];
+    return editableFields.some((field) => activeLead[field as keyof Lead] !== originalLeadRef.current![field as keyof Lead]);
+  }, [activeLead, note]);
+
+  useEffect(() => {
+    if (activeLead && (!originalLeadRef.current || originalLeadRef.current._id !== activeLead._id)) {
+      originalLeadRef.current = activeLead;
+    } else if (!activeLead) {
+      originalLeadRef.current = null;
+    }
+  }, [activeLead]);
+
+  useEffect(() => {
+    if (!hasUnsavedChanges) return;
+    const handleBeforeUnload = (e: BeforeUnloadEvent) => {
+      e.preventDefault();
+      e.returnValue = "";
+    };
+    window.addEventListener("beforeunload", handleBeforeUnload);
+    return () => window.removeEventListener("beforeunload", handleBeforeUnload);
+  }, [hasUnsavedChanges]);
+
+  const loadLeads = useCallback(async (silent = false) => {
+    if (!silent) setLoading(true);
     setError("");
     const params = new URLSearchParams({
       page: String(page),
@@ -209,27 +240,87 @@ export function AdminCrmApp({ admin }: { admin: Admin }) {
   }, [loadLeads, search]);
 
   async function updateLead(id: string, payload: Record<string, unknown>) {
-    setSaving(true);
+    if (isSavingRef.current) return false;
+    isSavingRef.current = true;
     setError("");
-    const response = await fetch("/api/admin/leads", {
-      method: "PATCH",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ id, ...payload }),
-    });
-    const data = await response.json();
-    setSaving(false);
-    if (!response.ok) {
-      setError(data.message || "Lead update failed.");
-      return false;
+
+    if (abortControllerRef.current) abortControllerRef.current.abort();
+    abortControllerRef.current = new AbortController();
+
+    const previousLead = leads.find((l) => l._id === id);
+    if (previousLead) {
+      setLeads((current) =>
+        current.map((l) => (l._id === id ? { ...l, ...payload } : l))
+      );
+      if (activeLead && activeLead._id === id) {
+        setActiveLead((current) => ({ ...current, ...payload } as Lead));
+        originalLeadRef.current = { ...originalLeadRef.current, ...payload } as Lead;
+      }
     }
-    await loadLeads();
-    return true;
+
+    const loadingToast = toast.loading("Saving changes...");
+
+    try {
+      const response = await fetch("/api/admin/leads", {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ id, ...payload }),
+        signal: abortControllerRef.current.signal
+      });
+      const data = await response.json();
+      
+      if (!response.ok) {
+        throw new Error(data.message || "Lead update failed.");
+      }
+      
+      toast.success("Saved", { id: loadingToast });
+      await loadLeads(true);
+      return true;
+    } catch (error: any) {
+      if (error.name === "AbortError") {
+        toast.dismiss(loadingToast);
+        return false;
+      }
+      logError("updateLead", error);
+      toast.error(error.message || "Could not save changes.", { id: loadingToast });
+      
+      if (previousLead) {
+        setLeads((current) =>
+          current.map((l) => (l._id === id ? previousLead : l))
+        );
+        if (activeLead && activeLead._id === id) {
+          setActiveLead(previousLead);
+          originalLeadRef.current = previousLead;
+        }
+      }
+      return false;
+    } finally {
+      isSavingRef.current = false;
+    }
   }
 
   async function appendNote() {
     if (!activeLead || !note.trim()) return;
-    const ok = await updateLead(activeLead._id, { note: note.trim() });
-    if (ok) setNote("");
+    const loadingToast = toast.loading("Saving note...");
+    // Bypass optimistic UI for notes to keep it simple, just await the save
+    isSavingRef.current = true;
+    try {
+      const response = await fetch("/api/admin/leads", {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ id: activeLead._id, note: note.trim() }),
+      });
+      if (!response.ok) throw new Error("Could not save note.");
+      
+      toast.success("Note saved", { id: loadingToast });
+      setNote("");
+      await loadLeads(true);
+    } catch (error: any) {
+      logError("appendNote", error);
+      toast.error("Could not save note.", { id: loadingToast });
+    } finally {
+      isSavingRef.current = false;
+    }
   }
 
   async function logContact(channel: string) {
@@ -352,6 +443,13 @@ export function AdminCrmApp({ admin }: { admin: Admin }) {
                 <option value="upcoming">Upcoming</option>
                 <option value="idle">Idle 48h+</option>
               </select>
+              <button 
+                onClick={() => { setSearch(""); setStatusFilter(""); setPriorityFilter(""); setTemperatureFilter(""); setServiceFilter(""); setTimelineFilter(""); setPage(1); }}
+                disabled={!(search || statusFilter || priorityFilter || temperatureFilter || serviceFilter || timelineFilter)}
+                className="crm-clear-filters"
+              >
+                Clear Filters
+              </button>
             </div>
 
             {loading ? (
@@ -435,7 +533,13 @@ export function AdminCrmApp({ admin }: { admin: Admin }) {
 
       {activeLead && (
         <div className="crm-drawer-shell">
-          <button className="crm-drawer-backdrop" onClick={() => setActiveLead(null)} aria-label="Close lead details" />
+          <button className="crm-drawer-backdrop" onClick={() => {
+            if (hasUnsavedChanges) {
+              if (!window.confirm("You have unsaved changes. Are you sure you want to close?")) return;
+            }
+            setActiveLead(null);
+            setNote("");
+          }} aria-label="Close lead details" />
           <aside className="crm-drawer">
             <header>
               <div>
@@ -443,7 +547,13 @@ export function AdminCrmApp({ admin }: { admin: Admin }) {
                 <h3>{activeLead.name}</h3>
                 <span>Captured {formatDateTime(activeLead.createdAt)}</span>
               </div>
-              <button onClick={() => setActiveLead(null)}>Close</button>
+              <button onClick={() => {
+                if (hasUnsavedChanges) {
+                  if (!window.confirm("You have unsaved changes. Are you sure you want to close?")) return;
+                }
+                setActiveLead(null);
+                setNote("");
+              }}>Close</button>
             </header>
 
             <div className="crm-drawer-actions">
@@ -469,8 +579,10 @@ export function AdminCrmApp({ admin }: { admin: Admin }) {
 
             <section className="crm-drawer-section">
               <h4>Internal notes</h4>
-              <textarea value={note} onChange={(event) => setNote(event.target.value)} placeholder="Add call note, client response, next step..." />
-              <button disabled={saving || !note.trim()} onClick={() => void appendNote()}>{saving ? "Saving..." : "Save note"}</button>
+              <fieldset disabled={isSavingRef.current} style={{ all: "unset", display: "contents" }}>
+                <textarea value={note} onChange={(event) => setNote(event.target.value)} placeholder="Add call note, client response, next step..." />
+                <button disabled={!note.trim()} onClick={() => void appendNote()}>Save note</button>
+              </fieldset>
               {activeLead.notes && <p className="crm-existing-notes">{activeLead.notes}</p>}
             </section>
 

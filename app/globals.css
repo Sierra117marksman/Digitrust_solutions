@@ -596,6 +596,7 @@ a {
 }
 
 .service-card {
+  position: relative;
   min-height: 380px;
   padding: 32px;
   display: flex;
@@ -603,6 +604,13 @@ a {
   border-right: 1px solid var(--border);
   border-bottom: 1px solid var(--border);
   background: var(--white);
+}
+
+.service-card-link::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+}
   transition: background 220ms ease, transform 220ms ease, box-shadow 220ms ease;
 }
 
