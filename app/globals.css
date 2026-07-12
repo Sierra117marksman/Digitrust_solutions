@@ -604,14 +604,13 @@ a {
   border-right: 1px solid var(--border);
   border-bottom: 1px solid var(--border);
   background: var(--white);
+  transition: background 220ms ease, transform 220ms ease, box-shadow 220ms ease;
 }
 
 .service-card-link::after {
   content: '';
   position: absolute;
   inset: 0;
-}
-  transition: background 220ms ease, transform 220ms ease, box-shadow 220ms ease;
 }
 
 .service-card:hover {
@@ -2049,6 +2048,51 @@ a {
 
 .form-message.success { color: #147a4a; }
 .form-message.error { color: #b42318; }
+
+/* Validation States */
+.input-success {
+  border-color: #147a4a !important;
+  background: rgba(20, 122, 74, 0.03) !important;
+}
+
+.input-warning {
+  border-color: #f79009 !important;
+  background: rgba(247, 144, 9, 0.03) !important;
+}
+
+.input-error {
+  border-color: #b42318 !important;
+  background: rgba(180, 35, 24, 0.03) !important;
+}
+
+.input-disabled {
+  background: #f1f5f9 !important;
+  color: #94a3b8 !important;
+  cursor: not-allowed;
+}
+
+.field-feedback {
+  display: block;
+  font-size: 12px;
+  margin-top: 6px;
+  min-height: 18px;
+  line-height: 1.4;
+  transition: color 150ms ease;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .contact-form input,
+  .contact-form select,
+  .contact-form textarea,
+  .field-feedback {
+    transition: none !important;
+  }
+}
+
+.field-feedback.info { color: #64748b; }
+.field-feedback.warning { color: #d07502; }
+.field-feedback.error { color: #b42318; }
+.field-feedback.success { color: #147a4a; }
 
 .site-footer {
   padding: 66px 0 28px;

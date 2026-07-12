@@ -1,14 +1,13 @@
 "use client";
 
 import Image from "next/image";
-import { useState, useRef } from "react";
+import { useState, useRef, useMemo, FormEvent } from "react";
 import toast from "react-hot-toast";
 import { logError } from "../../utils/logger";
+import { useProgressiveValidation, ValidationResult, Severity } from "../../hooks/useProgressiveValidation";
 
 type LoginState = {
   mode: "password" | "totp" | "setup";
-  email: string;
-  password: string;
   setupSecret?: string;
   otpAuthUrl?: string;
   qrCodeDataUrl?: string;
@@ -20,21 +19,66 @@ type LoginState = {
 export function LoginForm() {
   const [state, setState] = useState<LoginState>({
     mode: "password",
-    email: "",
-    password: "",
     loading: false,
   });
 
   const isSubmittingRef = useRef(false);
 
-  async function submitLogin(formData: FormData) {
+  const validators = useMemo(() => ({
+    email: (val: string): ValidationResult => {
+      const trimmed = val.trim().toLowerCase();
+      if (!trimmed) return { isValid: false, severity: "error", message: "Email is required.", value: trimmed };
+      if (trimmed.includes("@gmial.com") || trimmed.includes("@gmai.com")) {
+        return { isValid: true, severity: "warning", message: "Did you mean @gmail.com?", value: trimmed };
+      }
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      if (!emailRegex.test(trimmed)) return { isValid: false, severity: "error", message: "Enter a valid email.", value: trimmed };
+      return { isValid: true, severity: "success", message: "", value: trimmed };
+    },
+    password: (val: string): ValidationResult => {
+      if (!val) return { isValid: false, severity: "error", message: "Password is required." };
+      if (val.length < 8) return { isValid: false, severity: "error", message: "Password must be at least 8 characters." };
+      return { isValid: true, severity: "success", message: "" };
+    },
+    token: (val: string): ValidationResult => {
+      const digits = val.replace(/\D/g, "");
+      if (!digits) return { isValid: false, severity: "error", message: "Code is required.", value: digits };
+      if (digits.length !== 6) return { isValid: false, severity: "error", message: "Code must be 6 digits.", value: digits };
+      return { isValid: true, severity: "success", message: "", value: digits };
+    }
+  }), []);
+
+  const { fields, handleChange, handleBlur, validateAll, handleKeyDown } = useProgressiveValidation({
+    email: "",
+    password: "",
+    token: "",
+  }, validators);
+
+  function getInputClass(severity: Severity) {
+    if (severity === "neutral" || severity === "info") return "";
+    return `input-${severity}`;
+  }
+
+  async function submitLogin(e: FormEvent<HTMLFormElement>) {
+    e.preventDefault();
     if (isSubmittingRef.current) return;
+    
+    // Only validate fields relevant to the current mode
+    validateAll();
+    
+    const isEmailValid = validators.email(fields.email.value).isValid;
+    const isPasswordValid = validators.password(fields.password.value).isValid;
+    const isTokenValid = state.mode === "totp" ? validators.token(fields.token.value).isValid : true;
+
+    if (!isEmailValid || !isPasswordValid || !isTokenValid) {
+      // Focus first error
+      const errField = !isEmailValid ? "email" : !isPasswordValid ? "password" : "token";
+      const input = document.querySelector(`[name="${errField}"]`) as HTMLElement;
+      input?.focus();
+      return;
+    }
+
     isSubmittingRef.current = true;
-
-    const email = String(formData.get("email") || state.email);
-    const password = String(formData.get("password") || state.password);
-    const token = String(formData.get("token") || "");
-
     setState((current) => ({ ...current, loading: true, error: undefined, message: undefined }));
     const loadingToast = toast.loading(state.mode === "totp" ? "Verifying Code..." : "Checking...");
 
@@ -42,7 +86,7 @@ export function LoginForm() {
       const response = await fetch("/api/admin/login", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email, password, token }),
+        body: JSON.stringify({ email: fields.email.value, password: fields.password.value, token: fields.token.value }),
       });
       const result = await response.json();
 
@@ -57,8 +101,6 @@ export function LoginForm() {
       if (result.setupRequired) {
         setState({
           mode: "setup",
-          email,
-          password,
           setupSecret: result.setupSecret,
           otpAuthUrl: result.otpAuthUrl,
           qrCodeDataUrl: result.qrCodeDataUrl,
@@ -73,8 +115,6 @@ export function LoginForm() {
       if (result.totpRequired) {
         setState({
           mode: "totp",
-          email,
-          password,
           message: result.message,
           loading: false,
         });
@@ -85,8 +125,6 @@ export function LoginForm() {
 
       setState((current) => ({
         ...current,
-        email,
-        password,
         loading: false,
         error: result.message || "Login failed.",
       }));
@@ -100,11 +138,18 @@ export function LoginForm() {
     }
   }
 
-  async function submitSetup(formData: FormData) {
+  async function submitSetup(e: FormEvent<HTMLFormElement>) {
+    e.preventDefault();
     if (isSubmittingRef.current) return;
+    
+    if (!validators.token(fields.token.value).isValid) {
+      validateAll();
+      const input = document.querySelector(`[name="token"]`) as HTMLElement;
+      input?.focus();
+      return;
+    }
+    
     isSubmittingRef.current = true;
-
-    const token = String(formData.get("token") || "");
     setState((current) => ({ ...current, loading: true, error: undefined, message: undefined }));
     const loadingToast = toast.loading("Verifying Code...");
 
@@ -112,7 +157,7 @@ export function LoginForm() {
       const response = await fetch("/api/admin/mfa/setup", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ token }),
+        body: JSON.stringify({ token: fields.token.value }),
       });
       const result = await response.json();
 
@@ -148,7 +193,7 @@ export function LoginForm() {
       </div>
 
       {state.mode === "setup" ? (
-        <form action={submitSetup} className="admin-form">
+        <form onSubmit={submitSetup} className="admin-form" noValidate>
           <fieldset disabled={state.loading} style={{ all: "unset", display: "contents" }}>
             <div className="setup-box">
               <span>Scan QR code</span>
@@ -171,7 +216,22 @@ export function LoginForm() {
             </div>
             <label>
               <span>6 digit code</span>
-              <input name="token" inputMode="numeric" autoComplete="one-time-code" maxLength={6} required />
+              <input 
+                name="token" 
+                inputMode="numeric" 
+                autoComplete="one-time-code" 
+                maxLength={6} 
+                value={fields.token.value}
+                onChange={(e) => handleChange("token", e.target.value)}
+                onBlur={() => handleBlur("token")}
+                onKeyDown={handleKeyDown}
+                className={`form-input ${getInputClass(fields.token.severity)}`}
+                aria-invalid={fields.token.severity === "error"}
+                aria-describedby={fields.token.message ? "token-feedback" : undefined}
+              />
+              {fields.token.message && fields.token.touched && (
+                <span id="token-feedback" className={`field-feedback ${fields.token.severity}`} role="alert">{fields.token.message}</span>
+              )}
             </label>
             <button className="admin-primary-button" disabled={state.loading}>
               {state.loading ? "Verifying..." : "Enable Authenticator"}
@@ -179,7 +239,7 @@ export function LoginForm() {
           </fieldset>
         </form>
       ) : (
-        <form action={submitLogin} className="admin-form">
+        <form onSubmit={submitLogin} className="admin-form" noValidate>
           <fieldset disabled={state.loading} style={{ all: "unset", display: "contents" }}>
             <label>
               <span>Email</span>
@@ -187,9 +247,17 @@ export function LoginForm() {
                 name="email"
                 type="email"
                 autoComplete="email"
-                defaultValue={state.email}
-                required
+                value={fields.email.value}
+                onChange={(e) => handleChange("email", e.target.value)}
+                onBlur={() => handleBlur("email")}
+                onKeyDown={handleKeyDown}
+                className={`form-input ${getInputClass(fields.email.severity)}`}
+                aria-invalid={fields.email.severity === "error"}
+                aria-describedby={fields.email.message ? "email-feedback" : undefined}
               />
+              {fields.email.message && fields.email.touched && (
+                <span id="email-feedback" className={`field-feedback ${fields.email.severity}`} role="alert">{fields.email.message}</span>
+              )}
             </label>
             <label>
               <span>Password</span>
@@ -197,14 +265,37 @@ export function LoginForm() {
                 name="password"
                 type="password"
                 autoComplete="current-password"
-                defaultValue={state.password}
-                required
+                value={fields.password.value}
+                onChange={(e) => handleChange("password", e.target.value)}
+                onBlur={() => handleBlur("password")}
+                onKeyDown={handleKeyDown}
+                className={`form-input ${getInputClass(fields.password.severity)}`}
+                aria-invalid={fields.password.severity === "error"}
+                aria-describedby={fields.password.message ? "password-feedback" : undefined}
               />
+              {fields.password.message && fields.password.touched && (
+                <span id="password-feedback" className={`field-feedback ${fields.password.severity}`} role="alert">{fields.password.message}</span>
+              )}
             </label>
             {state.mode === "totp" && (
               <label>
                 <span>Authenticator code</span>
-                <input name="token" inputMode="numeric" autoComplete="one-time-code" maxLength={6} required />
+                <input 
+                  name="token" 
+                  inputMode="numeric" 
+                  autoComplete="one-time-code" 
+                  maxLength={6}
+                  value={fields.token.value}
+                  onChange={(e) => handleChange("token", e.target.value)}
+                  onBlur={() => handleBlur("token")}
+                  onKeyDown={handleKeyDown}
+                  className={`form-input ${getInputClass(fields.token.severity)}`}
+                  aria-invalid={fields.token.severity === "error"}
+                  aria-describedby={fields.token.message ? "token-feedback" : undefined}
+                />
+                {fields.token.message && fields.token.touched && (
+                  <span id="token-feedback" className={`field-feedback ${fields.token.severity}`} role="alert">{fields.token.message}</span>
+                )}
               </label>
             )}
             <button className="admin-primary-button" disabled={state.loading}>

@@ -3,7 +3,7 @@
 import { useCallback, useEffect, useMemo, useState, useRef } from "react";
 import toast from "react-hot-toast";
 import { contactInfo } from "@/content/contact";
-import { logError } from "../../utils/logger";
+import { logError } from "../utils/logger";
 
 const statuses = ["New", "Contacted", "Qualified", "Proposal Sent", "Won", "Lost"];
 const priorities = ["High", "Medium", "Low"];
@@ -147,29 +147,35 @@ export function AdminCrmApp({ admin }: { admin: Admin }) {
   const [view, setView] = useState<"table" | "kanban">("table");
   const [page, setPage] = useState(1);
   const [loading, setLoading] = useState(true);
-  const [saving, setSaving] = useState(false);
   const [error, setError] = useState("");
   const [activeLead, setActiveLead] = useState<Lead | null>(null);
   const [note, setNote] = useState("");
+  const [saving, setSaving] = useState(false);
 
-  const originalLeadRef = useRef<Lead | null>(null);
+  const [originalLead, setOriginalLead] = useState<Lead | null>(null);
   const isSavingRef = useRef(false);
   const abortControllerRef = useRef<AbortController | null>(null);
 
   const hasUnsavedChanges = useMemo(() => {
-    if (!activeLead || !originalLeadRef.current) return false;
+    if (!activeLead || !originalLead) return false;
     if (note.trim().length > 0) return true;
     const editableFields = ["status", "priority", "leadTemperature", "budgetRange", "followUpDate", "wonValue", "lostReason", "company"];
-    return editableFields.some((field) => activeLead[field as keyof Lead] !== originalLeadRef.current![field as keyof Lead]);
-  }, [activeLead, note]);
+    return editableFields.some((field) => activeLead[field as keyof Lead] !== originalLead[field as keyof Lead]);
+  }, [activeLead, note, originalLead]);
 
-  useEffect(() => {
-    if (activeLead && (!originalLeadRef.current || originalLeadRef.current._id !== activeLead._id)) {
-      originalLeadRef.current = activeLead;
-    } else if (!activeLead) {
-      originalLeadRef.current = null;
+  function openLead(lead: Lead) {
+    setActiveLead(lead);
+    setOriginalLead(lead);
+  }
+
+  function closeLead() {
+    if (hasUnsavedChanges) {
+      if (!window.confirm("You have unsaved changes. Are you sure you want to close?")) return;
     }
-  }, [activeLead]);
+    setActiveLead(null);
+    setOriginalLead(null);
+    setNote("");
+  }
 
   useEffect(() => {
     if (!hasUnsavedChanges) return;
@@ -242,6 +248,7 @@ export function AdminCrmApp({ admin }: { admin: Admin }) {
   async function updateLead(id: string, payload: Record<string, unknown>) {
     if (isSavingRef.current) return false;
     isSavingRef.current = true;
+    setSaving(true);
     setError("");
 
     if (abortControllerRef.current) abortControllerRef.current.abort();
@@ -254,7 +261,7 @@ export function AdminCrmApp({ admin }: { admin: Admin }) {
       );
       if (activeLead && activeLead._id === id) {
         setActiveLead((current) => ({ ...current, ...payload } as Lead));
-        originalLeadRef.current = { ...originalLeadRef.current, ...payload } as Lead;
+        setOriginalLead((current) => current ? ({ ...current, ...payload } as Lead) : null);
       }
     }
 
@@ -276,13 +283,13 @@ export function AdminCrmApp({ admin }: { admin: Admin }) {
       toast.success("Saved", { id: loadingToast });
       await loadLeads(true);
       return true;
-    } catch (error: any) {
-      if (error.name === "AbortError") {
+    } catch (error: unknown) {
+      if (error instanceof Error && error.name === "AbortError") {
         toast.dismiss(loadingToast);
         return false;
       }
       logError("updateLead", error);
-      toast.error(error.message || "Could not save changes.", { id: loadingToast });
+      toast.error(error instanceof Error ? error.message : "Could not save changes.", { id: loadingToast });
       
       if (previousLead) {
         setLeads((current) =>
@@ -290,20 +297,21 @@ export function AdminCrmApp({ admin }: { admin: Admin }) {
         );
         if (activeLead && activeLead._id === id) {
           setActiveLead(previousLead);
-          originalLeadRef.current = previousLead;
+          setOriginalLead(previousLead);
         }
       }
       return false;
     } finally {
       isSavingRef.current = false;
+      setSaving(false);
     }
   }
 
   async function appendNote() {
     if (!activeLead || !note.trim()) return;
     const loadingToast = toast.loading("Saving note...");
-    // Bypass optimistic UI for notes to keep it simple, just await the save
     isSavingRef.current = true;
+    setSaving(true);
     try {
       const response = await fetch("/api/admin/leads", {
         method: "PATCH",
@@ -315,11 +323,12 @@ export function AdminCrmApp({ admin }: { admin: Admin }) {
       toast.success("Note saved", { id: loadingToast });
       setNote("");
       await loadLeads(true);
-    } catch (error: any) {
+    } catch (error: unknown) {
       logError("appendNote", error);
       toast.error("Could not save note.", { id: loadingToast });
     } finally {
       isSavingRef.current = false;
+      setSaving(false);
     }
   }
 
@@ -460,7 +469,7 @@ export function AdminCrmApp({ admin }: { admin: Admin }) {
                   <div className="crm-kanban-column" key={status}>
                     <div><strong>{status}</strong><span>{leads.filter((lead) => lead.status === status).length}</span></div>
                     {leads.filter((lead) => lead.status === status).map((lead) => (
-                      <button className="crm-kanban-card" key={lead._id} onClick={() => setActiveLead(lead)}>
+                      <button className="crm-kanban-card" key={lead._id} onClick={() => openLead(lead)}>
                         <strong>{lead.name}</strong>
                         <span>{lead.service || "General enquiry"}</span>
                         <small>{lead.priority} priority • {lead.leadTemperature}</small>
@@ -485,7 +494,7 @@ export function AdminCrmApp({ admin }: { admin: Admin }) {
                     <span><em className={`crm-status-pill ${lead.status.toLowerCase().replace(/\s/g, "-")}`}>{lead.status}</em></span>
                     <span><em className={`crm-priority-pill ${lead.priority.toLowerCase()}`}>{lead.priority}</em></span>
                     <span>{formatDate(lead.followUpDate)}</span>
-                    <span><button className="crm-row-button" onClick={() => setActiveLead(lead)}>Open</button></span>
+                    <span><button className="crm-row-button" onClick={() => openLead(lead)}>Open</button></span>
                   </div>
                 )) : (
                   <p className="crm-empty">No leads match these filters.</p>
@@ -533,13 +542,7 @@ export function AdminCrmApp({ admin }: { admin: Admin }) {
 
       {activeLead && (
         <div className="crm-drawer-shell">
-          <button className="crm-drawer-backdrop" onClick={() => {
-            if (hasUnsavedChanges) {
-              if (!window.confirm("You have unsaved changes. Are you sure you want to close?")) return;
-            }
-            setActiveLead(null);
-            setNote("");
-          }} aria-label="Close lead details" />
+          <button className="crm-drawer-backdrop" onClick={closeLead} aria-label="Close lead details" />
           <aside className="crm-drawer">
             <header>
               <div>
@@ -547,13 +550,7 @@ export function AdminCrmApp({ admin }: { admin: Admin }) {
                 <h3>{activeLead.name}</h3>
                 <span>Captured {formatDateTime(activeLead.createdAt)}</span>
               </div>
-              <button onClick={() => {
-                if (hasUnsavedChanges) {
-                  if (!window.confirm("You have unsaved changes. Are you sure you want to close?")) return;
-                }
-                setActiveLead(null);
-                setNote("");
-              }}>Close</button>
+              <button onClick={closeLead}>Close</button>
             </header>
 
             <div className="crm-drawer-actions">
@@ -579,7 +576,7 @@ export function AdminCrmApp({ admin }: { admin: Admin }) {
 
             <section className="crm-drawer-section">
               <h4>Internal notes</h4>
-              <fieldset disabled={isSavingRef.current} style={{ all: "unset", display: "contents" }}>
+              <fieldset disabled={saving} style={{ all: "unset", display: "contents" }}>
                 <textarea value={note} onChange={(event) => setNote(event.target.value)} placeholder="Add call note, client response, next step..." />
                 <button disabled={!note.trim()} onClick={() => void appendNote()}>Save note</button>
               </fieldset>
