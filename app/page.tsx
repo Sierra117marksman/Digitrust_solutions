@@ -6,6 +6,7 @@ import { Testimonials } from "./components/Testimonials";
 import { featuredTestimonials } from "../content/testimonials";
 import { services } from "../content/services";
 import { policies } from "../content/policies";
+import { contactInfo } from "../content/contact";
 
 const stackGroups = [
   {
@@ -334,11 +335,27 @@ export default function Home() {
             <div className="contact-details">
               <div>
                 <span>Visit us</span>
-                <p>142B1, Dharam Colony, Palam Vihar,<br />Gurugram, Haryana - 122017</p>
+                <p>{contactInfo.addressLines[0]},<br />{contactInfo.addressLines[1]}</p>
               </div>
               <div>
                 <span>Business registration</span>
-                <p>GSTIN: 06DUYPD9228L1ZT</p>
+                <p>GSTIN: {contactInfo.gstin}</p>
+              </div>
+              <div>
+                <span>Call us</span>
+                <p>
+                  {contactInfo.phones.map((phone, index) => (
+                    <Link href={phone.href} key={phone.href}>{phone.display}{index < contactInfo.phones.length - 1 ? <br /> : null}</Link>
+                  ))}
+                </p>
+              </div>
+              <div>
+                <span>WhatsApp leads</span>
+                <p><Link href={contactInfo.whatsapp.href}>Message {contactInfo.whatsapp.display}</Link></p>
+              </div>
+              <div>
+                <span>Instagram</span>
+                <p><Link href={contactInfo.instagram.href}>{contactInfo.instagram.label}</Link></p>
               </div>
             </div>
           </div>
@@ -359,6 +376,7 @@ export default function Home() {
             <ScrollLink targetId="about">Why us</ScrollLink>
             <ScrollLink targetId="testimonials">Reviews</ScrollLink>
             <ScrollLink targetId="contact">Contact</ScrollLink>
+            <Link href={contactInfo.instagram.href}>Instagram</Link>
           </div>
         </div>
         <div className="container footer-bottom policy-footer-bottom">

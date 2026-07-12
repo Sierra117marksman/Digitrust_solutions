@@ -7,6 +7,7 @@ import { Testimonials } from "../../components/Testimonials";
 import { getService, services, serviceTitles } from "../../../content/services";
 import { getTestimonialsForService } from "../../../content/testimonials";
 import { policies } from "../../../content/policies";
+import { contactInfo } from "../../../content/contact";
 
 type ServicePageProps = {
   params: Promise<{ slug: string }>;
@@ -57,9 +58,11 @@ export default async function ServicePage({ params }: ServicePageProps) {
         provider: {
           "@type": "Organization",
           name: "Digitrust Solutions",
+          telephone: contactInfo.phones[0].display,
+          sameAs: [contactInfo.instagram.href],
           address: {
             "@type": "PostalAddress",
-            streetAddress: "142B1, Dharam Colony, Palam Vihar",
+            streetAddress: contactInfo.addressLines[0],
             addressLocality: "Gurugram",
             addressRegion: "Haryana",
             postalCode: "122017",
@@ -253,8 +256,18 @@ export default async function ServicePage({ params }: ServicePageProps) {
             <h2>Let&apos;s discuss your {service.title.toLowerCase()} needs.</h2>
             <p>Share the current situation, the outcome you need, and any timing considerations. We will review the details and suggest the right next conversation.</p>
             <div className="contact-details">
-              <div><span>Visit us</span><p>142B1, Dharam Colony, Palam Vihar,<br />Gurugram, Haryana - 122017</p></div>
-              <div><span>Business registration</span><p>GSTIN: 06DUYPD9228L1ZT</p></div>
+              <div><span>Visit us</span><p>{contactInfo.addressLines[0]},<br />{contactInfo.addressLines[1]}</p></div>
+              <div><span>Business registration</span><p>GSTIN: {contactInfo.gstin}</p></div>
+              <div>
+                <span>Call us</span>
+                <p>
+                  {contactInfo.phones.map((phone, index) => (
+                    <Link href={phone.href} key={phone.href}>{phone.display}{index < contactInfo.phones.length - 1 ? <br /> : null}</Link>
+                  ))}
+                </p>
+              </div>
+              <div><span>WhatsApp leads</span><p><Link href={contactInfo.whatsapp.href}>Message {contactInfo.whatsapp.display}</Link></p></div>
+              <div><span>Instagram</span><p><Link href={contactInfo.instagram.href}>{contactInfo.instagram.label}</Link></p></div>
             </div>
           </div>
           <ContactForm services={serviceTitles} defaultService={service.title} />
@@ -265,7 +278,7 @@ export default async function ServicePage({ params }: ServicePageProps) {
         <div className="container footer-main">
           <Link className="footer-brand" href="/"><Image src="/brand/logo.svg" alt="Digitrust Solutions" width={500} height={500} /></Link>
           <p>Strategy, creative marketing, and technology for confident digital growth.</p>
-          <div className="footer-links"><Link href="/#services">Services</Link><Link href="/#technology">Technology</Link><Link href="/#testimonials">Reviews</Link><a href="#service-contact">Contact</a></div>
+          <div className="footer-links"><Link href="/#services">Services</Link><Link href="/#technology">Technology</Link><Link href="/#testimonials">Reviews</Link><a href="#service-contact">Contact</a><Link href={contactInfo.instagram.href}>Instagram</Link></div>
         </div>
         <div className="container footer-bottom policy-footer-bottom">
           <span>© {new Date().getFullYear()} Digitrust Solutions. All rights reserved.</span>

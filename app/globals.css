@@ -1923,6 +1923,15 @@ a {
   line-height: 1.6 !important;
 }
 
+.contact-details a {
+  color: var(--white);
+  text-decoration: none;
+}
+
+.contact-details a:hover {
+  color: #75d0eb;
+}
+
 .contact-form {
   padding: 34px;
   border-radius: 26px;
