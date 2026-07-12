@@ -1,4 +1,5 @@
 import React from 'react';
+import Image from "next/image";
 
 export default function TeamSection() {
   return (
@@ -15,7 +16,7 @@ export default function TeamSection() {
           {/* CEO Card */}
           <article className="team-card ceo-card">
             <div className="team-photo-wrap">
-              <div className="team-photo placeholder">CEO</div>
+              <Image src="/team-ceo.webp" alt="Tarun Yadav - CEO & Founder" fill className="team-photo" />
               <div className="team-accent founder-accent">★ Founder</div>
             </div>
             <div className="team-content">
@@ -42,6 +43,7 @@ export default function TeamSection() {
               <p className="team-focus">Building fast, secure, scalable websites and applications.</p>
               <p className="team-bio">&quot;Specialized in modern web technologies, performance optimization, and secure application development.&quot;</p>
               <ul className="team-highlights">
+                <li>5+ Yrs Experience</li>
                 <li>Next.js</li>
                 <li>Shopify</li>
                 <li>Performance</li>
