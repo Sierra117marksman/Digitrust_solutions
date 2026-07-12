@@ -5,6 +5,7 @@ import { ScrollLink } from "./components/ScrollLink";
 import { Testimonials } from "./components/Testimonials";
 import { featuredTestimonials } from "../content/testimonials";
 import { services } from "../content/services";
+import { policies } from "../content/policies";
 
 const stackGroups = [
   {
@@ -360,9 +361,11 @@ export default function Home() {
             <ScrollLink targetId="contact">Contact</ScrollLink>
           </div>
         </div>
-        <div className="container footer-bottom">
+        <div className="container footer-bottom policy-footer-bottom">
           <span>© {new Date().getFullYear()} Digitrust Solutions. All rights reserved.</span>
-          <span>Gurugram, Haryana</span>
+          <nav aria-label="Legal links">
+            {policies.map((policy) => <Link href={`/policies/${policy.slug}`} key={policy.slug}>{policy.shortTitle}</Link>)}
+          </nav>
         </div>
       </footer>
     </main>

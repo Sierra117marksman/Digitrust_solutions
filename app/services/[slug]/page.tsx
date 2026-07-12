@@ -6,6 +6,7 @@ import { ContactForm } from "../../components/ContactForm";
 import { Testimonials } from "../../components/Testimonials";
 import { getService, services, serviceTitles } from "../../../content/services";
 import { getTestimonialsForService } from "../../../content/testimonials";
+import { policies } from "../../../content/policies";
 
 type ServicePageProps = {
   params: Promise<{ slug: string }>;
@@ -266,7 +267,10 @@ export default async function ServicePage({ params }: ServicePageProps) {
           <p>Strategy, creative marketing, and technology for confident digital growth.</p>
           <div className="footer-links"><Link href="/#services">Services</Link><Link href="/#technology">Technology</Link><Link href="/#testimonials">Reviews</Link><a href="#service-contact">Contact</a></div>
         </div>
-        <div className="container footer-bottom"><span>© {new Date().getFullYear()} Digitrust Solutions. All rights reserved.</span><span>Gurugram, Haryana</span></div>
+        <div className="container footer-bottom policy-footer-bottom">
+          <span>© {new Date().getFullYear()} Digitrust Solutions. All rights reserved.</span>
+          <nav aria-label="Legal links">{policies.map((policy) => <Link href={`/policies/${policy.slug}`} key={policy.slug}>{policy.shortTitle}</Link>)}</nav>
+        </div>
       </footer>
     </main>
   );
