@@ -904,72 +904,85 @@ a {
     var(--ice);
 }
 
-.why-ring {
+.why-orbit {
   position: relative;
-  width: 315px;
-  height: 315px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  border-radius: 50%;
-  background: radial-gradient(
-    circle,
-    var(--blue-deep) 0, var(--blue-deep) 35px,
-    var(--ice) 35px, var(--ice) 70px,
-    var(--blue-deep) 70px, var(--blue-deep) 105px,
-    var(--ice) 105px, var(--ice) 140px,
-    var(--navy) 140px, var(--navy) 100%
-  );
-  box-shadow: 0 20px 50px rgba(11, 31, 51, 0.1);
+  width: 320px;
+  height: 320px;
 }
 
-.why-ring::before,
-.why-ring::after {
+.orbit-ring {
   position: absolute;
-  content: "";
-  background: rgba(255, 255, 255, 0.3);
-  top: 0; left: 0; bottom: 0; right: 0;
-  margin: auto;
+  border-radius: 50%;
+  border: 1px solid rgba(20, 122, 156, 0.15);
 }
 
-.why-ring::before { width: 1px; height: 100%; }
-.why-ring::after { width: 100%; height: 1px; }
+.orbit-ring--outer {
+  top: 0; left: 0; right: 0; bottom: 0;
+  border-color: rgba(11, 31, 51, 0.12);
+}
+.orbit-ring--mid {
+  top: 50px; left: 50px; right: 50px; bottom: 50px;
+  border-color: rgba(20, 122, 156, 0.18);
+}
+.orbit-ring--inner {
+  top: 100px; left: 100px; right: 100px; bottom: 100px;
+  border-color: rgba(20, 122, 156, 0.25);
+}
+
+/* Subtle crosshair lines */
+.why-orbit::before,
+.why-orbit::after {
+  content: "";
+  position: absolute;
+  background: rgba(20, 122, 156, 0.08);
+}
+.why-orbit::before { width: 1px; height: 100%; left: 50%; top: 0; }
+.why-orbit::after { height: 1px; width: 100%; top: 50%; left: 0; }
 
 .why-core {
   position: absolute;
-  top: 0;
-  left: 0;
-  bottom: 0;
-  right: 0;
-  margin: auto;
+  top: 50%; left: 50%;
+  transform: translate(-50%, -50%);
   z-index: 2;
-  width: 48px;
-  height: 48px;
+  width: 56px;
+  height: 56px;
   display: grid;
   place-items: center;
   border-radius: 50%;
-  background: #f79009; /* Orange bullseye */
-  box-shadow: 0 4px 12px rgba(247, 144, 9, 0.4);
+  background: linear-gradient(135deg, var(--blue-deep) 0%, #0e6b8a 100%);
+  box-shadow:
+    0 0 0 8px rgba(20, 122, 156, 0.1),
+    0 0 0 16px rgba(20, 122, 156, 0.05),
+    0 8px 24px rgba(11, 31, 51, 0.15);
+  animation: corePulse 3s ease-in-out infinite;
+}
+
+@keyframes corePulse {
+  0%, 100% { box-shadow: 0 0 0 8px rgba(20,122,156,0.1), 0 0 0 16px rgba(20,122,156,0.05), 0 8px 24px rgba(11,31,51,0.15); }
+  50% { box-shadow: 0 0 0 12px rgba(20,122,156,0.15), 0 0 0 24px rgba(20,122,156,0.06), 0 8px 30px rgba(11,31,51,0.2); }
 }
 
 .orbit-node {
   position: absolute;
   z-index: 3;
-  width: 43px;
-  height: 43px;
+  width: 38px;
+  height: 38px;
   display: grid;
   place-items: center;
-  border: 5px solid var(--ice);
+  border: 3px solid var(--white);
   border-radius: 50%;
   background: var(--blue-dark);
   color: var(--white);
   font-size: 10px;
   font-weight: 800;
+  box-shadow: 0 4px 12px rgba(11, 31, 51, 0.12);
+  transition: transform 300ms ease;
 }
+.orbit-node:hover { transform: scale(1.15); }
 
-.node-one { top: -18px; left: 136px; }
-.node-two { right: 15px; bottom: 38px; }
-.node-three { left: 8px; bottom: 65px; }
+.node-one { top: -16px; left: 50%; margin-left: -19px; }
+.node-two { bottom: 30px; right: -8px; }
+.node-three { bottom: 45px; left: -8px; }
 
 .why-visual > p {
   margin: 0;
@@ -2276,10 +2289,11 @@ a {
   .stack-note { padding: 22px; }
   .approach-grid { gap: 50px; }
   .why-visual { min-height: 405px; border-radius: 26px; }
-  .why-ring { width: 235px; height: 235px; }
-  .why-core { width: 92px; height: 92px; border-radius: 50%; }
-  .node-one { left: 96px; }
-  .node-two { right: 3px; }
+  .why-orbit { width: 240px; height: 240px; }
+  .why-core { width: 44px; height: 44px; }
+  .orbit-ring--mid { top: 40px; left: 40px; right: 40px; bottom: 40px; }
+  .orbit-ring--inner { top: 80px; left: 80px; right: 80px; bottom: 80px; }
+  .node-two { right: -5px; }
   .node-three { left: -5px; }
   .contact-section { padding-top: 20px; }
   .contact-shell { width: 100%; padding: 52px 20px 20px; border-radius: 0; gap: 38px; }
