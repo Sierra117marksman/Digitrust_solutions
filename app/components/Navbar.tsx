@@ -77,7 +77,7 @@ export function Navbar() {
           onClick={() => setIsMobileMenuOpen(false)}
         >
           <Image
-            src="/brand/logo.svg"
+            src="/brand/logo.png"
             alt="Digitrust Solutions"
             width={500}
             height={500}

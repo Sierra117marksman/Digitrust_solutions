@@ -99,7 +99,7 @@ export default async function ServicePage({ params }: ServicePageProps) {
       <header className="site-header">
         <div className="container nav-wrap">
           <Link className="brand" href="/" aria-label="Digitrust Solutions home">
-            <Image src="/brand/logo.svg" alt="Digitrust Solutions" width={500} height={500} priority />
+            <Image src="/brand/logo.png" alt="Digitrust Solutions" width={500} height={500} priority />
           </Link>
           <nav className="desktop-nav" aria-label="Primary navigation">
             <Link href="/#services">Services</Link>

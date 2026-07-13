@@ -20,9 +20,9 @@ export const metadata: Metadata = {
     "full stack development",
   ],
   icons: {
-    icon: "/brand/logo.svg",
-    shortcut: "/brand/logo.svg",
-    apple: "/brand/logo.svg",
+    icon: "/brand/logo.png",
+    shortcut: "/brand/logo.png",
+    apple: "/brand/logo.png",
   },
   openGraph: {
     type: "website",

@@ -46,8 +46,8 @@ export default async function PolicyPage({ params }: PolicyPageProps) {
 
       <header className="site-header">
         <div className="container nav-wrap">
-          <Link className="brand" href="/" aria-label="Digitrust Solutions home">
-            <Image src="/brand/logo.svg" alt="Digitrust Solutions" width={500} height={500} priority />
+          <Link href="/" className="logo-link">
+            <Image src="/brand/logo.png" alt="Digitrust Solutions" width={500} height={500} priority />
           </Link>
           <nav className="desktop-nav" aria-label="Primary navigation">
             <Link href="/#services">Services</Link>

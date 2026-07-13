@@ -19,7 +19,7 @@ export default async function AdminLoginPage() {
   return (
     <main className="admin-login-page">
       <Link className="admin-login-brand" href="/">
-        <Image src="/brand/logo.svg" alt="Digitrust Solutions" width={500} height={500} priority />
+        <Image src="/brand/logo.png" alt="Digitrust Solutions" width={500} height={500} priority />
       </Link>
       <LoginForm />
     </main>
