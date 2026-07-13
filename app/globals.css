@@ -2526,6 +2526,39 @@ a {
   .contact-details { grid-template-columns: 1fr 1fr; }
   .footer-main { grid-template-columns: 170px 1fr; }
   .footer-links { grid-column: 1 / -1; }
+
+  /* Footer grid — tablet */
+  .footer-grid {
+    grid-template-columns: 1fr 1fr;
+    gap: 30px;
+  }
+  .footer-col.brand-col {
+    grid-column: 1 / -1;
+  }
+  .footer-trust {
+    flex-wrap: wrap;
+    gap: 8px 12px;
+  }
+  .footer-bottom {
+    flex-direction: column;
+    gap: 16px;
+    align-items: flex-start;
+  }
+  .footer-legal {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+  }
+  .footer-legal nav {
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+  .pre-footer-content h2 {
+    font-size: 32px;
+  }
+  .footer-top-cta h3 {
+    font-size: 22px;
+  }
 }
 
 @media (max-width: 600px) {
@@ -2592,8 +2625,62 @@ a {
   .form-row { grid-template-columns: 1fr; gap: 0; }
   .footer-main { grid-template-columns: 1fr; gap: 25px; }
   .footer-links { grid-column: auto; flex-wrap: wrap; }
-  .footer-bottom { flex-direction: column; gap: 9px; }
+  .footer-bottom { flex-direction: column; gap: 12px; align-items: flex-start; }
   .policy-footer-bottom nav { justify-content: flex-start; margin-top: 8px; }
+
+  /* Footer grid — phone */
+  .footer-grid {
+    grid-template-columns: 1fr;
+    gap: 28px;
+    padding-bottom: 40px;
+  }
+  .footer-col.brand-col {
+    grid-column: auto;
+  }
+  .footer-trust {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+  }
+  .footer-trust .trust-dot {
+    display: none;
+  }
+  .footer-trust span:not(.trust-dot) {
+    padding: 8px 12px;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 8px;
+    text-align: center;
+    font-size: 11px;
+  }
+  .footer-legal {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+  }
+  .footer-legal nav {
+    flex-wrap: wrap;
+    gap: 10px 16px;
+  }
+  .pre-footer-cta {
+    padding: 50px 0;
+  }
+  .pre-footer-content h2 {
+    font-size: 28px;
+  }
+  .pre-footer-button {
+    font-size: 14px;
+    padding: 14px 22px;
+  }
+  .site-footer {
+    padding: 50px 0 100px;
+  }
+  .footer-top-cta h3 {
+    font-size: 20px;
+    margin-bottom: 40px;
+  }
+  .contact-col address {
+    gap: 10px;
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {
