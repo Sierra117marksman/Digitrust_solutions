@@ -2327,6 +2327,11 @@ a {
   padding: 0 16px;
 }
 
+.contact-form select option {
+  background: var(--navy);
+  color: var(--white);
+}
+
 .contact-form textarea {
   min-height: 120px;
   padding: 16px;
