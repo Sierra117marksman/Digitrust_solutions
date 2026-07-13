@@ -8,6 +8,7 @@ import { Navbar } from "./components/Navbar";
 import { Footer } from "./components/Footer";
 import { StickyCTA } from "./components/StickyCTA";
 import { ScrollProgress } from "./components/ScrollProgress";
+import { Reveal } from "./components/Reveal";
 import { featuredTestimonials } from "../content/testimonials";
 import { services } from "../content/services";
 import { contactInfo } from "../content/contact";
@@ -186,46 +187,52 @@ export default function Home() {
 
       <section className="section services-section" id="services">
         <div className="container">
-          <div className="section-heading split-heading">
-            <div>
-              <p className="eyebrow"><span /> What we do</p>
-              <h2>Connected services.<br />Stronger outcomes.</h2>
+          <Reveal>
+            <div className="section-heading split-heading">
+              <div>
+                <p className="eyebrow"><span /> What we do</p>
+                <h2>Connected services.<br />Stronger outcomes.</h2>
+              </div>
+              <p>
+                Choose one focused service or bring everything together. Every
+                engagement is shaped around your audience, your goals, and what
+                comes next.
+              </p>
             </div>
-            <p>
-              Choose one focused service or bring everything together. Every
-              engagement is shaped around your audience, your goals, and what
-              comes next.
-            </p>
-          </div>
+          </Reveal>
 
           {/* Spotlight Cards — Meta Ads & Custom Development */}
           <div className="spotlight-row">
-            <Link href="/services/meta-ads" className="spotlight-card spotlight-meta">
-              <div className="spotlight-icon">📣</div>
-              <div className="spotlight-content">
-                <span className="spotlight-label">Most Popular</span>
-                <h3>Meta Ads Specialty</h3>
-                <p>High-ROAS Facebook & Instagram campaigns with dedicated landing pages, pixel tracking, and creative testing frameworks.</p>
-              </div>
-              <span className="spotlight-arrow" aria-hidden="true">→</span>
-            </Link>
-            <Link href="/services/full-stack-development" className="spotlight-card spotlight-dev">
-              <div className="spotlight-icon">⚡</div>
-              <div className="spotlight-content">
-                <span className="spotlight-label">High Demand</span>
-                <h3>Custom Development</h3>
-                <p>End-to-end web applications, CRM systems, dashboards & APIs — built around how your business actually works.</p>
-              </div>
-              <span className="spotlight-arrow" aria-hidden="true">→</span>
-            </Link>
+            <Reveal delay={100} direction="up" fullWidth>
+              <Link href="/services/meta-ads" className="spotlight-card spotlight-meta">
+                <div className="spotlight-icon">📣</div>
+                <div className="spotlight-content">
+                  <span className="spotlight-label">Most Popular</span>
+                  <h3>Meta Ads Specialty</h3>
+                  <p>High-ROAS Facebook & Instagram campaigns with dedicated landing pages, pixel tracking, and creative testing frameworks.</p>
+                </div>
+                <span className="spotlight-arrow" aria-hidden="true">→</span>
+              </Link>
+            </Reveal>
+            <Reveal delay={200} direction="up" fullWidth>
+              <Link href="/services/full-stack-development" className="spotlight-card spotlight-dev">
+                <div className="spotlight-icon">⚡</div>
+                <div className="spotlight-content">
+                  <span className="spotlight-label">High Demand</span>
+                  <h3>Custom Development</h3>
+                  <p>End-to-end web applications, CRM systems, dashboards & APIs — built around how your business actually works.</p>
+                </div>
+                <span className="spotlight-arrow" aria-hidden="true">→</span>
+              </Link>
+            </Reveal>
           </div>
 
           <div className="service-grid">
-            {services.map((service) => (
-              <article
-                className={`service-card ${service.featured ? "service-card-featured" : ""}`}
-                key={service.number}
-              >
+            {services.map((service, index) => (
+              <Reveal key={service.number} delay={index * 50} direction="up" fullWidth>
+                <article
+                  className={`service-card ${service.featured ? "service-card-featured" : ""}`}
+                >
                 <div className="service-topline">
                   <div className="service-badge-group">
                     <span>{service.number}</span>
@@ -246,7 +253,8 @@ export default function Home() {
                 <ul aria-label={`${service.title} capabilities`}>
                   {service.tags.map((tag) => <li key={tag}>{tag}</li>)}
                 </ul>
-              </article>
+                </article>
+              </Reveal>
             ))}
           </div>
         </div>
@@ -254,19 +262,22 @@ export default function Home() {
 
       <section className="section stack-section" id="technology">
         <div className="container">
-          <div className="section-heading stack-heading">
-            <p className="eyebrow"><span /> Platforms & technology</p>
-            <h2>The right stack for the job—not a one-size-fits-all build.</h2>
-            <p>
-              From marketing websites and online stores to custom applications,
-              we select dependable tools around your goals, team, budget, and
-              long-term ownership.
-            </p>
-          </div>
+          <Reveal>
+            <div className="section-heading stack-heading">
+              <p className="eyebrow"><span /> Platforms & technology</p>
+              <h2>The right stack for the job—not a one-size-fits-all build.</h2>
+              <p>
+                From marketing websites and online stores to custom applications,
+                we select dependable tools around your goals, team, budget, and
+                long-term ownership.
+              </p>
+            </div>
+          </Reveal>
 
           <div className="stack-grid">
             {stackGroups.map((group, index) => (
-              <article className="stack-card" key={group.label}>
+              <Reveal key={group.label} delay={index * 100} direction="up" fullWidth>
+                <article className="stack-card">
                 <div className="stack-card-head">
                   <span>0{index + 1}</span>
                   <h3>{group.label}</h3>
@@ -274,40 +285,47 @@ export default function Home() {
                 <ul aria-label={`${group.label} technologies`}>
                   {group.items.map((item) => <li key={item}>{item}</li>)}
                 </ul>
-              </article>
+                </article>
+              </Reveal>
             ))}
           </div>
 
-          <div className="stack-note">
-            <strong>Technology follows the business need.</strong>
-            <p>We recommend a practical architecture after discovery, with security, maintainability, and performance considered from day one.</p>
-          </div>
+          <Reveal delay={200}>
+            <div className="stack-note">
+              <strong>Technology follows the business need.</strong>
+              <p>We recommend a practical architecture after discovery, with security, maintainability, and performance considered from day one.</p>
+            </div>
+          </Reveal>
         </div>
       </section>
 
       <section className="section approach-section" id="approach">
         <div className="container approach-grid">
-          <div className="approach-intro">
-            <p className="eyebrow eyebrow-light"><span /> How we work</p>
-            <h2>Clear thinking.<br />Clean execution.</h2>
-            <p>
-              No confusing handoffs or disconnected teams. We keep strategy,
-              communication, and delivery moving in the same direction.
-            </p>
-            <ScrollLink targetId="contact" className="button button-light">
-              Build with us <span aria-hidden="true">↗</span>
-            </ScrollLink>
-          </div>
+          <Reveal direction="right">
+            <div className="approach-intro">
+              <p className="eyebrow eyebrow-light"><span /> How we work</p>
+              <h2>Clear thinking.<br />Clean execution.</h2>
+              <p>
+                No confusing handoffs or disconnected teams. We keep strategy,
+                communication, and delivery moving in the same direction.
+              </p>
+              <ScrollLink targetId="contact" className="button button-light">
+                Build with us <span aria-hidden="true">↗</span>
+              </ScrollLink>
+            </div>
+          </Reveal>
 
           <div className="process-list">
             {process.map((item, index) => (
-              <article className="process-item" key={item.step}>
+              <Reveal key={item.step} delay={index * 150} direction="left" fullWidth>
+                <article className="process-item">
                 <span>0{index + 1}</span>
                 <div>
                   <h3>{item.step}</h3>
                   <p>{item.copy}</p>
                 </div>
-              </article>
+                </article>
+              </Reveal>
             ))}
           </div>
         </div>
@@ -315,9 +333,10 @@ export default function Home() {
 
       <section className="section why-section" id="about">
         <div className="container why-grid">
-          <div className="why-visual" aria-hidden="true">
-            <div className="why-dartboard">
-              <svg viewBox="0 0 300 300" fill="none" xmlns="http://www.w3.org/2000/svg" className="dartboard-svg">
+          <Reveal direction="right">
+            <div className="why-visual" aria-hidden="true">
+              <div className="why-dartboard">
+                <svg viewBox="0 0 300 300" fill="none" xmlns="http://www.w3.org/2000/svg" className="dartboard-svg">
                 {/* Outer shadow ring */}
                 <circle cx="150" cy="150" r="140" fill="#0b1f33" opacity="0.06" />
                 {/* Board base */}
@@ -354,73 +373,84 @@ export default function Home() {
             </div>
             <p>Strategy • Creativity • Technology</p>
           </div>
+          </Reveal>
 
-          <div className="why-copy">
-            <p className="eyebrow"><span /> Why Digitrust</p>
-            <h2>Your goals deserve more than a generic solution.</h2>
-            <p className="why-lead">
-              We combine the agility of a focused team with the range to handle
-              your complete digital journey.
-            </p>
-            <div className="benefit-list">
-              <article>
-                <span>01</span>
-                <div><h3>Business-first thinking</h3><p>Every decision connects back to a real objective, not a passing trend.</p></div>
-              </article>
-              <article>
-                <span>02</span>
-                <div><h3>One connected team</h3><p>Marketing, design, and development work together from the beginning.</p></div>
-              </article>
-              <article>
-                <span>03</span>
-                <div><h3>Communication you can trust</h3><p>Clear expectations, visible progress, and honest recommendations.</p></div>
-              </article>
+          <Reveal direction="left">
+            <div className="why-copy">
+              <p className="eyebrow"><span /> Why Digitrust</p>
+              <h2>Your goals deserve more than a generic solution.</h2>
+              <p className="why-lead">
+                We combine the agility of a focused team with the range to handle
+                your complete digital journey.
+              </p>
+              <div className="benefit-list">
+                <article>
+                  <span>01</span>
+                  <div><h3>Business-first thinking</h3><p>Every decision connects back to a real objective, not a passing trend.</p></div>
+                </article>
+                <article>
+                  <span>02</span>
+                  <div><h3>One connected team</h3><p>Marketing, design, and development work together from the beginning.</p></div>
+                </article>
+                <article>
+                  <span>03</span>
+                  <div><h3>Communication you can trust</h3><p>Clear expectations, visible progress, and honest recommendations.</p></div>
+                </article>
+              </div>
             </div>
-          </div>
+          </Reveal>
         </div>
       </section>
 
-      <TeamSection />
+      <Reveal direction="up" fullWidth>
+        <TeamSection />
+      </Reveal>
 
-      <Testimonials items={featuredTestimonials} />
+      <Reveal direction="up" fullWidth>
+        <Testimonials items={featuredTestimonials} />
+      </Reveal>
 
       <section className="section contact-section" id="contact">
         <div className="container contact-shell">
-          <div className="contact-copy">
-            <p className="eyebrow eyebrow-light"><span /> Start a conversation</p>
-            <h2>Let&apos;s turn your next idea into progress.</h2>
-            <p>
-              Tell us what you are building, improving, or trying to grow. We
-              will review the details and plan the right next conversation.
-            </p>
-            <div className="contact-details">
-              <div>
-                <span>Visit us</span>
-                <p>{contactInfo.addressLines[0]},<br />{contactInfo.addressLines[1]}</p>
-              </div>
-              <div>
-                <span>Business registration</span>
-                <p>GSTIN: {contactInfo.gstin}</p>
-              </div>
-              <div>
-                <span>Call us</span>
-                <p>
-                  {contactInfo.phones.map((phone, index) => (
-                    <Link href={phone.href} key={phone.href}>{phone.display}{index < contactInfo.phones.length - 1 ? <br /> : null}</Link>
-                  ))}
-                </p>
-              </div>
-              <div>
-                <span>WhatsApp leads</span>
-                <p><Link href={contactInfo.whatsapp.href}>Message {contactInfo.whatsapp.display}</Link></p>
-              </div>
-              <div>
-                <span>Instagram</span>
-                <p><Link href={contactInfo.instagram.href}>{contactInfo.instagram.label}</Link></p>
+          <Reveal direction="right">
+            <div className="contact-copy">
+              <p className="eyebrow eyebrow-light"><span /> Start a conversation</p>
+              <h2>Let&apos;s turn your next idea into progress.</h2>
+              <p>
+                Tell us what you are building, improving, or trying to grow. We
+                will review the details and plan the right next conversation.
+              </p>
+              <div className="contact-details">
+                <div>
+                  <span>Visit us</span>
+                  <p>{contactInfo.addressLines[0]},<br />{contactInfo.addressLines[1]}</p>
+                </div>
+                <div>
+                  <span>Business registration</span>
+                  <p>GSTIN: {contactInfo.gstin}</p>
+                </div>
+                <div>
+                  <span>Call us</span>
+                  <p>
+                    {contactInfo.phones.map((phone, index) => (
+                      <Link href={phone.href} key={phone.href}>{phone.display}{index < contactInfo.phones.length - 1 ? <br /> : null}</Link>
+                    ))}
+                  </p>
+                </div>
+                <div>
+                  <span>WhatsApp leads</span>
+                  <p><Link href={contactInfo.whatsapp.href}>Message {contactInfo.whatsapp.display}</Link></p>
+                </div>
+                <div>
+                  <span>Instagram</span>
+                  <p><Link href={contactInfo.instagram.href}>{contactInfo.instagram.label}</Link></p>
+                </div>
               </div>
             </div>
-          </div>
-          <ContactForm services={services.map((service) => service.title)} />
+          </Reveal>
+          <Reveal direction="left" delay={200} fullWidth>
+            <ContactForm services={services.map((service) => service.title)} />
+          </Reveal>
         </div>
       </section>
 
