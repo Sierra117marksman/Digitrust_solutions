@@ -94,15 +94,76 @@ export function Navbar() {
         </ScrollLink>
 
         <nav className="desktop-nav" aria-label="Primary navigation">
-          {NAV_LINKS.map((link) => (
-            <ScrollLink
-              key={link.id}
-              targetId={link.id}
-              className={`nav-item ${activeSection === link.id ? "active" : ""}`}
-            >
-              {link.label}
-            </ScrollLink>
-          ))}
+          {NAV_LINKS.map((link) => {
+            if (link.id === "services") {
+              return (
+                <div key={link.id} className="nav-item-group">
+                  <ScrollLink
+                    targetId={link.id}
+                    className={`nav-item ${activeSection === link.id ? "active" : ""}`}
+                  >
+                    {link.label}
+                    <span className="dropdown-caret" aria-hidden="true">▾</span>
+                  </ScrollLink>
+                  <div className="nav-dropdown">
+                    <div className="nav-dropdown-inner">
+                      <div className="dropdown-col">
+                        <span className="dropdown-heading">Marketing & Growth</span>
+                        <a href="/services/meta-ads" className="dropdown-link">
+                          <span className="dropdown-icon">📣</span>
+                          <div>
+                            <strong>Meta Ads Specialty</strong>
+                            <span>High-ROAS campaigns</span>
+                          </div>
+                        </a>
+                        <a href="/services/seo-marketing" className="dropdown-link">
+                          <span className="dropdown-icon">📈</span>
+                          <div>
+                            <strong>SEO & Marketing</strong>
+                            <span>Organic traffic growth</span>
+                          </div>
+                        </a>
+                      </div>
+                      <div className="dropdown-col">
+                        <span className="dropdown-heading">Development</span>
+                        <a href="/services/full-stack-development" className="dropdown-link">
+                          <span className="dropdown-icon">⚡</span>
+                          <div>
+                            <strong>Custom Development</strong>
+                            <span>Web apps & APIs</span>
+                          </div>
+                        </a>
+                        <a href="/services/web-development" className="dropdown-link">
+                          <span className="dropdown-icon">💻</span>
+                          <div>
+                            <strong>Web Development</strong>
+                            <span>High-performance sites</span>
+                          </div>
+                        </a>
+                        <a href="/services/shopify-ecommerce" className="dropdown-link">
+                          <span className="dropdown-icon">🛒</span>
+                          <div>
+                            <strong>Shopify & E-commerce</strong>
+                            <span>Store optimization</span>
+                          </div>
+                        </a>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              );
+            }
+
+            return (
+              <ScrollLink
+                key={link.id}
+                targetId={link.id}
+                className={`nav-item ${activeSection === link.id ? "active" : ""}`}
+              >
+                {link.label}
+              </ScrollLink>
+            );
+          })}
           <ScrollLink targetId="contact" className="nav-cta premium-cta">
             Let's discuss your project
             <span className="cta-arrow" aria-hidden="true">→</span>

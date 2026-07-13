@@ -41,7 +41,7 @@ export default function TeamSection() {
             </div>
             <div className="team-content">
               <h3>Ajay Thakkar</h3>
-              <p className="team-role">Lead Developer</p>
+              <p className="team-role">Main Developer</p>
               <p className="team-focus">Building fast, secure, scalable websites and applications.</p>
               <p className="team-bio">&quot;Specialized in modern web technologies, performance optimization, and secure application development.&quot;</p>
               <ul className="team-highlights">
