@@ -36,7 +36,7 @@ export default function TeamSection() {
           {/* Developer Card */}
           <article className="team-card">
             <div className="team-photo-wrap">
-              <Image src="/team-ajay.jpg" alt="Ajay Thakkar - Lead Developer" fill className="team-photo" />
+              <Image src="/team-ajay.png" alt="Ajay Thakkar - Lead Developer" fill className="team-photo" />
               <div className="team-accent code-accent">&lt;/&gt;</div>
             </div>
             <div className="team-content">
