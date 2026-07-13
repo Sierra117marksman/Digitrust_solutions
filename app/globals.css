@@ -3503,8 +3503,7 @@ a {
   height: 100vh;
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
-  padding: 24px 18px;
+  padding: 24px 20px;
   background: #07192a;
   color: var(--white);
 }
@@ -3534,20 +3533,24 @@ a {
 
 .crm-os-sidebar nav {
   display: grid;
-  gap: 8px;
-  margin-top: 34px;
+  gap: 4px;
+  margin-top: 36px;
+  flex-grow: 1;
 }
 
 .crm-os-sidebar nav a {
-  padding: 12px;
+  display: flex;
+  align-items: center;
+  padding: 12px 14px;
   border-radius: 8px;
-  color: rgba(255, 255, 255, 0.76);
+  color: rgba(255, 255, 255, 0.65);
   font-size: 13px;
-  font-weight: 750;
+  font-weight: 600;
+  transition: background 150ms ease, color 150ms ease;
 }
 
 .crm-os-sidebar nav a:hover {
-  background: rgba(255, 255, 255, 0.08);
+  background: rgba(255, 255, 255, 0.05);
   color: var(--white);
 }
 
