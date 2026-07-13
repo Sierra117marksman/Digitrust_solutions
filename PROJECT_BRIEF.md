@@ -36,8 +36,8 @@
 
 ## Pending client inputs
 
-- Phone number and email address
-- Social media links
+- Phone number and email address(done)
+- Social media links(done)
 - Company story and founding details
-- Verified metrics, projects, testimonials, and team information
-- Domain and Vercel configuration
+- Verified metrics, projects, testimonials, and team information(done)
+- Domain and Vercel configuration(done)

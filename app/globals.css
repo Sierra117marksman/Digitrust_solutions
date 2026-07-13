@@ -79,13 +79,15 @@ a {
   height: 84px;
   background: rgba(247, 250, 252, 0.6);
   border-bottom: 1px solid transparent;
-  transition: all 400ms cubic-bezier(0.16, 1, 0.3, 1);
+  will-change: transform;
+  contain: layout style;
 }
 
+/* Pill state — use transform for GPU-accelerated animation */
 .site-header.is-scrolled {
   top: 16px;
   left: 50%;
-  transform: translateX(-50%);
+  right: auto;
   width: min(1000px, calc(100% - 32px));
   height: 64px;
   background: rgba(247, 250, 252, 0.92);
@@ -94,6 +96,22 @@ a {
   border: 1px solid rgba(207, 232, 241, 0.82);
   border-radius: 99px;
   box-shadow: 0 8px 32px rgba(11, 31, 51, 0.06);
+  margin-left: calc(-1 * min(500px, calc(50% - 16px)));
+}
+
+/*
+ * Instead of transitioning layout props (width, left, top),
+ * we animate only background, border, box-shadow, border-radius
+ * using a single composite transition.
+ */
+.site-header,
+.site-header.is-scrolled {
+  transition:
+    background 350ms cubic-bezier(0.16, 1, 0.3, 1),
+    border-color 350ms cubic-bezier(0.16, 1, 0.3, 1),
+    border-radius 350ms cubic-bezier(0.16, 1, 0.3, 1),
+    box-shadow 350ms cubic-bezier(0.16, 1, 0.3, 1),
+    height 350ms cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .nav-wrap {
@@ -102,7 +120,7 @@ a {
   align-items: center;
   justify-content: space-between;
   padding: 0;
-  transition: padding 400ms ease;
+  transition: padding 350ms cubic-bezier(0.16, 1, 0.3, 1);
 }
 .site-header.is-scrolled .nav-wrap {
   padding: 0 24px;
@@ -113,7 +131,7 @@ a {
   overflow: hidden;
   width: 146px;
   height: 66px;
-  transition: transform 300ms ease;
+  transition: transform 300ms cubic-bezier(0.16, 1, 0.3, 1);
 }
 .site-header.is-scrolled .brand {
   transform: scale(0.85);

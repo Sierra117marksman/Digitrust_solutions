@@ -17,35 +17,43 @@ export function Navbar() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   useEffect(() => {
+    let ticking = false;
+
     const handleScroll = () => {
-      // Toggle floating state
-      setIsScrolled(window.scrollY > 40);
+      if (ticking) return;
+      ticking = true;
 
-      // Scroll Spy logic
-      const sections = NAV_LINKS.map(link => document.getElementById(link.id)).filter(Boolean);
-      let currentSection = "";
-      
-      // Add 'top' and 'contact' to spyable sections
-      const allSections = [document.getElementById("top"), ...sections, document.getElementById("contact")].filter(Boolean) as HTMLElement[];
+      requestAnimationFrame(() => {
+        // Toggle floating state
+        setIsScrolled(window.scrollY > 40);
 
-      for (let i = allSections.length - 1; i >= 0; i--) {
-        const section = allSections[i];
-        if (section) {
-          const rect = section.getBoundingClientRect();
-          // If the top of the section is anywhere above the middle of the viewport
-          if (rect.top <= window.innerHeight / 2) {
-            currentSection = section.id;
-            break;
+        // Scroll Spy logic
+        const sections = NAV_LINKS.map(link => document.getElementById(link.id)).filter(Boolean);
+        let currentSection = "";
+        
+        // Add 'top' and 'contact' to spyable sections
+        const allSections = [document.getElementById("top"), ...sections, document.getElementById("contact")].filter(Boolean) as HTMLElement[];
+
+        for (let i = allSections.length - 1; i >= 0; i--) {
+          const section = allSections[i];
+          if (section) {
+            const rect = section.getBoundingClientRect();
+            // If the top of the section is anywhere above the middle of the viewport
+            if (rect.top <= window.innerHeight / 2) {
+              currentSection = section.id;
+              break;
+            }
           }
         }
-      }
-      
-      // If we're at the very bottom, highlight contact
-      if (window.innerHeight + window.scrollY >= document.body.offsetHeight - 10) {
-        currentSection = "contact";
-      }
+        
+        // If we're at the very bottom, highlight contact
+        if (window.innerHeight + window.scrollY >= document.body.offsetHeight - 10) {
+          currentSection = "contact";
+        }
 
-      setActiveSection(currentSection);
+        setActiveSection(currentSection);
+        ticking = false;
+      });
     };
 
     window.addEventListener("scroll", handleScroll, { passive: true });
