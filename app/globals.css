@@ -3536,6 +3536,7 @@ a {
   gap: 4px;
   margin-top: 36px;
   flex-grow: 1;
+  align-content: start;
 }
 
 .crm-os-sidebar nav a {
