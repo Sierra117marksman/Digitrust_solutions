@@ -196,23 +196,31 @@ export function LoginForm() {
         <form onSubmit={submitSetup} className="admin-form" noValidate>
           <fieldset disabled={state.loading} style={{ all: "unset", display: "contents" }}>
             <div className="setup-box">
-              <span>Scan QR code</span>
-              {state.qrCodeDataUrl && (
-                <Image
-                  className="auth-qr-code"
-                  src={state.qrCodeDataUrl}
-                  alt="Google Authenticator setup QR code"
-                  width={220}
-                  height={220}
-                  unoptimized
-                />
-              )}
-              <p>Open Google Authenticator, tap add account, and scan this QR code.</p>
+              <span>Setup Guide</span>
+              <ol className="admin-setup-guide">
+                <li>Download <strong>Google Authenticator</strong> from the App Store or Google Play.</li>
+                <li>Open the app and tap the <strong>+</strong> icon in the bottom right.</li>
+                <li>Select <strong>Scan a QR code</strong> and point your camera at the QR code below.</li>
+              </ol>
+              
+              <div className="qr-container">
+                {state.qrCodeDataUrl && (
+                  <Image
+                    className="auth-qr-code"
+                    src={state.qrCodeDataUrl}
+                    alt="Google Authenticator setup QR code"
+                    width={220}
+                    height={220}
+                    unoptimized
+                  />
+                )}
+              </div>
             </div>
+            
             <div className="setup-box setup-key-box">
               <span>Manual setup key</span>
               <strong>{state.setupSecret}</strong>
-              <p>If scan does not work, choose setup key and enter this manually.</p>
+              <p>If the camera scan does not work, choose <strong>Enter a setup key</strong> in the app and type this code manually.</p>
             </div>
             <label>
               <span>6 digit code</span>

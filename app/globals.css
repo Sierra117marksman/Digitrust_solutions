@@ -3169,13 +3169,38 @@ a {
   font-size: 17px;
 }
 
+.admin-setup-guide {
+  margin: 5px 0 15px;
+  padding-left: 20px;
+  color: var(--slate);
+  font-size: 13px;
+  line-height: 1.6;
+}
+
+.admin-setup-guide li {
+  margin-bottom: 6px;
+}
+
+.admin-setup-guide strong {
+  font-family: inherit;
+  font-size: 13px;
+  color: var(--navy);
+  font-weight: 700;
+}
+
+.qr-container {
+  display: flex;
+  justify-content: center;
+  margin: 10px 0;
+}
+
 .auth-qr-code {
-  width: min(100%, 220px);
+  width: min(100%, 200px);
   aspect-ratio: 1;
-  justify-self: center;
-  border: 10px solid var(--white);
+  border: 8px solid var(--white);
   border-radius: 12px;
   background: var(--white);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
 }
 
 .setup-key-box {
