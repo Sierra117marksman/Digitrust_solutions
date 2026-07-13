@@ -85,16 +85,16 @@ export default function Home() {
             </div>
             <div className="hero-proof" aria-label="Key business strengths">
               <div>
-                <strong>8</strong>
-                <span>Core services</span>
+                <strong>300+</strong>
+                <span>Projects delivered</span>
               </div>
               <div>
-                <strong>360°</strong>
-                <span>Digital delivery</span>
+                <strong>99%</strong>
+                <span>Client satisfaction</span>
               </div>
               <div>
-                <strong>GGM</strong>
-                <span>Gurugram based</span>
+                <strong>97%</strong>
+                <span>Success rate</span>
               </div>
             </div>
           </div>
@@ -158,6 +158,32 @@ export default function Home() {
         </div>
       </section>
 
+      {/* Results Strip */}
+      <section className="results-strip" aria-label="Track record">
+        <div className="container results-grid">
+          <div className="result-item">
+            <strong>300+</strong>
+            <span>Projects Delivered</span>
+          </div>
+          <div className="result-item">
+            <strong>99%</strong>
+            <span>Customer Satisfaction</span>
+          </div>
+          <div className="result-item">
+            <strong>97%</strong>
+            <span>Success Rate</span>
+          </div>
+          <div className="result-item">
+            <strong>50+</strong>
+            <span>Happy Clients</span>
+          </div>
+          <div className="result-item">
+            <strong>4.9★</strong>
+            <span>Average Rating</span>
+          </div>
+        </div>
+      </section>
+
       <section className="section services-section" id="services">
         <div className="container">
           <div className="section-heading split-heading">
@@ -170,6 +196,28 @@ export default function Home() {
               engagement is shaped around your audience, your goals, and what
               comes next.
             </p>
+          </div>
+
+          {/* Spotlight Cards — Meta Ads & Custom Development */}
+          <div className="spotlight-row">
+            <Link href="/services/meta-ads" className="spotlight-card spotlight-meta">
+              <div className="spotlight-icon">📣</div>
+              <div className="spotlight-content">
+                <span className="spotlight-label">Most Popular</span>
+                <h3>Meta Ads Specialty</h3>
+                <p>High-ROAS Facebook & Instagram campaigns with dedicated landing pages, pixel tracking, and creative testing frameworks.</p>
+              </div>
+              <span className="spotlight-arrow" aria-hidden="true">→</span>
+            </Link>
+            <Link href="/services/full-stack-development" className="spotlight-card spotlight-dev">
+              <div className="spotlight-icon">⚡</div>
+              <div className="spotlight-content">
+                <span className="spotlight-label">High Demand</span>
+                <h3>Custom Development</h3>
+                <p>End-to-end web applications, CRM systems, dashboards & APIs — built around how your business actually works.</p>
+              </div>
+              <span className="spotlight-arrow" aria-hidden="true">→</span>
+            </Link>
           </div>
 
           <div className="service-grid">
