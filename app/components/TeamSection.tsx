@@ -61,7 +61,7 @@ export default function TeamSection() {
               <div className="team-accent pm-accent">📅</div>
             </div>
             <div className="team-content">
-              <h3>Manisha Sherma</h3>
+              <h3>Manisha Sharma</h3>
               <p className="team-role">Delivery & Client Success</p>
               <p className="team-focus">Your dedicated point of contact, ensuring smooth communication, timely delivery, and solutions aligned with your business goals.</p>
               <p className="team-bio">&quot;Working closely with you to understand your goals, coordinate the team, and keep every project on schedule.&quot;</p>
