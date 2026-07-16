@@ -3738,7 +3738,7 @@ a {
 
 .crm-main-grid {
   display: grid;
-  grid-template-columns: minmax(0, 1.55fr) minmax(300px, 0.55fr);
+  grid-template-columns: 1fr;
   gap: 16px;
 }
 

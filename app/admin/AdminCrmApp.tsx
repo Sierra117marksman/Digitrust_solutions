@@ -520,6 +520,19 @@ async function logContact(id: string, channel: string) {
             <a href="#team">Team</a>
           )}
         </nav>
+        <div style={{ marginTop: '2rem', flex: 1, overflowY: 'auto' }}>
+          <h4 style={{ color: 'rgba(255,255,255,0.5)', textTransform: 'uppercase', fontSize: '0.75rem', letterSpacing: '0.05em', marginBottom: '1rem' }}>Recent Activity</h4>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+            {recentActivity.slice(0, 8).map((event: any, i: number) => (
+              <div key={i} style={{ fontSize: '0.8rem' }}>
+                <div style={{ color: 'white', fontWeight: 'bold' }}>{event.leadName}</div>
+                <div style={{ color: 'rgba(255,255,255,0.7)', margin: '0.2rem 0' }}>{event.action}</div>
+                <div style={{ color: 'rgba(255,255,255,0.4)', fontSize: '0.7rem' }}>{formatDateTime(event.timestamp)} • {event.performedBy}</div>
+              </div>
+            ))}
+          </div>
+        </div>
+
         <form action="/api/admin/logout" method="post">
           <button className="crm-ghost-button">Logout</button>
         </form>
@@ -551,10 +564,10 @@ async function logContact(id: string, channel: string) {
           </div>
         )}
 
-        <section className="crm-kpi-grid" id="dashboard">
+        <section style={{ display: "grid", gridTemplateColumns: "320px 1fr", gap: "24px", alignItems: "start", marginBottom: "24px" }} id="dashboard">
 
           {admin.role === "employee" ? (
-            <div className="crm-daily-planner" style={{ width: '100%' }}>
+            <>
               <NeedsAttentionQueue 
                 onAction={(leadId, action, phone) => {
                   if (action === "Call Now" && phone) {
@@ -567,12 +580,12 @@ async function logContact(id: string, channel: string) {
                   }
                 }}
               />
-              <div style={{ display: "flex", gap: "1rem", marginBottom: "1rem", flexWrap: "wrap" }}>
+              <div className="crm-kpi-grid" style={{ width: "100%", margin: 0, gridTemplateColumns: "repeat(auto-fit, minmax(150px, 1fr))" }}>
                 <button onClick={() => { setTimelineFilter(""); setStatusFilter(""); }} className={!timelineFilter && !statusFilter ? "active" : ""}><span>My Leads</span><strong>{stats.total}</strong></button>
                 <button onClick={() => { setTimelineFilter("dueToday"); setStatusFilter(""); }} className={timelineFilter === "dueToday" ? "active" : ""}><span>Today&apos;s Calls</span><strong>{stats.dueToday}</strong></button>
                 <button onClick={() => { setTimelineFilter("overdue"); setStatusFilter(""); }} className={timelineFilter === "overdue" ? "active" : ""}><span>Pending</span><strong>{stats.overdue}</strong></button>
               </div>
-            </div>
+            </>
           ) : (
             <>
               <NeedsAttentionQueue 
@@ -587,7 +600,7 @@ async function logContact(id: string, channel: string) {
                   }
                 }}
               />
-              <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))", gap: "1rem", marginBottom: "2rem", width: "100%" }}>
+              <div className="crm-kpi-grid" style={{ width: "100%", margin: 0, gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))" }}>
                 <button onClick={() => setTimelineFilter("")}>
                   <span>Total leads</span>
                   <strong style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
