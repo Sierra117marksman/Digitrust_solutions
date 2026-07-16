@@ -4,6 +4,7 @@ import { useCallback, useEffect, useMemo, useState, useRef } from "react";
 import toast from "react-hot-toast";
 import { contactInfo } from "@/content/contact";
 import { logError } from "../utils/logger";
+import TeamManagement from "./TeamManagement";
 
 const statuses = ["New", "Contacted", "Qualified", "Proposal Sent", "Won", "Lost"];
 const priorities = ["High", "Medium", "Low"];
@@ -385,6 +386,9 @@ export function AdminCrmApp({ admin }: { admin: Admin }) {
           <a href="#dashboard">Dashboard</a>
           <a href="#leads">Leads Hub</a>
           <a href="#activity">Activity</a>
+          {(admin.role === "owner" || admin.role === "manager") && (
+            <a href="#team">Team</a>
+          )}
         </nav>
         <form action="/api/admin/logout" method="post">
           <button className="crm-ghost-button">Logout</button>
@@ -538,6 +542,8 @@ export function AdminCrmApp({ admin }: { admin: Admin }) {
             </div>
           </aside>
         </section>
+        
+        <TeamManagement admin={admin} />
       </section>
 
       {activeLead && (
