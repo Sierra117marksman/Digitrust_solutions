@@ -506,7 +506,13 @@ async function logContact(id: string, channel: string) {
   }, [leads, admin.role]);
 
   return (
-    <main className="crm-os">
+    <main className="crm-layout">
+      <style>{`
+        .crm-tooltip-container { position: relative; display: inline-flex; }
+        .crm-tooltip-text { visibility: hidden; background-color: #1e293b; color: #f8fafc; text-align: center; border-radius: 8px; padding: 8px 12px; position: absolute; z-index: 99999; bottom: 125%; left: 50%; transform: translateX(-50%) translateY(10px); opacity: 0; transition: opacity 0.2s, transform 0.2s, visibility 0.2s; box-shadow: 0 10px 25px -5px rgba(0,0,0,0.2); font-size: 13px; font-weight: 500; white-space: nowrap; pointer-events: none; }
+        .crm-tooltip-text::after { content: ""; position: absolute; top: 100%; left: 50%; margin-left: -6px; border-width: 6px; border-style: solid; border-color: #1e293b transparent transparent transparent; }
+        .crm-tooltip-container:hover .crm-tooltip-text { visibility: visible; opacity: 1; transform: translateX(-50%) translateY(0); }
+      `}</style>
       <aside className="crm-os-sidebar">
         <div>
           <img src="/brand/logo.png" alt="Digitrust Logo" style={{ width: '48px', height: '48px', objectFit: 'contain', marginBottom: '1rem', background: 'white', borderRadius: '8px', padding: '4px' }} />
