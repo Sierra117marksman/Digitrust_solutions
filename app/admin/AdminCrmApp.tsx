@@ -205,7 +205,7 @@ export function AdminCrmApp({ admin }: { admin: Admin }) {
   const [originalLead, setOriginalLead] = useState<Lead | null>(null);
   const [isCreatingLead, setIsCreatingLead] = useState(false);
   const [actioningCall, setActioningCall] = useState<string | null>(null);
-  const [aiSummary, setAiSummary] = useState<any>(null);
+  const [activeTab, setActiveTab] = useState<"dashboard" | "activity" | "team">("dashboard");
   const [generatingSummary, setGeneratingSummary] = useState(false);
   const [showExportPreview, setShowExportPreview] = useState(false);
   const [actioningWhatsApp, setActioningWhatsApp] = useState<Lead | null>(null);
@@ -512,26 +512,16 @@ async function logContact(id: string, channel: string) {
           <p>{admin.name}</p>
           <small>{admin.role.replace(/_/g, " ")}</small>
         </div>
-        <nav aria-label="CRM sections">
-          <a href="#dashboard">Dashboard</a>
-          <a href="#leads">Leads Hub</a>
-          <a href="#activity">Activity</a>
+        <nav aria-label="CRM sections" className="crm-nav">
+          <button onClick={() => setActiveTab("dashboard")} className={activeTab === "dashboard" ? "active" : ""}>Dashboard</button>
+          <button onClick={() => { setActiveTab("dashboard"); setTimeout(() => document.getElementById("leads")?.scrollIntoView({ behavior: 'smooth' }), 50) }}>Leads Hub</button>
           {(admin.role === "owner" || admin.role === "manager") && (
-            <a href="#team">Team</a>
+            <>
+              <button onClick={() => setActiveTab("activity")} className={activeTab === "activity" ? "active" : ""}>Activity Log</button>
+              <button onClick={() => setActiveTab("team")} className={activeTab === "team" ? "active" : ""}>Team</button>
+            </>
           )}
         </nav>
-        <div style={{ marginTop: '2rem', flex: 1, overflowY: 'auto' }}>
-          <h4 style={{ color: 'rgba(255,255,255,0.5)', textTransform: 'uppercase', fontSize: '0.75rem', letterSpacing: '0.05em', marginBottom: '1rem' }}>Recent Activity</h4>
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
-            {recentActivity.slice(0, 8).map((event: any, i: number) => (
-              <div key={i} style={{ fontSize: '0.8rem' }}>
-                <div style={{ color: 'white', fontWeight: 'bold' }}>{event.leadName}</div>
-                <div style={{ color: 'rgba(255,255,255,0.7)', margin: '0.2rem 0' }}>{event.action}</div>
-                <div style={{ color: 'rgba(255,255,255,0.4)', fontSize: '0.7rem' }}>{formatDateTime(event.timestamp)} • {event.performedBy}</div>
-              </div>
-            ))}
-          </div>
-        </div>
 
         <form action="/api/admin/logout" method="post">
           <button className="crm-ghost-button">Logout</button>
@@ -539,6 +529,8 @@ async function logContact(id: string, channel: string) {
       </aside>
 
       <section className="crm-workspace">
+        {activeTab === "dashboard" && (
+          <>
         <header className="crm-commandbar">
           <div>
             <p className="admin-kicker">Sales operations</p>
@@ -715,28 +707,73 @@ async function logContact(id: string, channel: string) {
             ) : (
               <div className="crm-table">
                 <div className="crm-table-row crm-table-head">
-                  <span style={{width:"40px"}}><input type="checkbox" onChange={selectAll} checked={selectedLeads.size > 0 && selectedLeads.size === leads.length} /></span><span>Lead</span><span>Service</span><span>Health / SLA</span><span>Follow-up</span><span>Action</span>
+                  <span style={{width:"40px"}}><input type="checkbox" onChange={selectAll} checked={selectedLeads.size > 0 && selectedLeads.size === leads.length} /></span>
+                  <span>Lead</span>
+                  <span>Service</span>
+                  <span>Health / SLA</span>
+                  <span>Status</span>
+                  <span>Follow-up</span>
+                  <span>Action</span>
                 </div>
                 {leads.length ? leads.map((lead) => (
                   <div className="crm-table-row crm-rich-row" key={lead._id} style={{ background: selectedLeads.has(lead._id) ? "rgba(0,255,136,0.05)" : undefined }}>
                     <span style={{width:"40px"}}><input type="checkbox" checked={selectedLeads.has(lead._id)} onChange={() => toggleSelect(lead._id)} /></span>
                     <span>
                       <strong>{lead.name}</strong>
-                      <small>{lead.email || "No email"}</small>
-                      <small>{lead.phone}</small>
+                      <small style={{color: "#888", fontSize: "0.75rem"}}>{lead.phone}</small>
+                      <small style={{color: "#888", fontSize: "0.75rem"}}>{lead.email}</small>
                     </span>
-                    <span>{lead.service || "General"}</span>
+                    <span style={{fontWeight: 500}}>{lead.service || "General"}</span>
                     <span style={{display:"flex", flexDirection:"column", gap:"0.25rem"}}>
-                      <em style={{fontSize:"0.75rem", color: getSLA(lead).color}}>{getSLA(lead).text}</em>
-                      <em style={{fontSize:"0.75rem", color:"#888"}}>{getHealth(lead)}</em>
+                      <span className="crm-badge" style={{background: getSLA(lead).color + '22', color: getSLA(lead).color}}>{getSLA(lead).text}</span>
                     </span>
-                    <span>{formatDate(lead.nextFollowUpAt)}</span>
-                    <span className="quick-actions">
-                      <button title="Call" onClick={() => { window.location.href = `tel:${lead.phone}`; setActioningCall(lead._id); }}>📞</button>
-                      {lead.phone && <button title="WhatsApp" onClick={() => { setActioningWhatsApp(lead); }}>💬</button>}
-                      <button title="Snooze to Tomorrow 11AM" onClick={() => void snoozeLead(lead._id)}>📅</button>
-                      <button title="Mark Complete" onClick={() => void completeFollowUp(lead._id)}>✓</button>
-                      <button className="crm-row-button" onClick={() => openLead(lead)}>Open</button>
+                    <span>
+                      <select 
+                        className="crm-select-badge"
+                        value={lead.status}
+                        onChange={(e) => {
+                          let val = e.target.value;
+                          let wonVal = lead.wonValue;
+                          if (val === "Won") {
+                            const input = window.prompt("Enter final project value (₹):", "0");
+                            if (input !== null) wonVal = parseInt(input) || 0;
+                            else return; // Cancelled
+                          }
+                          fetch('/api/admin/leads/' + lead._id, {
+                            method: 'PATCH',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({ status: val, wonValue: wonVal })
+                          }).then(res => res.json()).then(data => {
+                            if (data.success) {
+                              setLeads(leads.map(l => l._id === lead._id ? { ...l, status: val, wonValue: wonVal } : l));
+                            }
+                          });
+                        }}
+                      >
+                        {statuses.map(s => <option key={s} value={s}>{s}</option>)}
+                      </select>
+                    </span>
+                    <span style={{fontSize: "0.8rem", color: "#666"}}>{formatDate(lead.nextFollowUpAt)}</span>
+                    <span className="quick-actions" style={{display: "flex", gap: "8px", alignItems: "center"}}>
+                      <button className="crm-row-button primary" onClick={() => openLead(lead)}>Open</button>
+                      <select 
+                        className="crm-action-dropdown"
+                        value="" 
+                        onChange={(e) => {
+                          const action = e.target.value;
+                          if (!action) return;
+                          if (action === "call") { window.location.href = `tel:${lead.phone}`; setActioningCall(lead._id); }
+                          if (action === "wa" && lead.phone) setActioningWhatsApp(lead);
+                          if (action === "snooze") snoozeLead(lead._id);
+                          if (action === "complete") completeFollowUp(lead._id);
+                        }}
+                      >
+                        <option value="">⋮</option>
+                        <option value="call">Call</option>
+                        {lead.phone && <option value="wa">WhatsApp</option>}
+                        <option value="snooze">Snooze 24h</option>
+                        <option value="complete">Mark Complete</option>
+                      </select>
                     </span>
                   </div>
                 )) : (
@@ -783,7 +820,30 @@ async function logContact(id: string, channel: string) {
         </section>
         
         <TeamManagement admin={admin} />
+          </>
+        )}
       </section>
+
+      {activeTab === "activity" && (
+        <div className="crm-panel">
+          <div className="crm-panel-head">
+            <div>
+              <p className="admin-kicker">Admin Only</p>
+              <h2>Complete Activity Log</h2>
+            </div>
+          </div>
+          <div className="crm-recent-list" style={{ padding: '24px' }}>
+            {recentActivity.length ? recentActivity.map((event: any, i: number) => (
+              <div key={i} style={{ marginBottom: '16px', paddingBottom: '16px', borderBottom: '1px solid #edf5f8' }}>
+                <strong>{event.leadName}</strong> - {event.action}
+                <div style={{ color: '#888', fontSize: '0.8rem', marginTop: '4px' }}>{formatDateTime(event.timestamp)} • {event.performedBy}</div>
+              </div>
+            )) : (
+              <p className="crm-empty">No recent activity.</p>
+            )}
+          </div>
+        </div>
+      )}
 
       {activeLead && (
         <div className="crm-drawer-shell">

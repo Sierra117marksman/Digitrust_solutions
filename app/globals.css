@@ -4348,3 +4348,68 @@ a {
   .team-card { padding: 30px 24px; }
 }
 
+
+.crm-os {
+  background: #F8FAFC !important;
+}
+.crm-os-sidebar {
+  background: #0F172A !important;
+  border-right: 1px solid rgba(255,255,255,0.05);
+}
+.crm-panel, .crm-kpi-grid button {
+  background: #FFFFFF !important;
+  border: 1px solid #E2E8F0 !important;
+  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.05) !important;
+  border-radius: 8px !important;
+}
+.crm-table-row {
+  grid-template-columns: 40px minmax(210px, 1.2fr) minmax(130px, 0.8fr) 110px 140px 100px 160px !important;
+  border-bottom: 1px solid #F1F5F9 !important;
+}
+.crm-table-row:hover {
+  background: #F8FAFC;
+}
+.crm-badge {
+  display: inline-flex;
+  padding: 4px 10px;
+  border-radius: 9999px;
+  font-size: 0.7rem;
+  font-weight: 600;
+  white-space: nowrap;
+}
+.crm-select-badge {
+  padding: 4px 8px;
+  border-radius: 6px;
+  border: 1px solid #E2E8F0;
+  background: #F8FAFC;
+  font-size: 0.75rem;
+  font-weight: 500;
+  color: #334155;
+  cursor: pointer;
+}
+.crm-select-badge:hover {
+  border-color: #CBD5E1;
+}
+.crm-row-button.primary {
+  background: #EEF2FF;
+  color: #4F46E5;
+  border: 1px solid #C7D2FE;
+}
+.crm-row-button.primary:hover {
+  background: #E0E7FF;
+}
+.crm-action-dropdown {
+  appearance: none;
+  border: 1px solid #E2E8F0;
+  background: white;
+  padding: 4px 8px;
+  border-radius: 6px;
+  font-size: 1rem;
+  font-weight: bold;
+  cursor: pointer;
+  width: 40px;
+  text-align: center;
+}
+.crm-action-dropdown:hover {
+  background: #F1F5F9;
+}
