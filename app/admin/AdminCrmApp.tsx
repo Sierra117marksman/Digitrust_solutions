@@ -506,7 +506,7 @@ async function logContact(id: string, channel: string) {
   }, [leads, admin.role]);
 
   return (
-    <main className="crm-layout">
+    <main className="crm-os">
       <style>{`
         .crm-tooltip-container { position: relative; display: inline-flex; }
         .crm-tooltip-text { visibility: hidden; background-color: #1e293b; color: #f8fafc; text-align: center; border-radius: 8px; padding: 8px 12px; position: absolute; z-index: 99999; bottom: 125%; left: 50%; transform: translateX(-50%) translateY(10px); opacity: 0; transition: opacity 0.2s, transform 0.2s, visibility 0.2s; box-shadow: 0 10px 25px -5px rgba(0,0,0,0.2); font-size: 13px; font-weight: 500; white-space: nowrap; pointer-events: none; }
