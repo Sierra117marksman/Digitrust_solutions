@@ -53,31 +53,38 @@ export default function NeedsAttentionQueue({ onAction }: { onAction: (leadId: s
         {summary.idle > 0 && <span style={{ background: "#ffedd5", color: "#ea580c", padding: "6px 12px", borderRadius: "99px", fontSize: "0.85rem", fontWeight: 600 }}>⚠ {summary.idle} High Priority Idle</span>}
       </div>
 
-      <div style={{ display: "flex", flexDirection: "column", gap: "0.75rem" }}>
-        {items.filter(i => i.priority === "high" || i.type === "sla" || i.type === "idle").slice(0, 5).map((item) => (
-          <div key={item.id} style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "1rem", background: "#f8fafc", borderRadius: "8px", border: "1px solid #e2e8f0" }}>
-            <div>
-              <strong style={{ display: "block", color: "#0f172a", marginBottom: "0.25rem", fontSize: "15px" }}>{item.title}</strong>
-              <span style={{ fontSize: "0.85rem", color: "#64748b" }}>{item.description}</span>
-            </div>
-            <button 
-              onClick={() => onAction(item.leadId, item.actionLabel, item.phone)}
-              className="icon-btn"
-              style={{ 
-                background: item.type === "sla" || item.type === "idle" ? "#fee2e2" : "#f1f5f9", 
-                color: item.type === "sla" || item.type === "idle" ? "#dc2626" : "#334155",
-                border: "none", 
-                padding: "8px 16px", 
-                borderRadius: "6px", 
-                cursor: "pointer",
-                fontWeight: 600,
-                fontSize: "13px"
-              }}
-            >
-              {item.actionLabel}
-            </button>
-          </div>
-        ))}
+      <div className="crm-table-container">
+        <table className="admin-team-table" style={{ width: "100%", borderCollapse: "collapse" }}>
+          <thead>
+            <tr>
+              <th style={{ textAlign: "left", padding: "0.75rem", borderBottom: "2px solid #e2e8f0", fontSize: "0.85rem", color: "#64748b" }}>Lead / Priority</th>
+              <th style={{ textAlign: "left", padding: "0.75rem", borderBottom: "2px solid #e2e8f0", fontSize: "0.85rem", color: "#64748b" }}>Reason</th>
+              <th style={{ textAlign: "left", padding: "0.75rem", borderBottom: "2px solid #e2e8f0", fontSize: "0.85rem", color: "#64748b" }}>Action</th>
+            </tr>
+          </thead>
+          <tbody>
+            {Array.from(new Map(items.filter(i => i.priority === "high" || i.type === "sla" || i.type === "idle").map(i => [i.id, i])).values()).slice(0, 5).map((item) => (
+              <tr key={item.id} style={{ borderBottom: "1px solid #f1f5f9" }}>
+                <td style={{ padding: "1rem" }}>
+                  <strong>{item.title}</strong>
+                  <br />
+                  <span style={{ fontSize: "12px", padding: "2px 6px", borderRadius: "4px", background: item.type === "sla" || item.type === "idle" ? "#fee2e2" : "#f1f5f9", color: item.type === "sla" || item.type === "idle" ? "#dc2626" : "#334155", display: "inline-block", marginTop: "4px" }}>
+                    {item.priority.toUpperCase()}
+                  </span>
+                </td>
+                <td style={{ padding: "1rem", color: "#64748b" }}>{item.description}</td>
+                <td style={{ padding: "1rem" }}>
+                  <button 
+                    onClick={() => onAction(item.leadId, item.actionLabel, item.phone)}
+                    style={{ background: "#3b82f6", color: "white", border: "none", padding: "6px 12px", borderRadius: "6px", cursor: "pointer", fontWeight: 600, fontSize: "13px" }}
+                  >
+                    {item.actionLabel}
+                  </button>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
         {items.length === 0 && (
           <div style={{ padding: "2rem", textAlign: "center", color: "#94a3b8" }}>You are all caught up!</div>
         )}

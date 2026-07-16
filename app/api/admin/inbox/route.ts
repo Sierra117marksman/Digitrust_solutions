@@ -65,7 +65,7 @@ export async function GET(request: Request) {
 
     for (const l of overdueLeads) {
       inboxItems.push({
-        id: `overdue-\${l._id}`,
+        id: `overdue-${l._id}`,
         leadId: l._id,
         type: 'overdue',
         title: l.name,
@@ -79,7 +79,7 @@ export async function GET(request: Request) {
 
     for (const l of dueTodayLeads) {
       inboxItems.push({
-        id: `today-\${l._id}`,
+        id: `today-${l._id}`,
         leadId: l._id,
         type: 'today',
         title: l.name,
@@ -93,7 +93,7 @@ export async function GET(request: Request) {
 
     for (const l of newLeads) {
       inboxItems.push({
-        id: `new-\${l._id}`,
+        id: `new-${l._id}`,
         leadId: l._id,
         type: 'new',
         title: l.name,
@@ -106,7 +106,7 @@ export async function GET(request: Request) {
 
     for (const l of slaBreaches) {
       inboxItems.push({
-        id: `sla-\${l._id}`,
+        id: `sla-${l._id}`,
         leadId: l._id,
         type: 'sla',
         title: l.name,
@@ -120,7 +120,7 @@ export async function GET(request: Request) {
 
     for (const l of idleLeads) {
       inboxItems.push({
-        id: `idle-\${l._id}`,
+        id: `idle-${l._id}`,
         leadId: l._id,
         type: 'idle',
         title: l.name,

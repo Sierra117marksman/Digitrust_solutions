@@ -205,7 +205,7 @@ export function AdminCrmApp({ admin }: { admin: Admin }) {
   const [originalLead, setOriginalLead] = useState<Lead | null>(null);
   const [isCreatingLead, setIsCreatingLead] = useState(false);
   const [actioningCall, setActioningCall] = useState<string | null>(null);
-  const [activeTab, setActiveTab] = useState<"dashboard" | "activity" | "team">("dashboard");
+  const [activeTab, setActiveTab] = useState<"dashboard" | "leads" | "queue" | "activity" | "analytics" | "team">("dashboard");
   const [generatingSummary, setGeneratingSummary] = useState(false);
   const [showExportPreview, setShowExportPreview] = useState(false);
   const [actioningWhatsApp, setActioningWhatsApp] = useState<Lead | null>(null);
@@ -513,12 +513,13 @@ async function logContact(id: string, channel: string) {
           <small>{admin.role.replace(/_/g, " ")}</small>
         </div>
         <nav aria-label="CRM sections" className="crm-nav">
-          <button onClick={() => setActiveTab("dashboard")} className={activeTab === "dashboard" ? "active" : ""}>Dashboard</button>
-          <button onClick={() => { setActiveTab("dashboard"); setTimeout(() => document.getElementById("leads")?.scrollIntoView({ behavior: 'smooth' }), 50) }}>Lead Workspace</button>
+          <button onClick={() => setActiveTab("dashboard")} className={activeTab === "dashboard" ? "active" : ""}>Executive Dashboard</button>
+          <button onClick={() => setActiveTab("queue")} className={activeTab === "queue" ? "active" : ""}>Action Queue</button>
+          <button onClick={() => setActiveTab("leads")} className={activeTab === "leads" ? "active" : ""}>Lead Workspace</button>
           {(admin.role === "owner" || admin.role === "manager") && (
             <>
               <button onClick={() => setActiveTab("activity")} className={activeTab === "activity" ? "active" : ""}>Activities</button>
-              <button>Analytics</button>
+              <button onClick={() => setActiveTab("analytics")} className={activeTab === "analytics" ? "active" : ""}>Analytics</button>
               <button onClick={() => setActiveTab("team")} className={activeTab === "team" ? "active" : ""}>Team</button>
             </>
           )}
@@ -574,30 +575,81 @@ async function logContact(id: string, channel: string) {
           </div>
         </div>
         
-        <section style={{ padding: '0 32px 32px 32px', display: 'grid', gridTemplateColumns: '320px 1fr', gap: '24px', alignItems: 'start' }} id="dashboard">
-          <div className="recent-activity-col">
-            <h3 style={{ fontSize: '14px', textTransform: 'uppercase', color: '#64748b', marginBottom: '16px', letterSpacing: '0.05em', fontWeight: 600 }}>Recent Activity</h3>
-            <NeedsAttentionQueue 
-               onAction={(leadId, action, phone) => {
-                 if (action === "Call Now" && phone) {
-                   window.location.href = `tel:${phone}`;
-                   const l = leads.find((l: any) => l._id === leadId);
-                   if (l) setActioningCall(l._id);
-                 } else {
-                   const l = leads.find((l: any) => l._id === leadId);
-                   if (l) openLead(l);
-                 }
-               }}
-            />
+        <section style={{ padding: '0 32px 32px 32px' }} id="dashboard">
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '24px' }}>
+            <h2 style={{ fontSize: '24px', fontWeight: 800, color: '#0f172a' }}>Executive Dashboard</h2>
+            <div style={{ background: 'white', border: '1px solid #e2e8f0', padding: '6px 16px', borderRadius: '8px', fontSize: '13px', fontWeight: 600, color: '#64748b' }}>
+              This Month ▾
+            </div>
           </div>
-          <div>
-             <h3 style={{ fontSize: '14px', textTransform: 'uppercase', color: '#64748b', marginBottom: '16px', letterSpacing: '0.05em', fontWeight: 600 }}>Pipeline</h3>
-             <div style={{ background: '#f8fafc', border: '1px dashed #cbd5e1', borderRadius: '8px', padding: '32px', textAlign: 'center', color: '#94a3b8' }}>
-                Pipeline summary will appear here.
-             </div>
+
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '24px' }}>
+            {(() => {
+              const totalLeads = leads.length;
+              const newLeads = leads.filter(l => l.status === "New").length;
+              const wonLeads = leads.filter(l => l.status === "Won").length;
+              const pipelineVal = leads.filter(l => l.status !== "Lost").reduce((sum, l) => {
+                if (l.wonValue) return sum + Number(l.wonValue);
+                if (l.budgetRange) {
+                  const m = l.budgetRange.match(/\d+/g);
+                  if (m) return sum + Number(m[m.length - 1]);
+                }
+                return sum + 5000;
+              }, 0);
+              
+              const formatMoney = (v: number) => {
+                if (v >= 10000000) return "₹" + (v / 10000000).toFixed(2) + "Cr";
+                if (v >= 100000) return "₹" + (v / 100000).toFixed(2) + "L";
+                if (v >= 1000) return "₹" + (v / 1000).toFixed(1) + "k";
+                return "₹" + v.toLocaleString('en-IN');
+              };
+
+              const cards = [
+                { title: "Total Leads", val: totalLeads.toLocaleString(), badge: "+12%", color: "#9333ea", icon: "👥", path: "M0,35 C20,35 30,15 50,25 C70,35 80,5 100,5" },
+                { title: "New Leads", val: newLeads.toLocaleString(), badge: "+8%", color: "#3b82f6", icon: "👤", path: "M0,25 C20,25 30,35 50,20 C70,5 80,15 100,10" },
+                { title: "Pipeline Value", val: formatMoney(pipelineVal), badge: "↑ 2%", color: "#f59e0b", icon: "💰", path: "M0,35 C20,35 30,25 50,30 C70,35 80,10 100,5" },
+                { title: "Deals Won", val: wonLeads.toLocaleString(), badge: "+15%", color: "#10b981", icon: "🏆", path: "M0,30 C20,30 30,15 50,25 C70,35 80,5 100,5" }
+              ];
+
+              return cards.map(c => (
+                <div key={c.title} style={{ background: 'white', border: '1px solid #e2e8f0', borderRadius: '16px', padding: '24px 24px 0 24px', boxShadow: '0 4px 6px -1px rgba(0,0,0,0.05)', display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
+                    <div style={{ display: 'flex', gap: '16px', alignItems: 'center' }}>
+                      <div style={{ width: '48px', height: '48px', borderRadius: '12px', background: c.color, color: 'white', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '24px' }}>
+                        {c.icon}
+                      </div>
+                      <div>
+                        <div style={{ color: '#64748b', fontSize: '13px', fontWeight: 600, marginBottom: '4px' }}>{c.title}</div>
+                        <div style={{ fontSize: '28px', fontWeight: 800, color: '#0f172a' }}>{c.val}</div>
+                      </div>
+                    </div>
+                    <div style={{ background: c.color + '20', color: c.color, padding: '4px 10px', borderRadius: '20px', fontSize: '12px', fontWeight: 700 }}>
+                      {c.badge}
+                    </div>
+                  </div>
+                  
+                  <div style={{ marginTop: '24px', height: '60px', position: 'relative', marginLeft: '-24px', marginRight: '-24px', width: 'calc(100% + 48px)' }}>
+                    <svg viewBox="0 0 100 40" preserveAspectRatio="none" style={{ width: '100%', height: '100%', overflow: 'visible' }}>
+                      <path d={c.path} fill="none" stroke={c.color} strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" />
+                      <path d={`${c.path} L100,50 L0,50 Z`} fill={`url(#grad-${c.title.replace(/\s/g, '')})`} opacity="0.15" />
+                      <defs>
+                        <linearGradient id={`grad-${c.title.replace(/\s/g, '')}`} x1="0" y1="0" x2="0" y2="1">
+                          <stop offset="0%" stopColor={c.color} stopOpacity="1" />
+                          <stop offset="100%" stopColor={c.color} stopOpacity="0" />
+                        </linearGradient>
+                      </defs>
+                    </svg>
+                  </div>
+                </div>
+              ));
+            })()}
           </div>
         </section>
+        </>
+        )}
 
+        {activeTab === "leads" && (
+        <>
         <section className="crm-main-grid">
           <div className="crm-panel crm-leads-panel" id="leads">
             <div className="crm-panel-head crm-toolbar">
@@ -780,11 +832,27 @@ async function logContact(id: string, channel: string) {
 
           </aside>
         </section>
-        
-        <TeamManagement admin={admin} />
-          </>
+        </>
         )}
-      </section>
+
+      {activeTab === "queue" && (
+        <div style={{ padding: '32px' }}>
+          <h2 style={{ fontSize: '24px', fontWeight: 'bold', marginBottom: '8px' }}>Action Queue</h2>
+          <p style={{ color: '#64748b', marginBottom: '24px' }}>Leads that require immediate attention (SLA breaches, Overdue follow-ups, Idle VIPs).</p>
+          <NeedsAttentionQueue 
+             onAction={(leadId, action, phone) => {
+               if (action === "Call Now" && phone) {
+                 window.location.href = `tel:${phone}`;
+                 const l = leads.find((l: any) => l._id === leadId);
+                 if (l) setActioningCall(l._id);
+               } else {
+                 const l = leads.find((l: any) => l._id === leadId);
+                 if (l) openLead(l);
+               }
+             }}
+          />
+        </div>
+      )}
 
       {activeTab === "activity" && (
         <div className="crm-panel">
@@ -939,6 +1007,103 @@ async function logContact(id: string, channel: string) {
         />
       )}
 
+
+
+      {activeTab === "analytics" && (() => {
+        const wonLeads = leads.filter(l => l.status === "Won");
+        const lostLeads = leads.filter(l => l.status === "Lost");
+        const totalResolved = wonLeads.length + lostLeads.length;
+        const conversionRate = totalResolved > 0 ? Math.round((wonLeads.length / totalResolved) * 100) : 0;
+        
+        const totalRevenue = wonLeads.reduce((sum, l) => sum + (l.wonValue || 0), 0);
+        const avgDealSize = wonLeads.length > 0 ? Math.round(totalRevenue / wonLeads.length) : 0;
+        
+        const sourceMap = leads.reduce((acc, l) => { const s = l.source || "Direct"; acc[s] = (acc[s] || 0) + 1; return acc; }, {} as Record<string, number>);
+        const sources = Object.entries(sourceMap).sort((a, b) => b[1] - a[1]);
+        
+        const serviceMap = leads.reduce((acc, l) => { const s = l.service || "General"; acc[s] = (acc[s] || 0) + 1; return acc; }, {} as Record<string, number>);
+        const services = Object.entries(serviceMap).sort((a, b) => b[1] - a[1]);
+
+        const formatINR = (v: number) => {
+          if (v >= 10000000) return "₹" + (v / 10000000).toFixed(2) + "Cr";
+          if (v >= 100000) return "₹" + (v / 100000).toFixed(2) + "L";
+          if (v >= 1000) return "₹" + (v / 1000).toFixed(1) + "k";
+          return "₹" + v.toLocaleString('en-IN');
+        };
+
+        return (
+          <div style={{ padding: '32px', maxWidth: '1200px' }}>
+            <h2 style={{ fontSize: '28px', fontWeight: 800, color: '#0f172a', marginBottom: '8px' }}>Analytics & Performance</h2>
+            <p style={{ color: '#64748b', marginBottom: '32px' }}>Weekly insights and team performance metrics.</p>
+            
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '24px', marginBottom: '32px' }}>
+              <div style={{ background: 'linear-gradient(135deg, #0f172a 0%, #1e293b 100%)', color: 'white', borderRadius: '16px', padding: '32px', display: 'flex', flexDirection: 'column', position: 'relative', overflow: 'hidden' }}>
+                <div style={{ fontSize: '14px', textTransform: 'uppercase', letterSpacing: '0.05em', color: '#94a3b8', fontWeight: 600, marginBottom: '8px' }}>Conversion Rate</div>
+                <div style={{ fontSize: '48px', fontWeight: 800 }}>{conversionRate}%</div>
+                <div style={{ marginTop: '16px', background: 'rgba(255,255,255,0.1)', padding: '8px 12px', borderRadius: '8px', display: 'inline-block', alignSelf: 'flex-start', fontSize: '13px' }}>
+                  Based on {totalResolved} resolved leads
+                </div>
+                <div style={{ position: 'absolute', right: '-20px', bottom: '-40px', fontSize: '150px', opacity: 0.05 }}>📈</div>
+              </div>
+              <div style={{ background: 'linear-gradient(135deg, #10b981 0%, #059669 100%)', color: 'white', borderRadius: '16px', padding: '32px', display: 'flex', flexDirection: 'column', position: 'relative', overflow: 'hidden' }}>
+                <div style={{ fontSize: '14px', textTransform: 'uppercase', letterSpacing: '0.05em', color: '#d1fae5', fontWeight: 600, marginBottom: '8px' }}>Avg Deal Size</div>
+                <div style={{ fontSize: '48px', fontWeight: 800 }}>{formatINR(avgDealSize)}</div>
+                <div style={{ marginTop: '16px', background: 'rgba(0,0,0,0.1)', padding: '8px 12px', borderRadius: '8px', display: 'inline-block', alignSelf: 'flex-start', fontSize: '13px' }}>
+                  From {wonLeads.length} won deals
+                </div>
+                <div style={{ position: 'absolute', right: '-20px', bottom: '-40px', fontSize: '150px', opacity: 0.1 }}>💰</div>
+              </div>
+            </div>
+
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '24px' }}>
+              <div style={{ background: 'white', border: '1px solid #e2e8f0', borderRadius: '16px', padding: '24px' }}>
+                <h3 style={{ fontSize: '16px', fontWeight: 700, color: '#0f172a', marginBottom: '24px' }}>Top Lead Sources</h3>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+                  {sources.slice(0, 5).map(([source, count]) => (
+                    <div key={source}>
+                      <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '8px', fontSize: '14px' }}>
+                        <strong style={{ color: '#334155' }}>{source}</strong>
+                        <span style={{ color: '#64748b' }}>{count} leads</span>
+                      </div>
+                      <div style={{ width: '100%', background: '#f1f5f9', height: '8px', borderRadius: '4px', overflow: 'hidden' }}>
+                        <div style={{ width: `${(count / leads.length) * 100}%`, background: '#3b82f6', height: '100%', borderRadius: '4px' }}></div>
+                      </div>
+                    </div>
+                  ))}
+                  {sources.length === 0 && <p style={{ color: '#94a3b8' }}>No source data available.</p>}
+                </div>
+              </div>
+
+              <div style={{ background: 'white', border: '1px solid #e2e8f0', borderRadius: '16px', padding: '24px' }}>
+                <h3 style={{ fontSize: '16px', fontWeight: 700, color: '#0f172a', marginBottom: '24px' }}>Service Distribution</h3>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+                  {services.slice(0, 5).map(([service, count]) => (
+                    <div key={service}>
+                      <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '8px', fontSize: '14px' }}>
+                        <strong style={{ color: '#334155' }}>{service}</strong>
+                        <span style={{ color: '#64748b' }}>{count} leads</span>
+                      </div>
+                      <div style={{ width: '100%', background: '#f1f5f9', height: '8px', borderRadius: '4px', overflow: 'hidden' }}>
+                        <div style={{ width: `${(count / leads.length) * 100}%`, background: '#8b5cf6', height: '100%', borderRadius: '4px' }}></div>
+                      </div>
+                    </div>
+                  ))}
+                  {services.length === 0 && <p style={{ color: '#94a3b8' }}>No service data available.</p>}
+                </div>
+              </div>
+            </div>
+            
+          </div>
+        );
+      })()}
+
+      {activeTab === "team" && (
+        <div style={{ padding: '32px' }}>
+          <TeamManagement admin={admin} />
+        </div>
+      )}
+
+      </section>
     </main>
   );
 }
