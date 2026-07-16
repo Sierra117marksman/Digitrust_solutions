@@ -150,7 +150,7 @@ export default function TeamManagement({ admin }: { admin: Admin }) {
         <p style={{ padding: "20px" }}>Loading team...</p>
       ) : (
         <div className="crm-table-container">
-          <table className="crm-table">
+          <table className="admin-team-table">
             <thead>
               <tr>
                 <th>Name</th>

@@ -4476,13 +4476,13 @@ a {
 
 
 /* TEAM MANAGEMENT TABLE HOTFIX */
-.crm-table {
+.admin-team-table {
   width: 100%;
   border-collapse: collapse;
   text-align: left;
   margin-top: 1rem;
 }
-.crm-table th {
+.admin-team-table th {
   padding: 12px 16px;
   background: #f8fafc;
   color: #64748b;
@@ -4492,16 +4492,16 @@ a {
   letter-spacing: 0.05em;
   border-bottom: 1px solid #e2e8f0;
 }
-.crm-table td {
+.admin-team-table td {
   padding: 16px;
   border-bottom: 1px solid #e2e8f0;
   vertical-align: middle;
   font-size: 14px;
 }
-.crm-table td strong {
+.admin-team-table td strong {
   color: #0f172a;
 }
-.crm-table td small {
+.admin-team-table td small {
   color: #64748b;
 }
 .status-won {
