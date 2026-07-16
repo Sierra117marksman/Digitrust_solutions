@@ -44,6 +44,23 @@ export async function GET(request: Request) {
       assignedTo: admin.id
     }).project({ name: 1, createdAt: 1, assignedBy: 1 }).limit(10).toArray();
 
+    // 4. SLA Breaches (New for > 8 hours)
+    const slaBreachThreshold = new Date(Date.now() - 8 * 3600000);
+    const slaBreaches = await collection.find({
+      ...baseQuery,
+      status: { $in: ["New", "new"] },
+      createdAt: { $lt: slaBreachThreshold }
+    }).project({ name: 1, createdAt: 1, phone: 1 }).limit(10).toArray();
+
+    // 5. Idle High Priority (No contact in 14 days)
+    const idleThreshold = new Date(Date.now() - 14 * 86400000);
+    const idleLeads = await collection.find({
+      ...baseQuery,
+      status: { $nin: ["Won", "Lost"] },
+      priority: "High",
+      $or: [{ lastContactedAt: { $lt: idleThreshold } }, { lastContactedAt: { $exists: false }, createdAt: { $lt: idleThreshold } }]
+    }).project({ name: 1, lastContactedAt: 1, phone: 1 }).limit(10).toArray();
+
     const inboxItems = [];
 
     for (const l of overdueLeads) {
@@ -87,6 +104,34 @@ export async function GET(request: Request) {
       });
     }
 
+    for (const l of slaBreaches) {
+      inboxItems.push({
+        id: `sla-\${l._id}`,
+        leadId: l._id,
+        type: 'sla',
+        title: l.name,
+        description: 'SLA Breach (New > 8h)',
+        actionLabel: 'Call Now',
+        phone: l.phone,
+        timestamp: l.createdAt,
+        priority: 'high'
+      });
+    }
+
+    for (const l of idleLeads) {
+      inboxItems.push({
+        id: `idle-\${l._id}`,
+        leadId: l._id,
+        type: 'idle',
+        title: l.name,
+        description: 'Idle High Priority (>14d)',
+        actionLabel: 'Open Lead',
+        phone: l.phone,
+        timestamp: l.lastContactedAt,
+        priority: 'high'
+      });
+    }
+
     inboxItems.sort((a, b) => new Date(b.timestamp || 0).getTime() - new Date(a.timestamp || 0).getTime());
 
     return NextResponse.json({
@@ -94,7 +139,9 @@ export async function GET(request: Request) {
       summary: {
         overdue: overdueLeads.length,
         dueToday: dueTodayLeads.length,
-        newLeads: newLeads.length
+        newLeads: newLeads.length,
+        slaBreaches: slaBreaches.length,
+        idle: idleLeads.length
       }
     });
 

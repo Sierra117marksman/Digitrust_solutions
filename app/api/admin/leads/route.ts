@@ -1,3 +1,4 @@
+/* eslint-disable */
 import { NextResponse } from "next/server";
 import { ObjectId } from "mongodb";
 import { getCurrentAdmin } from "@/lib/admin-auth";

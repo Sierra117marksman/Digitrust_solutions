@@ -8,6 +8,10 @@ import NewLeadModal from "./NewLeadModal";
 import ActionCenter from "./ActionCenter";
 import CallOutcomeModal from "./CallOutcomeModal";
 import WhatsAppTemplateModal from "./WhatsAppTemplateModal";
+import NeedsAttentionQueue from "./NeedsAttentionQueue";
+import ExportPreviewModal from "./ExportPreviewModal";
+import SavedViewsBar from "./SavedViewsBar";
+import BusinessHealthDashboard from "./BusinessHealthDashboard";
 import { contactInfo } from "@/content/contact";
 import { logError } from "../utils/logger";
 import TeamManagement from "./TeamManagement";
@@ -201,6 +205,9 @@ export function AdminCrmApp({ admin }: { admin: Admin }) {
   const [originalLead, setOriginalLead] = useState<Lead | null>(null);
   const [isCreatingLead, setIsCreatingLead] = useState(false);
   const [actioningCall, setActioningCall] = useState<string | null>(null);
+  const [aiSummary, setAiSummary] = useState<any>(null);
+  const [generatingSummary, setGeneratingSummary] = useState(false);
+  const [showExportPreview, setShowExportPreview] = useState(false);
   const [actioningWhatsApp, setActioningWhatsApp] = useState<Lead | null>(null);
   const [selectedLeads, setSelectedLeads] = useState<Set<string>>(new Set());
   const [recentFeed, setRecentFeed] = useState<any[]>([]); // eslint-disable-line @typescript-eslint/no-explicit-any
@@ -548,20 +555,19 @@ async function logContact(id: string, channel: string) {
 
           {admin.role === "employee" ? (
             <div className="crm-daily-planner" style={{ width: '100%' }}>
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem' }}>
-                <div>
-                  <h3 style={{ margin: 0 }}>Good Morning {admin.name.split(' ')[0]} 👋</h3>
-                  <p style={{ margin: '0.25rem 0 0 0', color: '#888' }}>Here is your daily schedule</p>
-                </div>
-                <div style={{ textAlign: 'right' }}>
-                  <p style={{ margin: 0, fontSize: '0.85rem' }}>Daily Goal</p>
-                  <div style={{ background: '#333', borderRadius: '8px', height: '8px', width: '150px', marginTop: '0.5rem', overflow: 'hidden' }}>
-                    <div style={{ background: '#00ff88', height: '100%', width: `${Math.min(100, (stats.dueToday > 0 ? ((stats.dueToday - stats.overdue) / stats.dueToday) * 100 : 100))}%` }} />
-                  </div>
-                  <p style={{ margin: '0.25rem 0 0 0', fontSize: '0.75rem', color: '#ffcc00' }}>🔥 {stats.overdue} calls left</p>
-                </div>
-              </div>
-              <div style={{ display: 'flex', gap: '0.5rem' }}>
+              <NeedsAttentionQueue 
+                onAction={(leadId, action, phone) => {
+                  if (action === "Call Now" && phone) {
+                    window.location.href = `tel:${phone}`;
+                    const l = leads.find(l => l._id === leadId);
+                    if (l) setActioningCall(l._id);
+                  } else {
+                    const l = leads.find(l => l._id === leadId);
+                    if (l) openLead(l);
+                  }
+                }}
+              />
+              <div style={{ display: "flex", gap: "1rem", marginBottom: "1rem", flexWrap: "wrap" }}>
                 <button onClick={() => { setTimelineFilter(""); setStatusFilter(""); }} className={!timelineFilter && !statusFilter ? "active" : ""}><span>My Leads</span><strong>{stats.total}</strong></button>
                 <button onClick={() => { setTimelineFilter("dueToday"); setStatusFilter(""); }} className={timelineFilter === "dueToday" ? "active" : ""}><span>Today&apos;s Calls</span><strong>{stats.dueToday}</strong></button>
                 <button onClick={() => { setTimelineFilter("overdue"); setStatusFilter(""); }} className={timelineFilter === "overdue" ? "active" : ""}><span>Pending</span><strong>{stats.overdue}</strong></button>
@@ -569,6 +575,18 @@ async function logContact(id: string, channel: string) {
             </div>
           ) : (
             <>
+              <NeedsAttentionQueue 
+                onAction={(leadId, action, phone) => {
+                  if (action === "Call Now" && phone) {
+                    window.location.href = `tel:${phone}`;
+                    const l = leads.find((l: any) => l._id === leadId);
+                    if (l) setActioningCall(l._id);
+                  } else {
+                    const l = leads.find((l: any) => l._id === leadId);
+                    if (l) openLead(l);
+                  }
+                }}
+              />
               <button onClick={() => setTimelineFilter("")}>
                 <span>Total leads</span>
                 <strong style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
