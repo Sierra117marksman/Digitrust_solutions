@@ -57,6 +57,7 @@ type Lead = {
   leadTemperature: string;
   budgetRange?: string;
   source?: string;
+  clientSummary?: string;
   notes?: Note[];
   nextFollowUpAt?: string;
   followUpReason?: string;
@@ -113,17 +114,17 @@ function formatDate(value?: string) {
 
   const getSLA = (lead: Lead) => {
     const ageHours = (Date.now() - new Date(lead.createdAt).getTime()) / 3600000;
-    if (ageHours < 2) return { color: "#00ff88", text: "New" };
-    if (ageHours < 8) return { color: "#ffcc00", text: "Action Needed" };
-    return { color: "#ff4444", text: "At Risk" };
+    if (ageHours < 2) return { color: "#00ff88", text: "New", title: "New Lead (< 2 hours old)" };
+    if (ageHours < 8) return { color: "#ffcc00", text: "Action Needed", title: "Action Needed: Uncontacted for 2-8 hours" };
+    return { color: "#ff4444", text: "At Risk", title: "At Risk: Uncontacted for over 8 hours" };
   };
 
   const getHealth = (lead: Lead) => {
-    if (!lead.lastContactedAt) return "🔴 Idle";
+    if (!lead.lastContactedAt) return { color: "#ff4444", text: "🔴 Idle", title: "Idle: Never contacted" };
     const days = (Date.now() - new Date(lead.lastContactedAt).getTime()) / 86400000;
-    if (days < 2) return "🟢 Healthy";
-    if (days < 5) return "🟡 Needs Attention";
-    return "🔴 At Risk";
+    if (days < 2) return { color: "#00ff88", text: "🟢 Healthy", title: "Healthy: Contacted within the last 48 hours" };
+    if (days < 5) return { color: "#ffcc00", text: "🟡 Needs Attention", title: "Needs Attention: Ignored for 2-5 days" };
+    return { color: "#ff4444", text: "🔴 At Risk", title: "At Risk: Ignored for over 5 days" };
   };
 
 function formatDateTime(value?: string) {
@@ -205,6 +206,7 @@ export function AdminCrmApp({ admin }: { admin: Admin }) {
   const [originalLead, setOriginalLead] = useState<Lead | null>(null);
   const [isCreatingLead, setIsCreatingLead] = useState(false);
   const [actioningCall, setActioningCall] = useState<string | null>(null);
+  const [showGlossary, setShowGlossary] = useState(false);
   const [activeTab, setActiveTab] = useState<"dashboard" | "leads" | "queue" | "activity" | "analytics" | "team">("dashboard");
   const [generatingSummary, setGeneratingSummary] = useState(false);
   const [showExportPreview, setShowExportPreview] = useState(false);
@@ -545,6 +547,7 @@ async function logContact(id: string, channel: string) {
           </div>
           <div className="crm-command-actions" style={{ gap: '16px', marginLeft: '24px' }}>
             <button className="icon-btn" title="Quick Add" onClick={() => setIsCreatingLead(true)} style={{ background: '#f8fafc', padding: '8px 12px', borderRadius: '8px', border: '1px solid #e2e8f0', cursor: 'pointer', borderStyle: 'solid' }}>➕</button>
+            <button className="icon-btn" title="Sales Playbook & Glossary" onClick={() => setShowGlossary(true)} style={{ background: '#f8fafc', padding: '8px 12px', borderRadius: '8px', border: '1px solid #e2e8f0', cursor: 'pointer', borderStyle: 'solid' }}>❓</button>
             <button className="icon-btn" title="Notifications" style={{ background: '#f8fafc', padding: '8px 12px', borderRadius: '8px', border: '1px solid #e2e8f0', cursor: 'pointer', borderStyle: 'solid' }}>🔔</button>
             <button className="icon-btn" title="Profile" style={{ background: '#f8fafc', padding: '8px 12px', borderRadius: '8px', border: '1px solid #e2e8f0', cursor: 'pointer', borderStyle: 'solid' }}>👤</button>
           </div>
@@ -744,8 +747,9 @@ async function logContact(id: string, channel: string) {
                       <small style={{color: "#64748b", fontSize: "12px"}}>{lead.email}</small>
                     </span>
                     <span style={{fontWeight: 500}}>{lead.service || "General"}</span>
-                    <span style={{display:"flex", flexDirection:"column", gap:"0.25rem"}}>
-                      <span className="crm-badge" style={{background: getSLA(lead).color + '22', color: getSLA(lead).color}}>{getSLA(lead).text}</span>
+                    <span style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
+                      <span className="crm-badge" title={getSLA(lead).title} style={{background: getSLA(lead).color + '22', color: getSLA(lead).color, cursor: 'help'}}>{getSLA(lead).text}</span>
+                      <span className="crm-badge" title={getHealth(lead).title} style={{background: getHealth(lead).color + '22', color: getHealth(lead).color, cursor: 'help'}}>{getHealth(lead).text}</span>
                     </span>
                     <span>
                       <select 
@@ -937,25 +941,55 @@ async function logContact(id: string, channel: string) {
             </section>
 
             <section className="crm-drawer-section">
-              <h4>Notes</h4>
-              <div className="crm-notes-list">
+              <h4 style={{ marginBottom: '16px' }}>Interaction Timeline</h4>
+              <fieldset disabled={saving} style={{ all: "unset", display: "flex", gap: "8px", marginBottom: "24px" }}>
+                <input 
+                  type="text"
+                  value={note} 
+                  onChange={(event) => setNote(event.target.value)} 
+                  placeholder="Quickly add a call note or update..." 
+                  style={{ flex: 1, padding: '12px 16px', borderRadius: '8px', border: '1px solid #cbd5e1' }}
+                />
+                <button 
+                  disabled={!note.trim()} 
+                  onClick={() => void appendNote()}
+                  style={{ padding: '0 24px', background: '#0f172a', color: 'white', borderRadius: '8px', fontWeight: 500, opacity: note.trim() ? 1 : 0.5 }}
+                >Post</button>
+              </fieldset>
+
+              <div className="crm-notes-list" style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
                 {Array.isArray(activeLead.notes) ? activeLead.notes.map((n, i) => (
-                  <div key={i} className="crm-note-item">
-                    <strong>{n.author}</strong> <span>{formatDateTime(n.createdAt)}</span>
-                    <p>{n.note}</p>
+                  <div key={i} className="crm-note-item" style={{ background: '#f8fafc', padding: '16px', borderRadius: '8px', borderLeft: '4px solid #3b82f6' }}>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '8px', fontSize: '13px' }}>
+                      <strong style={{ color: '#0f172a' }}>{n.author}</strong> 
+                      <span style={{ color: '#64748b' }}>{formatDateTime(n.createdAt)}</span>
+                    </div>
+                    <p style={{ margin: 0, color: '#334155', fontSize: '14px', lineHeight: 1.5 }}>{n.note}</p>
                   </div>
                 )) : activeLead.notes ? (
                   <p className="crm-existing-notes">{activeLead.notes as string}</p>
-                ) : null}
+                ) : <p style={{ color: '#94a3b8', fontStyle: 'italic' }}>No timeline events yet.</p>}
               </div>
-              <fieldset disabled={saving} style={{ all: "unset", display: "contents" }}>
-                <textarea value={note} onChange={(event) => setNote(event.target.value)} placeholder="Add call note, client response..." />
-                <button disabled={!note.trim()} onClick={() => void appendNote()}>Save note</button>
-              </fieldset>
+            </section>
+
+            <section className="crm-drawer-section" style={{ background: '#f8fafc', padding: '20px', borderRadius: '12px', border: '1px solid #e2e8f0' }}>
+              <h4 style={{ display: 'flex', alignItems: 'center', gap: '8px', color: '#0f172a', marginBottom: '12px' }}>📝 Executive Summary / Client Needs</h4>
+              <textarea 
+                placeholder="Write a clear summary of what this client needs, budget constraints, or other key reporting details..." 
+                value={activeLead.clientSummary || ""}
+                onChange={(e) => void updateLead(activeLead._id, { clientSummary: e.target.value })}
+                onBlur={(e) => void updateLead(activeLead._id, { clientSummary: e.target.value })}
+                style={{ 
+                  width: '100%', minHeight: '100px', padding: '16px', borderRadius: '8px', 
+                  border: '1px solid #cbd5e1', background: '#ffffff', fontSize: '14px', 
+                  color: '#334155', resize: 'vertical', boxShadow: 'inset 0 2px 4px rgba(0,0,0,0.02)',
+                  fontFamily: 'inherit'
+                }} 
+              />
             </section>
 
             <section className="crm-drawer-section">
-              <h4>Next Follow-up</h4>
+              <h4>Lead Qualification</h4>
               <div className="crm-drawer-grid">
                 <label>Date & Time<input type="datetime-local" value={activeLead.nextFollowUpAt ? new Date(new Date(activeLead.nextFollowUpAt).getTime() - new Date().getTimezoneOffset() * 60000).toISOString().slice(0, 16) : ""} onChange={(event) => void updateLead(activeLead._id, { nextFollowUpAt: new Date(event.target.value).toISOString() })} /></label>
                 <label>Type<select value={activeLead.followUpType || "Call"} onChange={(event) => void updateLead(activeLead._id, { followUpType: event.target.value as any })}><option>Call</option><option>WhatsApp</option><option>Email</option><option>Meeting</option></select></label>
@@ -1007,7 +1041,37 @@ async function logContact(id: string, channel: string) {
         />
       )}
 
+      {showGlossary && (
+        <div className="crm-modal" onClick={() => setShowGlossary(false)}>
+          <div className="crm-modal-content" style={{ maxWidth: '600px' }} onClick={e => e.stopPropagation()}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '24px' }}>
+              <h2>Sales Playbook & Glossary</h2>
+              <button onClick={() => setShowGlossary(false)} style={{ background: 'transparent', border: 'none', cursor: 'pointer', fontSize: '20px' }}>✕</button>
+            </div>
+            
+            <div style={{ marginBottom: '24px' }}>
+              <h3 style={{ fontSize: '18px', marginBottom: '12px', color: '#0f172a' }}>SLA (Response Time)</h3>
+              <p style={{ color: '#64748b', marginBottom: '12px', fontSize: '14px' }}>Measures how quickly we respond to new leads.</p>
+              <div style={{ display: 'grid', gap: '8px' }}>
+                <div style={{ padding: '12px', background: '#f8fafc', borderRadius: '8px', borderLeft: '4px solid #00ff88' }}><strong>New:</strong> Lead arrived &lt; 2 hours ago.</div>
+                <div style={{ padding: '12px', background: '#f8fafc', borderRadius: '8px', borderLeft: '4px solid #ffcc00' }}><strong>Action Needed:</strong> Waiting 2-8 hours without contact.</div>
+                <div style={{ padding: '12px', background: '#f8fafc', borderRadius: '8px', borderLeft: '4px solid #ff4444' }}><strong>At Risk:</strong> Ignored &gt; 8 hours.</div>
+              </div>
+            </div>
 
+            <div>
+              <h3 style={{ fontSize: '18px', marginBottom: '12px', color: '#0f172a' }}>Lead Health (Engagement)</h3>
+              <p style={{ color: '#64748b', marginBottom: '12px', fontSize: '14px' }}>Measures how consistently we stay in touch with active leads.</p>
+              <div style={{ display: 'grid', gap: '8px' }}>
+                <div style={{ padding: '12px', background: '#f8fafc', borderRadius: '8px', borderLeft: '4px solid #00ff88' }}><strong>Healthy:</strong> Contacted in the last 48 hours.</div>
+                <div style={{ padding: '12px', background: '#f8fafc', borderRadius: '8px', borderLeft: '4px solid #ffcc00' }}><strong>Needs Attention:</strong> No contact for 2-5 days.</div>
+                <div style={{ padding: '12px', background: '#f8fafc', borderRadius: '8px', borderLeft: '4px solid #ff4444' }}><strong>At Risk:</strong> Ignored &gt; 5 days.</div>
+                <div style={{ padding: '12px', background: '#f8fafc', borderRadius: '8px', borderLeft: '4px solid #94a3b8' }}><strong>Idle:</strong> Never contacted.</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
 
       {activeTab === "analytics" && (() => {
         const wonLeads = leads.filter(l => l.status === "Won");
