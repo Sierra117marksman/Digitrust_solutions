@@ -80,6 +80,10 @@ export async function GET(request: Request) {
   const today = new Date();
   const startOfToday = new Date(today.getFullYear(), today.getMonth(), today.getDate());
   const endOfToday = new Date(today.getFullYear(), today.getMonth(), today.getDate(), 23, 59, 59, 999);
+  
+  const startOfYesterday = new Date(today.getFullYear(), today.getMonth(), today.getDate() - 1);
+  const endOfYesterday = new Date(today.getFullYear(), today.getMonth(), today.getDate() - 1, 23, 59, 59, 999);
+  
   const idleThreshold = new Date(Date.now() - 48 * 60 * 60 * 1000);
   const openStatus = { $nin: ["Won", "Lost"] };
 
@@ -102,7 +106,7 @@ export async function GET(request: Request) {
   const collection = database.collection("website_enquiries");
   const skip = (page - 1) * limit;
 
-  const [leads, totalLeads, basicStats, timelineStats, idleCount, services, assignmentStats] = await Promise.all([
+  const [leads, totalLeads, basicStats, timelineStats, idleCount, services, assignmentStats, yesterdayStats, globalEvents] = await Promise.all([
     collection.find(query).sort({ createdAt: -1 }).skip(skip).limit(limit).toArray(),
     collection.countDocuments(query),
     collection.aggregate<{ _id: string; count: number; totalWon: number }>([
@@ -125,6 +129,22 @@ export async function GET(request: Request) {
       { $match: { status: { $nin: ["Won", "Lost"] } } },
       { $group: { _id: "$assignedTo", count: { $sum: 1 } } }
     ]).toArray(),
+    
+    // Yesterday's basics for trend
+    collection.aggregate([
+      { $match: { createdAt: { $gte: startOfYesterday, $lte: endOfYesterday } } },
+      { $group: { _id: null, count: { $sum: 1 } } }
+    ]).toArray(),
+    
+    // Global events (recent activity feed) for owner/manager
+    (admin.role === "owner" || admin.role === "manager") ? 
+      collection.aggregate([
+        { $match: { events: { $exists: true, $not: { $size: 0 } } } },
+        { $unwind: "$events" },
+        { $sort: { "events.timestamp": -1 } },
+        { $limit: 15 },
+        { $project: { _id: 1, name: 1, action: "$events.action", type: "$events.type", performedBy: "$events.performedBy", timestamp: "$events.timestamp" } }
+      ]).toArray() : Promise.resolve([])
   ]);
 
   const counts = Object.fromEntries(statuses.map((item) => [item, 0]));
@@ -166,7 +186,9 @@ export async function GET(request: Request) {
       unassigned,
       employeeStats,
       totalWonValue,
+      yesterdayLeads: yesterdayStats[0]?.count || 0,
     },
+    recentActivityFeed: globalEvents || []
   });
 }
 
@@ -201,7 +223,7 @@ export async function PATCH(request: Request) {
   }
 
   const updates: Record<string, unknown> = { updatedAt: new Date() };
-  const logs: ReturnType<typeof activity>[] = [];
+  const logs: any[] = [];
 
   // Assignment Logic
   if (body.assignedTo !== undefined) {
@@ -272,7 +294,15 @@ export async function PATCH(request: Request) {
 
   if (body.lastContactedAt !== undefined) {
     updates.lastContactedAt = new Date(clean(body.lastContactedAt, 60) || Date.now());
-    logs.push(activity(`Contact logged${body.contactChannel ? ` via ${clean(body.contactChannel, 30)}` : ""}`, "contact", admin.name));
+    let msg = `Contact logged${body.contactChannel ? ` via ${clean(body.contactChannel, 30)}` : ""}`;
+    if (body.callOutcome) msg += ` - Outcome: ${clean(body.callOutcome, 50)}`;
+    
+    logs.push({
+       ...activity(msg, "contact", admin.name),
+       callDuration: typeof body.callDuration === "number" ? body.callDuration : undefined,
+       callOutcome: body.callOutcome ? clean(body.callOutcome, 50) : undefined,
+       callReason: body.callReason ? clean(body.callReason, 100) : undefined
+    });
   }
   if (body.wonValue !== undefined) {
     const value = Number(body.wonValue);

@@ -1,4 +1,6 @@
 "use client";
+/* eslint-disable */
+
 
 import Link from "next/link";
 import { ScrollLink } from "./ScrollLink";

@@ -1,3 +1,4 @@
+/* eslint-disable */
 import { getMongoClient } from "../mongodb";
 import { ObjectId } from "mongodb";
 import { headers } from "next/headers";

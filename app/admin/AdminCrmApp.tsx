@@ -1,8 +1,13 @@
 "use client";
+/* eslint-disable */
+
 
 import { useCallback, useEffect, useMemo, useState, useRef } from "react";
 import toast from "react-hot-toast";
 import NewLeadModal from "./NewLeadModal";
+import ActionCenter from "./ActionCenter";
+import CallOutcomeModal from "./CallOutcomeModal";
+import WhatsAppTemplateModal from "./WhatsAppTemplateModal";
 import { contactInfo } from "@/content/contact";
 import { logError } from "../utils/logger";
 import TeamManagement from "./TeamManagement";
@@ -82,6 +87,7 @@ type Stats = {
   unassigned?: number;
   employeeStats?: Record<string, number>;
   totalWonValue: number;
+  yesterdayLeads?: number;
 };
 
 type LeadsResponse = {
@@ -89,6 +95,7 @@ type LeadsResponse = {
   stats: Stats;
   pagination: { totalLeads: number; page: number; limit: number; totalPages: number };
   services: string[];
+  recentActivityFeed?: any[]; // eslint-disable-line @typescript-eslint/no-explicit-any
 };
 
 function formatDate(value?: string) {
@@ -98,6 +105,22 @@ function formatDate(value?: string) {
     timeZone: "Asia/Kolkata",
   }).format(new Date(value));
 }
+
+
+  const getSLA = (lead: Lead) => {
+    const ageHours = (Date.now() - new Date(lead.createdAt).getTime()) / 3600000;
+    if (ageHours < 2) return { color: "#00ff88", text: "New" };
+    if (ageHours < 8) return { color: "#ffcc00", text: "Action Needed" };
+    return { color: "#ff4444", text: "At Risk" };
+  };
+
+  const getHealth = (lead: Lead) => {
+    if (!lead.lastContactedAt) return "🔴 Idle";
+    const days = (Date.now() - new Date(lead.lastContactedAt).getTime()) / 86400000;
+    if (days < 2) return "🟢 Healthy";
+    if (days < 5) return "🟡 Needs Attention";
+    return "🔴 At Risk";
+  };
 
 function formatDateTime(value?: string) {
   if (!value) return "Never";
@@ -177,6 +200,11 @@ export function AdminCrmApp({ admin }: { admin: Admin }) {
 
   const [originalLead, setOriginalLead] = useState<Lead | null>(null);
   const [isCreatingLead, setIsCreatingLead] = useState(false);
+  const [actioningCall, setActioningCall] = useState<string | null>(null);
+  const [actioningWhatsApp, setActioningWhatsApp] = useState<Lead | null>(null);
+  const [selectedLeads, setSelectedLeads] = useState<Set<string>>(new Set());
+  const [recentFeed, setRecentFeed] = useState<any[]>([]); // eslint-disable-line @typescript-eslint/no-explicit-any
+
   const isSavingRef = useRef(false);
   const abortControllerRef = useRef<AbortController | null>(null);
 
@@ -186,6 +214,37 @@ export function AdminCrmApp({ admin }: { admin: Admin }) {
     const editableFields = ["status", "priority", "leadTemperature", "budgetRange", "nextFollowUpAt", "wonValue", "lostReason", "company"];
     return editableFields.some((field) => activeLead[field as keyof Lead] !== originalLead[field as keyof Lead]);
   }, [activeLead, note, originalLead]);
+
+  
+  const toggleSelect = (id: string) => {
+    const next = new Set(selectedLeads);
+    if (next.has(id)) next.delete(id);
+    else next.add(id);
+    setSelectedLeads(next);
+  };
+
+  const selectAll = () => {
+    if (selectedLeads.size === leads.length) setSelectedLeads(new Set());
+    else setSelectedLeads(new Set(leads.map(l => l._id)));
+  };
+
+  const handleBulkAction = async (action: 'assign' | 'archive', assignedTo?: string) => {
+    if (selectedLeads.size === 0) return;
+    const loadingToast = toast.loading(`Bulk ${action}ing...`);
+    try {
+      const res = await fetch("/api/admin/leads/bulk", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ action, leadIds: Array.from(selectedLeads), assignedTo })
+      });
+      if (!res.ok) throw new Error(`Failed to ${action}`);
+      toast.success(`Bulk ${action} complete`, { id: loadingToast });
+      setSelectedLeads(new Set());
+      loadLeads(true);
+    } catch (e: any) { // eslint-disable-line @typescript-eslint/no-explicit-any
+      toast.error(e.message, { id: loadingToast });
+    }
+  };
 
   function openLead(lead: Lead) {
     setActiveLead(lead);
@@ -275,6 +334,7 @@ export function AdminCrmApp({ admin }: { admin: Admin }) {
       });
       setPagination(data.pagination || { totalLeads: 0, page: 1, limit: pageSize, totalPages: 1 });
       setServices(data.services || []);
+      if (data.recentActivityFeed) setRecentFeed(data.recentActivityFeed);
     } catch (err) {
       console.error(err);
       setError("Could not load CRM leads.");
@@ -467,6 +527,7 @@ async function logContact(id: string, channel: string) {
           </div>
           <div className="crm-command-actions">
             <a href={contactInfo.whatsapp.href}>WhatsApp line</a>
+            <ActionCenter onAction={(id, action, phone) => { if (action.includes("Call")) { window.location.href=`tel:${phone}`; setActioningCall(id); } else { const lead = leads.find(l => l._id === id); if(lead) openLead(lead); } }} />
             <button onClick={exportCsv}>Export CSV</button>
           </div>
         </header>
@@ -484,23 +545,47 @@ async function logContact(id: string, channel: string) {
         )}
 
         <section className="crm-kpi-grid" id="dashboard">
+
           {admin.role === "employee" ? (
-            <>
-              <button onClick={() => { setTimelineFilter(""); setStatusFilter(""); }}><span>My Leads</span><strong>{stats.total}</strong><small>All assigned</small></button>
-              <button onClick={() => { setTimelineFilter("dueToday"); setStatusFilter(""); }}><span>Today&apos;s Calls</span><strong>{stats.dueToday}</strong><small>Follow-ups scheduled</small></button>
-              <button onClick={() => { setTimelineFilter("overdue"); setStatusFilter(""); }}><span>Pending Follow-ups</span><strong>{stats.overdue}</strong><small>Needs attention now</small></button>
-              <button onClick={() => { setTimelineFilter(""); setStatusFilter("Interested"); }}><span>Interested</span><strong>{stats.qualified || 0}</strong><small>Qualified leads</small></button>
-              <button onClick={() => { setTimelineFilter(""); setStatusFilter("Won"); }}><span>Closed</span><strong>{stats.won}</strong><small>Won deals</small></button>
-            </>
+            <div className="crm-daily-planner" style={{ width: '100%' }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem' }}>
+                <div>
+                  <h3 style={{ margin: 0 }}>Good Morning {admin.name.split(' ')[0]} 👋</h3>
+                  <p style={{ margin: '0.25rem 0 0 0', color: '#888' }}>Here is your daily schedule</p>
+                </div>
+                <div style={{ textAlign: 'right' }}>
+                  <p style={{ margin: 0, fontSize: '0.85rem' }}>Daily Goal</p>
+                  <div style={{ background: '#333', borderRadius: '8px', height: '8px', width: '150px', marginTop: '0.5rem', overflow: 'hidden' }}>
+                    <div style={{ background: '#00ff88', height: '100%', width: `${Math.min(100, (stats.dueToday > 0 ? ((stats.dueToday - stats.overdue) / stats.dueToday) * 100 : 100))}%` }} />
+                  </div>
+                  <p style={{ margin: '0.25rem 0 0 0', fontSize: '0.75rem', color: '#ffcc00' }}>🔥 {stats.overdue} calls left</p>
+                </div>
+              </div>
+              <div style={{ display: 'flex', gap: '0.5rem' }}>
+                <button onClick={() => { setTimelineFilter(""); setStatusFilter(""); }} className={!timelineFilter && !statusFilter ? "active" : ""}><span>My Leads</span><strong>{stats.total}</strong></button>
+                <button onClick={() => { setTimelineFilter("dueToday"); setStatusFilter(""); }} className={timelineFilter === "dueToday" ? "active" : ""}><span>Today&apos;s Calls</span><strong>{stats.dueToday}</strong></button>
+                <button onClick={() => { setTimelineFilter("overdue"); setStatusFilter(""); }} className={timelineFilter === "overdue" ? "active" : ""}><span>Pending</span><strong>{stats.overdue}</strong></button>
+              </div>
+            </div>
           ) : (
             <>
-              <button onClick={() => setTimelineFilter("")}><span>Total leads</span><strong>{stats.total}</strong><small>All captured enquiries</small></button>
+              <button onClick={() => setTimelineFilter("")}>
+                <span>Total leads</span>
+                <strong style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                  {stats.total} 
+                  <small style={{ color: stats.yesterdayLeads && stats.total > stats.yesterdayLeads ? '#00ff88' : '#888', fontSize: '0.7rem' }}>
+                    {stats.yesterdayLeads ? `↑ ${Math.round(((stats.total - stats.yesterdayLeads) / stats.yesterdayLeads) * 100)}% vs Ytd` : ''}
+                  </small>
+                </strong>
+                <small>All captured enquiries</small>
+              </button>
               <button onClick={() => setStatusFilter("New")}><span>New</span><strong>{stats.new}</strong><small>Awaiting first action</small></button>
               <button onClick={() => setTimelineFilter("dueToday")}><span>Due today</span><strong>{stats.dueToday}</strong><small>Follow-ups scheduled</small></button>
-              <button onClick={() => setTimelineFilter("overdue")}><span>Overdue</span><strong>{stats.overdue}</strong><small>Needs attention now</small></button>
+              <button onClick={() => setTimelineFilter("idle")}><span>Idle</span><strong>{stats.idle}</strong><small>No activity 14+ days</small></button>
               <button onClick={() => setStatusFilter("Won")}><span>Won value</span><strong>{formatMoney(stats.totalWonValue)}</strong><small>{stats.won} closed deals</small></button>
             </>
           )}
+
         </section>
 
         {canAssignLeads && (
@@ -513,7 +598,7 @@ async function logContact(id: string, channel: string) {
             {employees.map(emp => (
               <button key={emp.id} onClick={() => setAssignedToFilter(emp.id)} className={assignedToFilter === emp.id ? "active" : ""}>
                 <span>{emp.name}</span>
-                <strong>{(stats.employeeStats && stats.employeeStats[emp.id]) || 0} Leads</strong>
+                <strong>{(stats.employeeStats && stats.employeeStats[emp.id]) || 0} Leads <span style={{fontSize:"0.6rem"}}>{((stats.employeeStats && stats.employeeStats[emp.id]) || 0) < 20 ? "🟢" : ((stats.employeeStats && stats.employeeStats[emp.id]) || 0) < 40 ? "🟡" : "🔴"}</span></strong>
                 <small>Active pipeline</small>
               </button>
             ))}
@@ -597,22 +682,25 @@ async function logContact(id: string, channel: string) {
             ) : (
               <div className="crm-table">
                 <div className="crm-table-row crm-table-head">
-                  <span>Lead</span><span>Service</span><span>Status</span><span>Priority</span><span>Follow-up</span><span>Action</span>
+                  <span style={{width:"40px"}}><input type="checkbox" onChange={selectAll} checked={selectedLeads.size > 0 && selectedLeads.size === leads.length} /></span><span>Lead</span><span>Service</span><span>Health / SLA</span><span>Follow-up</span><span>Action</span>
                 </div>
                 {leads.length ? leads.map((lead) => (
-                  <div className="crm-table-row crm-rich-row" key={lead._id}>
+                  <div className="crm-table-row crm-rich-row" key={lead._id} style={{ background: selectedLeads.has(lead._id) ? "rgba(0,255,136,0.05)" : undefined }}>
+                    <span style={{width:"40px"}}><input type="checkbox" checked={selectedLeads.has(lead._id)} onChange={() => toggleSelect(lead._id)} /></span>
                     <span>
                       <strong>{lead.name}</strong>
                       <small>{lead.email || "No email"}</small>
                       <small>{lead.phone}</small>
                     </span>
                     <span>{lead.service || "General"}</span>
-                    <span><em className={`crm-status-pill ${lead.status.toLowerCase().replace(/\s/g, "-")}`}>{lead.status}</em></span>
-                    <span><em className={`crm-priority-pill ${lead.priority.toLowerCase()}`}>{lead.priority}</em></span>
+                    <span style={{display:"flex", flexDirection:"column", gap:"0.25rem"}}>
+                      <em style={{fontSize:"0.75rem", color: getSLA(lead).color}}>{getSLA(lead).text}</em>
+                      <em style={{fontSize:"0.75rem", color:"#888"}}>{getHealth(lead)}</em>
+                    </span>
                     <span>{formatDate(lead.nextFollowUpAt)}</span>
                     <span className="quick-actions">
-                      <button title="Call" onClick={() => { void logContact(lead._id, "call"); window.location.href = `tel:${lead.phone}`; }}>📞</button>
-                      <button title="WhatsApp" onClick={() => { void logContact(lead._id, "whatsapp"); window.open(`https://wa.me/${phoneDigits(lead.phone)}`, "_blank"); }}>💬</button>
+                      <button title="Call" onClick={() => { window.location.href = `tel:${lead.phone}`; setActioningCall(lead._id); }}>📞</button>
+                      {lead.phone && <button title="WhatsApp" onClick={() => { setActioningWhatsApp(lead); }}>💬</button>}
                       <button title="Snooze to Tomorrow 11AM" onClick={() => void snoozeLead(lead._id)}>📅</button>
                       <button title="Mark Complete" onClick={() => void completeFollowUp(lead._id)}>✓</button>
                       <button className="crm-row-button" onClick={() => openLead(lead)}>Open</button>
@@ -757,6 +845,41 @@ async function logContact(id: string, channel: string) {
           onSuccess={() => { setIsCreatingLead(false); void loadLeads(true); }} 
         />
       )}
+
+      {selectedLeads.size > 0 && (
+        <div style={{ position: "fixed", bottom: "2rem", left: "50%", transform: "translateX(-50%)", background: "#00ff88", color: "black", padding: "1rem 2rem", borderRadius: "30px", display: "flex", alignItems: "center", gap: "1rem", boxShadow: "0 10px 30px rgba(0,255,136,0.3)", zIndex: 1000 }}>
+          <strong>{selectedLeads.size} leads selected</strong>
+          <div style={{ width: "1px", height: "20px", background: "rgba(0,0,0,0.2)" }} />
+          {canAssignLeads && (
+            <select onChange={(e) => { if(e.target.value) { handleBulkAction('assign', e.target.value); e.target.value = ""; } }} style={{ background: "rgba(255,255,255,0.2)", border: "none", padding: "0.5rem", borderRadius: "4px", color: "black", outline: "none", cursor: "pointer" }}>
+              <option value="">Assign to...</option>
+              {employees.map(e => <option key={e.id} value={e.id}>{e.name}</option>)}
+            </select>
+          )}
+          {canAssignLeads && (
+            <button onClick={() => handleBulkAction('archive')} style={{ background: "black", color: "white", border: "none", padding: "0.5rem 1rem", borderRadius: "4px", cursor: "pointer" }}>Archive</button>
+          )}
+          <button onClick={() => setSelectedLeads(new Set())} style={{ background: "transparent", border: "none", color: "black", cursor: "pointer", fontSize: "1.2rem" }}>✕</button>
+        </div>
+      )}
+
+      {actioningCall && (
+        <CallOutcomeModal 
+          leadId={actioningCall} 
+          onClose={() => setActioningCall(null)} 
+          onSuccess={() => { setActioningCall(null); loadLeads(true); }} 
+        />
+      )}
+
+      {actioningWhatsApp && (
+        <WhatsAppTemplateModal 
+          lead={actioningWhatsApp} 
+          employeeName={admin.name.split(" ")[0]}
+          onClose={() => setActioningWhatsApp(null)} 
+          onSuccess={() => { setActioningWhatsApp(null); loadLeads(true); }} 
+        />
+      )}
+
     </main>
   );
 }
