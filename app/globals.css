@@ -4413,3 +4413,63 @@ a {
 .crm-action-dropdown:hover {
   background: #F1F5F9;
 }
+
+.mission-stat {
+  font-size: 16px;
+  color: #334155;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: #ffffff;
+  padding: 16px 20px;
+  border-radius: 12px;
+  border: 1px solid #e2e8f0;
+  box-shadow: 0 1px 2px rgba(0,0,0,0.03);
+}
+.mission-stat strong {
+  font-size: 24px;
+  color: #0f172a;
+}
+.hero-start-btn:hover {
+  background: #1e293b !important;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(15, 23, 42, 0.2);
+  transition: all 0.2s ease;
+}
+.crm-nav-bottom {
+  background: transparent;
+  border: none;
+  color: #64748b;
+  text-align: left;
+  padding: 8px 16px;
+  font-size: 14px;
+  cursor: pointer;
+  border-radius: 6px;
+  transition: all 0.2s;
+}
+.crm-nav-bottom:hover {
+  background: rgba(255,255,255,0.05);
+  color: #f8fafc;
+}
+.crm-logout-small {
+  background: transparent;
+  border: none;
+  color: #ef4444;
+  text-align: left;
+  padding: 8px 16px;
+  font-size: 14px;
+  cursor: pointer;
+  border-radius: 6px;
+  width: 100%;
+  transition: all 0.2s;
+}
+.crm-logout-small:hover {
+  background: rgba(239, 68, 68, 0.1);
+}
+.icon-btn {
+  transition: all 0.2s ease;
+}
+.icon-btn:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+}

@@ -514,121 +514,89 @@ async function logContact(id: string, channel: string) {
         </div>
         <nav aria-label="CRM sections" className="crm-nav">
           <button onClick={() => setActiveTab("dashboard")} className={activeTab === "dashboard" ? "active" : ""}>Dashboard</button>
-          <button onClick={() => { setActiveTab("dashboard"); setTimeout(() => document.getElementById("leads")?.scrollIntoView({ behavior: 'smooth' }), 50) }}>Leads Hub</button>
+          <button onClick={() => { setActiveTab("dashboard"); setTimeout(() => document.getElementById("leads")?.scrollIntoView({ behavior: 'smooth' }), 50) }}>Lead Workspace</button>
           {(admin.role === "owner" || admin.role === "manager") && (
             <>
-              <button onClick={() => setActiveTab("activity")} className={activeTab === "activity" ? "active" : ""}>Activity Log</button>
+              <button onClick={() => setActiveTab("activity")} className={activeTab === "activity" ? "active" : ""}>Activities</button>
+              <button>Analytics</button>
               <button onClick={() => setActiveTab("team")} className={activeTab === "team" ? "active" : ""}>Team</button>
             </>
           )}
         </nav>
 
-        <form action="/api/admin/logout" method="post">
-          <button className="crm-ghost-button">Logout</button>
-        </form>
+        <div style={{ marginTop: 'auto', display: 'flex', flexDirection: 'column', gap: '4px' }}>
+          <button className="crm-nav-bottom">Settings</button>
+          <form action="/api/admin/logout" method="post">
+            <button className="crm-logout-small">Logout</button>
+          </form>
+        </div>
       </aside>
 
       <section className="crm-workspace">
         {activeTab === "dashboard" && (
           <>
-        <header className="crm-commandbar">
-          <div>
-            <p className="admin-kicker">Sales operations</p>
-            <h2>Lead Command Center</h2>
-            <span>{stats.active} active leads need movement. {stats.overdue} overdue follow-ups.</span>
+        <header className="crm-commandbar" style={{ justifyContent: 'space-between', padding: '16px 32px', background: 'white', borderBottom: '1px solid #e2e8f0', alignItems: 'center' }}>
+          <div style={{ flex: 1, maxWidth: '600px' }}>
+            <div className="crm-search-bar" style={{ display: 'flex', alignItems: 'center', background: '#f8fafc', padding: '8px 16px', borderRadius: '8px', border: '1px solid #e2e8f0' }}>
+              <span style={{ marginRight: '8px' }}>🔍</span>
+              <input type="text" placeholder="Search Name, Phone, Email, Company, Service..." value={search} onChange={(e) => setSearch(e.target.value)} style={{ border: 'none', background: 'transparent', width: '100%', outline: 'none', fontSize: '14px' }} />
+            </div>
           </div>
-          <div className="crm-command-actions">
-            <a href={contactInfo.whatsapp.href}>WhatsApp line</a>
-            <ActionCenter onAction={(id, action, phone) => { if (action.includes("Call")) { window.location.href=`tel:${phone}`; setActioningCall(id); } else { const lead = leads.find(l => l._id === id); if(lead) openLead(lead); } }} />
-            <button onClick={exportCsv}>Export CSV</button>
+          <div className="crm-command-actions" style={{ gap: '16px', marginLeft: '24px' }}>
+            <button className="icon-btn" title="Quick Add" onClick={() => setIsCreatingLead(true)} style={{ background: '#f8fafc', padding: '8px 12px', borderRadius: '8px', border: '1px solid #e2e8f0', cursor: 'pointer', borderStyle: 'solid' }}>➕</button>
+            <button className="icon-btn" title="Notifications" style={{ background: '#f8fafc', padding: '8px 12px', borderRadius: '8px', border: '1px solid #e2e8f0', cursor: 'pointer', borderStyle: 'solid' }}>🔔</button>
+            <button className="icon-btn" title="Profile" style={{ background: '#f8fafc', padding: '8px 12px', borderRadius: '8px', border: '1px solid #e2e8f0', cursor: 'pointer', borderStyle: 'solid' }}>👤</button>
           </div>
         </header>
 
-        {error && <p className="crm-error">{error}</p>}
+        {error && <p className="crm-error" style={{ margin: "16px 32px 0 32px" }}>{error}</p>}
 
-        {nextCallLead && (
-          <div style={{ background: 'rgba(0, 255, 136, 0.1)', borderLeft: '4px solid #00ff88', padding: '1rem', borderRadius: '8px', marginBottom: '1rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-            <div>
-              <p style={{ margin: 0, color: '#888', fontSize: '0.85rem' }}>Next Call</p>
-              <h3 style={{ margin: '0.25rem 0 0 0', color: 'white' }}>{nextCallLead.name} at {formatDateTime(nextCallLead.nextFollowUpAt)}</h3>
+        <div className="workflow-hub-header" style={{ padding: '32px 32px 0 32px', maxWidth: '900px' }}>
+          <h1 style={{ fontSize: '32px', fontWeight: 700, color: '#0f172a', margin: '0 0 8px 0' }}>Good Morning {admin.name.split(' ')[0]} 👋</h1>
+          <p style={{ fontSize: '16px', color: '#64748b', margin: '0 0 24px 0' }}>{stats.overdue + stats.dueToday} leads need attention today.</p>
+          
+          <button className="hero-start-btn" onClick={() => {
+             if (nextCallLead) { openLead(nextCallLead); } else { const pending = leads.filter(l => l.nextFollowUpAt && l.followUpStatus !== 'Completed'); if (pending.length > 0) openLead(pending[0]); }
+          }} style={{ background: '#0f172a', color: 'white', padding: '14px 32px', borderRadius: '8px', fontSize: '16px', fontWeight: 'bold', border: 'none', cursor: 'pointer', marginBottom: '32px', display: 'inline-block' }}>
+            Start Working
+          </button>
+          
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '16px', marginBottom: '40px' }}>
+            <div className="mission-stat">
+              <span style={{ color: '#ef4444' }}>🔴</span> <strong>{stats.overdue}</strong> Overdue
             </div>
-            <button onClick={() => { void logContact(nextCallLead._id, "call"); window.location.href = `tel:${nextCallLead.phone}`; }} style={{ background: '#00ff88', color: 'black', padding: '0.5rem 1rem', border: 'none', borderRadius: '4px', cursor: 'pointer', fontWeight: 'bold' }}>Call Now →</button>
+            <div className="mission-stat">
+              <span style={{ color: '#eab308' }}>🟡</span> <strong>{stats.dueToday}</strong> Follow-ups
+            </div>
+            <div className="mission-stat">
+              <span style={{ color: '#22c55e' }}>🟢</span> <strong>{stats.new}</strong> New Leads
+            </div>
           </div>
-        )}
-
-        <section style={{ display: "grid", gridTemplateColumns: "320px 1fr", gap: "24px", alignItems: "start", marginBottom: "24px" }} id="dashboard">
-
-          {admin.role === "employee" ? (
-            <>
-              <NeedsAttentionQueue 
-                onAction={(leadId, action, phone) => {
-                  if (action === "Call Now" && phone) {
-                    window.location.href = `tel:${phone}`;
-                    const l = leads.find(l => l._id === leadId);
-                    if (l) setActioningCall(l._id);
-                  } else {
-                    const l = leads.find(l => l._id === leadId);
-                    if (l) openLead(l);
-                  }
-                }}
-              />
-              <div className="crm-kpi-grid" style={{ width: "100%", margin: 0, gridTemplateColumns: "repeat(auto-fit, minmax(150px, 1fr))" }}>
-                <button onClick={() => { setTimelineFilter(""); setStatusFilter(""); }} className={!timelineFilter && !statusFilter ? "active" : ""}><span>My Leads</span><strong>{stats.total}</strong></button>
-                <button onClick={() => { setTimelineFilter("dueToday"); setStatusFilter(""); }} className={timelineFilter === "dueToday" ? "active" : ""}><span>Today&apos;s Calls</span><strong>{stats.dueToday}</strong></button>
-                <button onClick={() => { setTimelineFilter("overdue"); setStatusFilter(""); }} className={timelineFilter === "overdue" ? "active" : ""}><span>Pending</span><strong>{stats.overdue}</strong></button>
-              </div>
-            </>
-          ) : (
-            <>
-              <NeedsAttentionQueue 
-                onAction={(leadId, action, phone) => {
-                  if (action === "Call Now" && phone) {
-                    window.location.href = `tel:${phone}`;
-                    const l = leads.find((l: any) => l._id === leadId);
-                    if (l) setActioningCall(l._id);
-                  } else {
-                    const l = leads.find((l: any) => l._id === leadId);
-                    if (l) openLead(l);
-                  }
-                }}
-              />
-              <div className="crm-kpi-grid" style={{ width: "100%", margin: 0, gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))" }}>
-                <button onClick={() => setTimelineFilter("")}>
-                  <span>Total leads</span>
-                  <strong style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                    {stats.total} 
-                    <small style={{ color: stats.yesterdayLeads && stats.total > stats.yesterdayLeads ? '#00ff88' : '#888', fontSize: '0.7rem' }}>
-                      {stats.yesterdayLeads ? `↑ ${Math.round(((stats.total - stats.yesterdayLeads) / stats.yesterdayLeads) * 100)}% vs Ytd` : ''}
-                    </small>
-                  </strong>
-                  <small>All captured enquiries</small>
-                </button>
-                <button onClick={() => setStatusFilter("New")}><span>New</span><strong>{stats.new}</strong><small>Awaiting first action</small></button>
-                <button onClick={() => setTimelineFilter("dueToday")}><span>Due today</span><strong>{stats.dueToday}</strong><small>Follow-ups scheduled</small></button>
-                <button onClick={() => setTimelineFilter("idle")}><span>Idle</span><strong>{stats.idle}</strong><small>No activity 14+ days</small></button>
-                <button onClick={() => setStatusFilter("Won")}><span>Won value</span><strong>{formatMoney(stats.totalWonValue)}</strong><small>{stats.won} closed deals</small></button>
-              </div>
-            </>
-          )}
-
+        </div>
+        
+        <section style={{ padding: '0 32px 32px 32px', display: 'grid', gridTemplateColumns: '320px 1fr', gap: '24px', alignItems: 'start' }} id="dashboard">
+          <div className="recent-activity-col">
+            <h3 style={{ fontSize: '14px', textTransform: 'uppercase', color: '#64748b', marginBottom: '16px', letterSpacing: '0.05em', fontWeight: 600 }}>Recent Activity</h3>
+            <NeedsAttentionQueue 
+               onAction={(leadId, action, phone) => {
+                 if (action === "Call Now" && phone) {
+                   window.location.href = `tel:${phone}`;
+                   const l = leads.find((l: any) => l._id === leadId);
+                   if (l) setActioningCall(l._id);
+                 } else {
+                   const l = leads.find((l: any) => l._id === leadId);
+                   if (l) openLead(l);
+                 }
+               }}
+            />
+          </div>
+          <div>
+             <h3 style={{ fontSize: '14px', textTransform: 'uppercase', color: '#64748b', marginBottom: '16px', letterSpacing: '0.05em', fontWeight: 600 }}>Pipeline</h3>
+             <div style={{ background: '#f8fafc', border: '1px dashed #cbd5e1', borderRadius: '8px', padding: '32px', textAlign: 'center', color: '#94a3b8' }}>
+                Pipeline summary will appear here.
+             </div>
+          </div>
         </section>
-
-        {canAssignLeads && (
-          <section className="crm-kpi-grid" style={{ marginTop: "1rem" }}>
-            <button onClick={() => setAssignedToFilter("unassigned")} className={assignedToFilter === "unassigned" ? "active" : ""}>
-              <span>Unassigned</span>
-              <strong>{stats.unassigned || 0}</strong>
-              <small>Needs assignment</small>
-            </button>
-            {employees.map(emp => (
-              <button key={emp.id} onClick={() => setAssignedToFilter(emp.id)} className={assignedToFilter === emp.id ? "active" : ""}>
-                <span>{emp.name}</span>
-                <strong>{(stats.employeeStats && stats.employeeStats[emp.id]) || 0} Leads <span style={{fontSize:"0.6rem"}}>{((stats.employeeStats && stats.employeeStats[emp.id]) || 0) < 20 ? "🟢" : ((stats.employeeStats && stats.employeeStats[emp.id]) || 0) < 40 ? "🟡" : "🔴"}</span></strong>
-                <small>Active pipeline</small>
-              </button>
-            ))}
-          </section>
-        )}
 
         <section className="crm-main-grid">
           <div className="crm-panel crm-leads-panel" id="leads">
