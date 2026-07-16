@@ -3450,11 +3450,13 @@ a {
 
 .crm-table {
   display: grid;
+  min-width: 800px;
+  overflow-x: auto;
 }
 
 .crm-table-row {
   display: grid;
-  grid-template-columns: minmax(210px, 1.2fr) minmax(150px, 0.8fr) 100px 170px;
+  grid-template-columns: 40px minmax(210px, 1.2fr) minmax(120px, 0.8fr) 110px 100px 180px;
   gap: 14px;
   align-items: center;
   padding: 15px 20px;
@@ -3532,10 +3534,6 @@ a {
   .crm-grid {
     grid-template-columns: 1fr 1fr;
   }
-
-  .crm-table-row {
-    grid-template-columns: 1fr 1fr;
-  }
 }
 
 @media (max-width: 640px) {
@@ -3562,8 +3560,7 @@ a {
   }
 
   .crm-stats,
-  .crm-grid,
-  .crm-table-row {
+  .crm-grid {
     grid-template-columns: 1fr;
   }
 }

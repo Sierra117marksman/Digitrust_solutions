@@ -587,20 +587,22 @@ async function logContact(id: string, channel: string) {
                   }
                 }}
               />
-              <button onClick={() => setTimelineFilter("")}>
-                <span>Total leads</span>
-                <strong style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                  {stats.total} 
-                  <small style={{ color: stats.yesterdayLeads && stats.total > stats.yesterdayLeads ? '#00ff88' : '#888', fontSize: '0.7rem' }}>
-                    {stats.yesterdayLeads ? `↑ ${Math.round(((stats.total - stats.yesterdayLeads) / stats.yesterdayLeads) * 100)}% vs Ytd` : ''}
-                  </small>
-                </strong>
-                <small>All captured enquiries</small>
-              </button>
-              <button onClick={() => setStatusFilter("New")}><span>New</span><strong>{stats.new}</strong><small>Awaiting first action</small></button>
-              <button onClick={() => setTimelineFilter("dueToday")}><span>Due today</span><strong>{stats.dueToday}</strong><small>Follow-ups scheduled</small></button>
-              <button onClick={() => setTimelineFilter("idle")}><span>Idle</span><strong>{stats.idle}</strong><small>No activity 14+ days</small></button>
-              <button onClick={() => setStatusFilter("Won")}><span>Won value</span><strong>{formatMoney(stats.totalWonValue)}</strong><small>{stats.won} closed deals</small></button>
+              <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))", gap: "1rem", marginBottom: "2rem", width: "100%" }}>
+                <button onClick={() => setTimelineFilter("")}>
+                  <span>Total leads</span>
+                  <strong style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                    {stats.total} 
+                    <small style={{ color: stats.yesterdayLeads && stats.total > stats.yesterdayLeads ? '#00ff88' : '#888', fontSize: '0.7rem' }}>
+                      {stats.yesterdayLeads ? `↑ ${Math.round(((stats.total - stats.yesterdayLeads) / stats.yesterdayLeads) * 100)}% vs Ytd` : ''}
+                    </small>
+                  </strong>
+                  <small>All captured enquiries</small>
+                </button>
+                <button onClick={() => setStatusFilter("New")}><span>New</span><strong>{stats.new}</strong><small>Awaiting first action</small></button>
+                <button onClick={() => setTimelineFilter("dueToday")}><span>Due today</span><strong>{stats.dueToday}</strong><small>Follow-ups scheduled</small></button>
+                <button onClick={() => setTimelineFilter("idle")}><span>Idle</span><strong>{stats.idle}</strong><small>No activity 14+ days</small></button>
+                <button onClick={() => setStatusFilter("Won")}><span>Won value</span><strong>{formatMoney(stats.totalWonValue)}</strong><small>{stats.won} closed deals</small></button>
+              </div>
             </>
           )}
 
