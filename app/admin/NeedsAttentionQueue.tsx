@@ -45,44 +45,46 @@ export default function NeedsAttentionQueue({ onAction }: { onAction: (leadId: s
   if (items.length === 0) return null;
 
   return (
-    <section style={{ margin: "2rem 0", background: "rgba(255, 68, 68, 0.05)", border: "1px solid rgba(255, 68, 68, 0.2)", borderRadius: "12px", padding: "1.5rem" }}>
-      <h3 style={{ margin: "0 0 1rem 0", color: "#ff4444", display: "flex", alignItems: "center", gap: "0.5rem" }}>
-        <span>🔥</span> Needs Attention
-      </h3>
+    <section style={{ margin: "1rem 0", background: "#ffffff", border: "1px solid #e2e8f0", borderRadius: "12px", padding: "1.5rem", boxShadow: "0 1px 3px rgba(0,0,0,0.05)" }}>
       
-      <div style={{ display: "flex", gap: "2rem", marginBottom: "1.5rem" }}>
-        {summary.overdue > 0 && <span style={{ color: "#ffcc00", fontSize: "0.9rem" }}>⚠ {summary.overdue} Overdue Follow-ups</span>}
-        {summary.slaBreaches > 0 && <span style={{ color: "#ff4444", fontSize: "0.9rem" }}>⚠ {summary.slaBreaches} SLA Breaches</span>}
-        {summary.idle > 0 && <span style={{ color: "#ff8800", fontSize: "0.9rem" }}>⚠ {summary.idle} High Priority Idle</span>}
+      <div style={{ display: "flex", gap: "1rem", marginBottom: "1.5rem", flexWrap: "wrap" }}>
+        {summary.overdue > 0 && <span style={{ background: "#fef3c7", color: "#d97706", padding: "6px 12px", borderRadius: "99px", fontSize: "0.85rem", fontWeight: 600 }}>⚠ {summary.overdue} Overdue</span>}
+        {summary.slaBreaches > 0 && <span style={{ background: "#fee2e2", color: "#dc2626", padding: "6px 12px", borderRadius: "99px", fontSize: "0.85rem", fontWeight: 600 }}>⚠ {summary.slaBreaches} SLA Breaches</span>}
+        {summary.idle > 0 && <span style={{ background: "#ffedd5", color: "#ea580c", padding: "6px 12px", borderRadius: "99px", fontSize: "0.85rem", fontWeight: 600 }}>⚠ {summary.idle} High Priority Idle</span>}
       </div>
 
-      <div style={{ display: "flex", flexDirection: "column", gap: "0.5rem" }}>
+      <div style={{ display: "flex", flexDirection: "column", gap: "0.75rem" }}>
         {items.filter(i => i.priority === "high" || i.type === "sla" || i.type === "idle").slice(0, 5).map((item) => (
-          <div key={item.id} style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "0.75rem", background: "rgba(0,0,0,0.2)", borderRadius: "8px", border: "1px solid rgba(255,255,255,0.05)" }}>
+          <div key={item.id} style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "1rem", background: "#f8fafc", borderRadius: "8px", border: "1px solid #e2e8f0" }}>
             <div>
-              <strong style={{ display: "block", color: "white", marginBottom: "0.25rem" }}>{item.title}</strong>
-              <span style={{ fontSize: "0.85rem", color: "#aaa" }}>{item.description}</span>
+              <strong style={{ display: "block", color: "#0f172a", marginBottom: "0.25rem", fontSize: "15px" }}>{item.title}</strong>
+              <span style={{ fontSize: "0.85rem", color: "#64748b" }}>{item.description}</span>
             </div>
             <button 
               onClick={() => onAction(item.leadId, item.actionLabel, item.phone)}
+              className="icon-btn"
               style={{ 
-                background: item.type === "sla" || item.type === "idle" ? "#ff4444" : "rgba(255,255,255,0.1)", 
-                color: item.type === "sla" || item.type === "idle" ? "white" : "white",
+                background: item.type === "sla" || item.type === "idle" ? "#fee2e2" : "#f1f5f9", 
+                color: item.type === "sla" || item.type === "idle" ? "#dc2626" : "#334155",
                 border: "none", 
-                padding: "0.5rem 1rem", 
-                borderRadius: "4px", 
+                padding: "8px 16px", 
+                borderRadius: "6px", 
                 cursor: "pointer",
-                fontWeight: item.type === "sla" || item.type === "idle" ? "bold" : "normal"
+                fontWeight: 600,
+                fontSize: "13px"
               }}
             >
               {item.actionLabel}
             </button>
           </div>
         ))}
+        {items.length === 0 && (
+          <div style={{ padding: "2rem", textAlign: "center", color: "#94a3b8" }}>You are all caught up!</div>
+        )}
       </div>
       
       {totalCritical > 5 && (
-        <button style={{ marginTop: "1rem", background: "transparent", border: "1px solid rgba(255,255,255,0.1)", color: "white", padding: "0.5rem 1rem", borderRadius: "4px", cursor: "pointer", width: "100%" }}>
+        <button style={{ marginTop: "1rem", background: "transparent", border: "1px solid #e2e8f0", color: "#64748b", padding: "0.75rem", borderRadius: "8px", cursor: "pointer", width: "100%", fontWeight: 500 }}>
           View Full Queue ({totalCritical - 5} more)
         </button>
       )}
