@@ -7,7 +7,7 @@
   },
   "scripts": {
     "dev": "next dev",
-    "build": "next build",
+    "build": "npm run lint && next build",
     "start": "next start",
     "lint": "eslint . --ignore-pattern .next",
     "seed:admins": "node --env-file=.env.local scripts/seed-admins.mjs"
