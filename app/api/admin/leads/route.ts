@@ -113,9 +113,9 @@ export async function GET(request: Request) {
       {
         $group: {
           _id: null,
-          overdue: { $sum: { $cond: [{ $lt: ["$followUpDate", startOfToday] }, 1, 0] } },
-          dueToday: { $sum: { $cond: [{ $and: [{ $gte: ["$followUpDate", startOfToday] }, { $lte: ["$followUpDate", endOfToday] }] }, 1, 0] } },
-          upcoming: { $sum: { $cond: [{ $gt: ["$followUpDate", endOfToday] }, 1, 0] } },
+          overdue: { $sum: { $cond: [{ $lt: ["$nextFollowUpAt", startOfToday] }, 1, 0] } },
+          dueToday: { $sum: { $cond: [{ $and: [{ $gte: ["$nextFollowUpAt", startOfToday] }, { $lte: ["$nextFollowUpAt", endOfToday] }] }, 1, 0] } },
+          upcoming: { $sum: { $cond: [{ $gt: ["$nextFollowUpAt", endOfToday] }, 1, 0] } },
         },
       },
     ]).toArray(),
@@ -249,14 +249,30 @@ export async function PATCH(request: Request) {
     updates.budgetRange = clean(body.budgetRange, 30);
     logs.push(activity(`Budget set to ${updates.budgetRange || "not specified"}`, "budget", admin.email));
   }
-  if (body.followUpDate !== undefined) {
-    const value = clean(body.followUpDate, 40);
-    updates.followUpDate = value ? new Date(value) : null;
-    logs.push(activity(value ? `Follow-up scheduled for ${value}` : "Follow-up removed", "followup", admin.email));
+  if (body.nextFollowUpAt !== undefined) {
+    const value = clean(body.nextFollowUpAt, 40);
+    updates.nextFollowUpAt = value ? new Date(value) : null;
+    logs.push(activity(value ? `Follow-up scheduled for ${new Date(value).toLocaleString('en-IN')}` : "Follow-up removed", "followup", admin.name));
   }
+  if (body.followUpReason !== undefined) {
+    updates.followUpReason = clean(body.followUpReason, 200);
+  }
+  if (body.followUpType !== undefined) {
+    updates.followUpType = clean(body.followUpType, 20);
+  }
+  if (body.followUpStatus !== undefined) {
+    const status = clean(body.followUpStatus, 20);
+    updates.followUpStatus = status;
+    if (status === 'Completed') {
+      logs.push(activity(`Follow-up completed`, "followup", admin.name));
+    } else if (status === 'Missed') {
+      logs.push(activity(`Follow-up marked as missed`, "followup", admin.name));
+    }
+  }
+
   if (body.lastContactedAt !== undefined) {
     updates.lastContactedAt = new Date(clean(body.lastContactedAt, 60) || Date.now());
-    logs.push(activity(`Contact logged${body.contactChannel ? ` via ${clean(body.contactChannel, 30)}` : ""}`, "contact", admin.email));
+    logs.push(activity(`Contact logged${body.contactChannel ? ` via ${clean(body.contactChannel, 30)}` : ""}`, "contact", admin.name));
   }
   if (body.wonValue !== undefined) {
     const value = Number(body.wonValue);
@@ -273,15 +289,71 @@ export async function PATCH(request: Request) {
   if (body.company !== undefined) updates.company = clean(body.company, 120);
   if (body.note !== undefined) {
     const note = clean(body.note, 1500);
-    const previous = typeof lead.notes === "string" && lead.notes ? `${lead.notes}\n\n` : "";
-    updates.notes = `${previous}[${new Date().toLocaleString("en-IN")}] ${note}`;
-    logs.push(activity("Note added", "note", admin.email));
+    if (note) {
+      const newNote = {
+        author: admin.name,
+        createdAt: new Date(),
+        note,
+        type: admin.role === 'employee' ? 'Employee' : 'Manager'
+      };
+      updates.notes = [...(Array.isArray(lead.notes) ? lead.notes : []), newNote];
+      logs.push(activity("Note added", "note", admin.name));
+    }
   }
 
   if (logs.length) {
-    updates.activityLog = [...((lead.activityLog as unknown[]) || []), ...logs];
+    const existingEvents = Array.isArray(lead.events) ? lead.events : (Array.isArray(lead.activityLog) ? lead.activityLog : []);
+    updates.events = [...existingEvents, ...logs];
   }
 
   await collection.updateOne({ _id: new ObjectId(id) }, { $set: updates });
   return NextResponse.json({ success: true });
+}
+
+export async function POST(request: Request) {
+  const admin = await getCurrentAdmin();
+  if (!admin) return NextResponse.json({ message: "Unauthorized." }, { status: 401 });
+
+  try {
+    const body = await request.json();
+    const phone = clean(body.phone, 20);
+    if (!phone) return NextResponse.json({ message: "Phone number is required." }, { status: 400 });
+
+    const client = await getMongoClient();
+    const collection = client.db(process.env.MONGODB_DB || "adybabacrm").collection("website_enquiries");
+
+    // Duplicate Check
+    const existing = await collection.findOne({ phone });
+    if (existing) {
+      return NextResponse.json({ 
+        message: `Lead already exists.`,
+        isDuplicate: true,
+        existingLeadId: existing._id,
+        lastContactedAt: existing.lastContactedAt
+      }, { status: 409 });
+    }
+
+    const newLead = {
+      name: clean(body.name, 80),
+      company: clean(body.company, 100),
+      email: clean(body.email, 120).toLowerCase(),
+      phone,
+      service: clean(body.service, 80),
+      source: admin.role === 'employee' ? "Manual" : (clean(body.source, 50) || "Manual"),
+      status: "New",
+      priority: clean(body.priority, 20) || "Medium",
+      leadTemperature: "Warm",
+      createdAt: new Date(),
+      events: [activity("Lead created manually", "creation", admin.name)],
+      assignedTo: admin.id,
+      assignedBy: admin.id,
+      assignedAt: new Date(),
+    };
+
+    const result = await collection.insertOne(newLead);
+    return NextResponse.json({ success: true, leadId: result.insertedId });
+  } catch (error) {
+    console.error("Manual lead creation failed", error);
+    return NextResponse.json({ message: "Internal server error" }, { status: 500 });
+  }
 }

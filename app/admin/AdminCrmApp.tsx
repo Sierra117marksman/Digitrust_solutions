@@ -2,6 +2,7 @@
 
 import { useCallback, useEffect, useMemo, useState, useRef } from "react";
 import toast from "react-hot-toast";
+import NewLeadModal from "./NewLeadModal";
 import { contactInfo } from "@/content/contact";
 import { logError } from "../utils/logger";
 import TeamManagement from "./TeamManagement";
@@ -20,11 +21,18 @@ type Admin = {
   role: string;
 };
 
-type ActivityLog = {
+type Event = {
   action: string;
   type: string;
   performedBy: string;
   timestamp: string;
+};
+
+type Note = {
+  author: string;
+  createdAt: string;
+  note: string;
+  type: "Call" | "System" | "Manager" | "Employee";
 };
 
 type Lead = {
@@ -40,8 +48,11 @@ type Lead = {
   leadTemperature: string;
   budgetRange?: string;
   source?: string;
-  notes?: string;
-  followUpDate?: string;
+  notes?: Note[];
+  nextFollowUpAt?: string;
+  followUpReason?: string;
+  followUpType?: "Call" | "WhatsApp" | "Email" | "Meeting";
+  followUpStatus?: "Pending" | "Completed" | "Missed" | "Cancelled";
   lastContactedAt?: string;
   wonValue?: number;
   lostReason?: string;
@@ -52,7 +63,7 @@ type Lead = {
   assignedAt?: string;
   lastAssignedAt?: string;
   reassignedCount?: number;
-  activityLog?: ActivityLog[];
+  events?: Event[];
 };
 
 type Stats = {
@@ -165,13 +176,14 @@ export function AdminCrmApp({ admin }: { admin: Admin }) {
   const [saving, setSaving] = useState(false);
 
   const [originalLead, setOriginalLead] = useState<Lead | null>(null);
+  const [isCreatingLead, setIsCreatingLead] = useState(false);
   const isSavingRef = useRef(false);
   const abortControllerRef = useRef<AbortController | null>(null);
 
   const hasUnsavedChanges = useMemo(() => {
     if (!activeLead || !originalLead) return false;
     if (note.trim().length > 0) return true;
-    const editableFields = ["status", "priority", "leadTemperature", "budgetRange", "followUpDate", "wonValue", "lostReason", "company"];
+    const editableFields = ["status", "priority", "leadTemperature", "budgetRange", "nextFollowUpAt", "wonValue", "lostReason", "company"];
     return editableFields.some((field) => activeLead[field as keyof Lead] !== originalLead[field as keyof Lead]);
   }, [activeLead, note, originalLead]);
 
@@ -365,9 +377,21 @@ export function AdminCrmApp({ admin }: { admin: Admin }) {
     }
   }
 
-  async function logContact(channel: string) {
-    if (!activeLead) return;
-    await updateLead(activeLead._id, { lastContactedAt: new Date().toISOString(), contactChannel: channel });
+    async function snoozeLead(id: string) {
+    const tomorrow = new Date();
+    tomorrow.setDate(tomorrow.getDate() + 1);
+    tomorrow.setHours(11, 0, 0, 0);
+    await updateLead(id, { nextFollowUpAt: tomorrow.toISOString(), followUpStatus: 'Pending' });
+    toast.success("Follow-up snoozed to tomorrow 11 AM");
+  }
+
+  async function completeFollowUp(id: string) {
+    await updateLead(id, { followUpStatus: 'Completed' });
+    toast.success("Follow-up marked as completed");
+  }
+
+async function logContact(id: string, channel: string) {
+    await updateLead(id, { lastContactedAt: new Date().toISOString(), contactChannel: channel });
   }
 
   function exportCsv() {
@@ -383,9 +407,9 @@ export function AdminCrmApp({ admin }: { admin: Admin }) {
       lead.leadTemperature,
       lead.budgetRange || "",
       lead.source || "",
-      lead.followUpDate || "",
+      lead.nextFollowUpAt || "",
       lead.lastContactedAt || "",
-      lead.notes || "",
+      (Array.isArray(lead.notes) ? lead.notes.map(n => n.note).join(" | ") : (lead.notes || "")),
     ]);
     const csv = [headers, ...rows]
       .map((row) => row.map((cell) => `"${String(cell).replace(/"/g, '""')}"`).join(","))
@@ -400,10 +424,17 @@ export function AdminCrmApp({ admin }: { admin: Admin }) {
 
   const recentActivity = useMemo(() => {
     return leads
-      .flatMap((lead) => (lead.activityLog || []).map((item) => ({ ...item, leadName: lead.name })))
+      .flatMap((lead) => (lead.events || (lead as any).activityLog || []).map((item: Event) => ({ ...item, leadName: lead.name })))
       .sort((a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime())
       .slice(0, 8);
   }, [leads]);
+
+  const nextCallLead = useMemo(() => {
+    if (admin.role !== 'employee') return null;
+    const pendingCalls = leads.filter(l => l.nextFollowUpAt && l.followUpStatus !== 'Completed');
+    pendingCalls.sort((a, b) => new Date(a.nextFollowUpAt!).getTime() - new Date(b.nextFollowUpAt!).getTime());
+    return pendingCalls[0];
+  }, [leads, admin.role]);
 
   return (
     <main className="crm-os">
@@ -441,6 +472,16 @@ export function AdminCrmApp({ admin }: { admin: Admin }) {
         </header>
 
         {error && <p className="crm-error">{error}</p>}
+
+        {nextCallLead && (
+          <div style={{ background: 'rgba(0, 255, 136, 0.1)', borderLeft: '4px solid #00ff88', padding: '1rem', borderRadius: '8px', marginBottom: '1rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+            <div>
+              <p style={{ margin: 0, color: '#888', fontSize: '0.85rem' }}>Next Call</p>
+              <h3 style={{ margin: '0.25rem 0 0 0', color: 'white' }}>{nextCallLead.name} at {formatDateTime(nextCallLead.nextFollowUpAt)}</h3>
+            </div>
+            <button onClick={() => { void logContact(nextCallLead._id, "call"); window.location.href = `tel:${nextCallLead.phone}`; }} style={{ background: '#00ff88', color: 'black', padding: '0.5rem 1rem', border: 'none', borderRadius: '4px', cursor: 'pointer', fontWeight: 'bold' }}>Call Now →</button>
+          </div>
+        )}
 
         <section className="crm-kpi-grid" id="dashboard">
           {admin.role === "employee" ? (
@@ -487,6 +528,7 @@ export function AdminCrmApp({ admin }: { admin: Admin }) {
                 <h3>Pipeline workspace</h3>
               </div>
               <div className="crm-view-toggle">
+                <button onClick={() => setIsCreatingLead(true)} style={{ marginRight: '1rem', background: 'white', color: 'black' }}>+ New Lead</button>
                 <button className={view === "table" ? "active" : ""} onClick={() => setView("table")}>Table</button>
                 <button className={view === "kanban" ? "active" : ""} onClick={() => setView("kanban")}>Kanban</button>
               </div>
@@ -567,8 +609,14 @@ export function AdminCrmApp({ admin }: { admin: Admin }) {
                     <span>{lead.service || "General"}</span>
                     <span><em className={`crm-status-pill ${lead.status.toLowerCase().replace(/\s/g, "-")}`}>{lead.status}</em></span>
                     <span><em className={`crm-priority-pill ${lead.priority.toLowerCase()}`}>{lead.priority}</em></span>
-                    <span>{formatDate(lead.followUpDate)}</span>
-                    <span><button className="crm-row-button" onClick={() => openLead(lead)}>Open</button></span>
+                    <span>{formatDate(lead.nextFollowUpAt)}</span>
+                    <span className="quick-actions">
+                      <button title="Call" onClick={() => { void logContact(lead._id, "call"); window.location.href = `tel:${lead.phone}`; }}>📞</button>
+                      <button title="WhatsApp" onClick={() => { void logContact(lead._id, "whatsapp"); window.open(`https://wa.me/${phoneDigits(lead.phone)}`, "_blank"); }}>💬</button>
+                      <button title="Snooze to Tomorrow 11AM" onClick={() => void snoozeLead(lead._id)}>📅</button>
+                      <button title="Mark Complete" onClick={() => void completeFollowUp(lead._id)}>✓</button>
+                      <button className="crm-row-button" onClick={() => openLead(lead)}>Open</button>
+                    </span>
                   </div>
                 )) : (
                   <p className="crm-empty">No leads match these filters.</p>
@@ -630,8 +678,8 @@ export function AdminCrmApp({ admin }: { admin: Admin }) {
             </header>
 
             <div className="crm-drawer-actions">
-              <a href={`tel:${activeLead.phone}`} onClick={() => void logContact("call")}>Call</a>
-              <a href={`https://wa.me/${phoneDigits(activeLead.phone)}`} target="_blank" rel="noreferrer" onClick={() => void logContact("whatsapp")}>WhatsApp</a>
+              <a href={`tel:${activeLead.phone}`} onClick={() => void logContact(activeLead._id, "call")}>Call</a>
+              <a href={`https://wa.me/${phoneDigits(activeLead.phone)}`} target="_blank" rel="noreferrer" onClick={() => void logContact(activeLead._id, "whatsapp")}>WhatsApp</a>
             </div>
 
             <section className="crm-drawer-grid">
@@ -653,42 +701,61 @@ export function AdminCrmApp({ admin }: { admin: Admin }) {
               )}
               <label>Status<select value={activeLead.status} onChange={(event) => void updateLead(activeLead._id, { status: event.target.value })}>{statuses.map((status) => <option key={status}>{status}</option>)}</select></label>
               <label>Priority<select value={activeLead.priority} onChange={(event) => void updateLead(activeLead._id, { priority: event.target.value })}>{priorities.map((priority) => <option key={priority}>{priority}</option>)}</select></label>
-              <label>Temperature<select value={activeLead.leadTemperature} onChange={(event) => void updateLead(activeLead._id, { leadTemperature: event.target.value })}>{temperatures.map((temperature) => <option key={temperature}>{temperature}</option>)}</select></label>
-              <label>Budget<select value={activeLead.budgetRange || ""} onChange={(event) => void updateLead(activeLead._id, { budgetRange: event.target.value })}>{budgets.map((budget) => <option key={budget} value={budget}>{budgetLabel(budget)}</option>)}</select></label>
-              <label>Follow-up<input type="date" value={todayInputValue(activeLead.followUpDate)} onChange={(event) => void updateLead(activeLead._id, { followUpDate: event.target.value })} /></label>
-              <label>Won value<input type="number" min="0" value={activeLead.wonValue || ""} onChange={(event) => void updateLead(activeLead._id, { wonValue: Number(event.target.value || 0) })} /></label>
-              <label>Lost reason<select value={activeLead.lostReason || ""} onChange={(event) => void updateLead(activeLead._id, { lostReason: event.target.value })}>{lostReasons.map((reason) => <option key={reason} value={reason}>{reason || "None"}</option>)}</select></label>
-              <label>Company<input value={activeLead.company || ""} onChange={(event) => setActiveLead({ ...activeLead, company: event.target.value })} onBlur={(event) => void updateLead(activeLead._id, { company: event.target.value })} /></label>
-            </section>
-
-            <section className="crm-drawer-section">
-              <h4>Project brief</h4>
-              <p>{activeLead.message || "No message submitted."}</p>
-            </section>
-
-            <section className="crm-drawer-section">
-              <h4>Internal notes</h4>
-              <fieldset disabled={saving} style={{ all: "unset", display: "contents" }}>
-                <textarea value={note} onChange={(event) => setNote(event.target.value)} placeholder="Add call note, client response, next step..." />
-                <button disabled={!note.trim()} onClick={() => void appendNote()}>Save note</button>
-              </fieldset>
-              {activeLead.notes && <p className="crm-existing-notes">{activeLead.notes}</p>}
+              <label>Source<select disabled={!canAssignLeads} value={activeLead.source || "Website"} onChange={(event) => void updateLead(activeLead._id, { source: event.target.value })}><option value="Website">Website</option><option value="Google Ads">Google Ads</option><option value="Meta Ads">Meta Ads</option><option value="WhatsApp">WhatsApp</option><option value="Manual">Manual</option></select></label>
             </section>
 
             <section className="crm-drawer-section">
               <h4>Timeline</h4>
-              <div className="crm-timeline">
-                {(activeLead.activityLog || []).slice().reverse().map((item, index) => (
-                  <div key={`${item.timestamp}-${index}`}>
-                    <strong>{item.action}</strong>
-                    <span>{formatDateTime(item.timestamp)} • {item.performedBy}</span>
+              <div className="crm-timeline-slack">
+                {(activeLead.events || (activeLead as any).activityLog || []).slice().reverse().map((item: Event, index: number) => (
+                  <div key={`${item.timestamp}-${index}`} className="timeline-event">
+                    <span className="timeline-icon">
+                      {item.type === "creation" ? "🟢" : item.type === "status" ? "🟡" : item.type === "assignment" ? "🔵" : "⚪"}
+                    </span>
+                    <div className="timeline-content">
+                      <strong>{formatDate(item.timestamp)}</strong>
+                      <p>{item.performedBy} {item.action.toLowerCase()}</p>
+                    </div>
                   </div>
                 ))}
-                {!(activeLead.activityLog || []).length && <p>No activity recorded yet.</p>}
+              </div>
+            </section>
+
+            <section className="crm-drawer-section">
+              <h4>Notes</h4>
+              <div className="crm-notes-list">
+                {Array.isArray(activeLead.notes) ? activeLead.notes.map((n, i) => (
+                  <div key={i} className="crm-note-item">
+                    <strong>{n.author}</strong> <span>{formatDateTime(n.createdAt)}</span>
+                    <p>{n.note}</p>
+                  </div>
+                )) : activeLead.notes ? (
+                  <p className="crm-existing-notes">{activeLead.notes as string}</p>
+                ) : null}
+              </div>
+              <fieldset disabled={saving} style={{ all: "unset", display: "contents" }}>
+                <textarea value={note} onChange={(event) => setNote(event.target.value)} placeholder="Add call note, client response..." />
+                <button disabled={!note.trim()} onClick={() => void appendNote()}>Save note</button>
+              </fieldset>
+            </section>
+
+            <section className="crm-drawer-section">
+              <h4>Next Follow-up</h4>
+              <div className="crm-drawer-grid">
+                <label>Date & Time<input type="datetime-local" value={activeLead.nextFollowUpAt ? new Date(new Date(activeLead.nextFollowUpAt).getTime() - new Date().getTimezoneOffset() * 60000).toISOString().slice(0, 16) : ""} onChange={(event) => void updateLead(activeLead._id, { nextFollowUpAt: new Date(event.target.value).toISOString() })} /></label>
+                <label>Type<select value={activeLead.followUpType || "Call"} onChange={(event) => void updateLead(activeLead._id, { followUpType: event.target.value as any })}><option>Call</option><option>WhatsApp</option><option>Email</option><option>Meeting</option></select></label>
+                <label style={{ gridColumn: "1 / -1" }}>Reason<input type="text" value={activeLead.followUpReason || ""} onChange={(event) => void updateLead(activeLead._id, { followUpReason: event.target.value })} placeholder="Why are we following up?" /></label>
               </div>
             </section>
           </aside>
         </div>
+      )}
+
+      {isCreatingLead && (
+        <NewLeadModal 
+          onClose={() => setIsCreatingLead(false)} 
+          onSuccess={() => { setIsCreatingLead(false); void loadLeads(true); }} 
+        />
       )}
     </main>
   );
