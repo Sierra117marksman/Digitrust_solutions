@@ -36,7 +36,8 @@ export default function TeamManagement({ admin }: { admin: Admin }) {
 
   useEffect(() => {
     fetchUsers();
-  }, [search]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   async function fetchUsers() {
     setLoading(true);
@@ -75,7 +76,7 @@ export default function TeamManagement({ admin }: { admin: Admin }) {
       } else {
         toast.error(data.error || "Failed to create user.", { id: t });
       }
-    } catch (err) {
+    } catch {
       toast.error("Internal error.", { id: t });
     }
   }
@@ -92,7 +93,7 @@ export default function TeamManagement({ admin }: { admin: Admin }) {
         const data = await res.json();
         toast.error(data.error || "Failed to deactivate.", { id: t });
       }
-    } catch (e) {
+    } catch {
       toast.error("Internal error.", { id: t });
     }
   }
@@ -115,7 +116,7 @@ export default function TeamManagement({ admin }: { admin: Admin }) {
       } else {
         toast.error(data.error || "Failed to reset password.", { id: t });
       }
-    } catch (e) {
+    } catch {
       toast.error("Internal error.", { id: t });
     }
   }

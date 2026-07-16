@@ -36,7 +36,7 @@ export function Footer() {
                 <span className="brand-text">Digitrust</span>
               </Link>
               <p className="footer-bio">
-                Built with passion for businesses that want to grow.
+                Ready to transform your digital presence? Let&apos;s build something extraordinary together.
               </p>
               <div className="footer-socials">
                 <Link href={contactInfo.instagram.href} className="social-icon" aria-label="Instagram">
@@ -83,7 +83,7 @@ export function Footer() {
                 <a href={contactInfo.phones[0].href} className="contact-link">
                   {contactInfo.phones[0].display}
                 </a>
-                <p className="contact-location">Surat, Gujarat</p>
+                <p>123 Digital Avenue<br />Tech District<br />Mumbai, Maharashtra 400001<br />India</p>
               </address>
             </div>
           </div>

@@ -11,8 +11,8 @@ export type AuditLogEntry = {
   targetName?: string;
   action: AuditAction;
   resource: "User" | "Lead" | "System";
-  oldValue?: any;
-  newValue?: any;
+  oldValue?: unknown;
+  newValue?: unknown;
   timestamp: Date;
   ipAddress: string;
   userAgent: string;

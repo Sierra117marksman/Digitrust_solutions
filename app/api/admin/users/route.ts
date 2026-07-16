@@ -70,7 +70,7 @@ export const POST = requirePermission(PERMISSIONS.CREATE_USER, async (req, conte
   createRateLimit.set(admin.id, validTimestamps);
 
   try {
-    const body = await req.json();
+    const body = (await req.json()) as Record<string, unknown>;
     const { name, email, role } = body;
 
     if (!name || !email || !role) {

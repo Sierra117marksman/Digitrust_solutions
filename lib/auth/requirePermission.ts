@@ -5,11 +5,11 @@ import { Permission } from "./permissions";
 
 export type AuthenticatedRouteHandler = (
   req: Request,
-  context: { admin: CurrentAdmin; params: any }
+  context: { params: Record<string, string>; admin: CurrentAdmin }
 ) => Promise<NextResponse> | NextResponse;
 
 export function requirePermission(permission: Permission, handler: AuthenticatedRouteHandler) {
-  return async (req: Request, context: { params: any }) => {
+  return async (req: Request, context: { params: Record<string, string> }) => {
     try {
       const admin = await getCurrentAdmin();
       
@@ -30,7 +30,7 @@ export function requirePermission(permission: Permission, handler: Authenticated
 }
 
 export function requireAuthenticated(handler: AuthenticatedRouteHandler) {
-  return async (req: Request, context: { params: any }) => {
+  return async (req: Request, context: { params: Record<string, string> }) => {
     try {
       const admin = await getCurrentAdmin();
       

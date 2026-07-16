@@ -2,13 +2,15 @@
 
 import { useState } from "react";
 import toast from "react-hot-toast";
-import { useRouter } from "next/navigation";
 
-export default function ForcePasswordReset({ admin }: { admin: any }) {
+interface CurrentAdmin {
+  name: string;
+}
+
+export default function ForcePasswordReset({ admin }: { admin: CurrentAdmin }) {
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [loading, setLoading] = useState(false);
-  const router = useRouter();
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -25,15 +27,15 @@ export default function ForcePasswordReset({ admin }: { admin: any }) {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ password })
       });
-      const data = await res.json();
       
       if (res.ok) {
         toast.success("Password updated successfully!", { id: t });
         window.location.reload(); // Reload to lift the reset screen
       } else {
+        const data = await res.json().catch(() => ({}));
         toast.error(data.error || "Failed to update password.", { id: t });
       }
-    } catch (e) {
+    } catch {
       toast.error("Internal error.", { id: t });
     } finally {
       setLoading(false);

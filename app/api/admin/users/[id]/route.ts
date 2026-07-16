@@ -50,7 +50,7 @@ export const PATCH = requirePermission(PERMISSIONS.EDIT_USER, async (req, contex
       }
     }
 
-    const updates: any = {};
+    const updates: Record<string, unknown> = {};
     if (name) updates.name = name;
     if (email) updates.email = email.toLowerCase();
     if (status) updates.status = status;
