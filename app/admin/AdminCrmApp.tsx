@@ -747,9 +747,15 @@ async function logContact(id: string, channel: string) {
                       <small style={{color: "#64748b", fontSize: "12px"}}>{lead.email}</small>
                     </span>
                     <span style={{fontWeight: 500}}>{lead.service || "General"}</span>
-                    <span style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
-                      <span className="crm-badge" title={getSLA(lead).title} style={{background: getSLA(lead).color + '22', color: getSLA(lead).color, cursor: 'help'}}>{getSLA(lead).text}</span>
-                      <span className="crm-badge" title={getHealth(lead).title} style={{background: getHealth(lead).color + '22', color: getHealth(lead).color, cursor: 'help'}}>{getHealth(lead).text}</span>
+                    <span style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                      <div className="crm-tooltip-container">
+                        <span className="crm-badge" style={{background: getSLA(lead).color + '22', color: getSLA(lead).color, cursor: 'help'}}>{getSLA(lead).text}</span>
+                        <span className="crm-tooltip-text">{getSLA(lead).title}</span>
+                      </div>
+                      <div className="crm-tooltip-container">
+                        <span className="crm-badge" style={{background: getHealth(lead).color + '22', color: getHealth(lead).color, cursor: 'help'}}>{getHealth(lead).text}</span>
+                        <span className="crm-tooltip-text">{getHealth(lead).title}</span>
+                      </div>
                     </span>
                     <span>
                       <select 
