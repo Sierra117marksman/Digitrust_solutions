@@ -507,7 +507,7 @@ async function logContact(id: string, channel: string) {
     <main className="crm-os">
       <aside className="crm-os-sidebar">
         <div>
-          <span className="crm-mark">D</span>
+          <img src="/brand/logo.png" alt="Digitrust Logo" style={{ width: '48px', height: '48px', objectFit: 'contain', marginBottom: '1rem', background: 'white', borderRadius: '8px', padding: '4px' }} />
           <h1>Digitrust CRM</h1>
           <p>{admin.name}</p>
           <small>{admin.role.replace(/_/g, " ")}</small>
