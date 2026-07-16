@@ -686,10 +686,10 @@ async function logContact(id: string, channel: string) {
                 {leads.length ? leads.map((lead) => (
                   <div className="crm-table-row crm-rich-row" key={lead._id} style={{ background: selectedLeads.has(lead._id) ? "rgba(0,255,136,0.05)" : undefined }}>
                     <span style={{width:"40px"}}><input type="checkbox" checked={selectedLeads.has(lead._id)} onChange={() => toggleSelect(lead._id)} /></span>
-                    <span>
-                      <strong>{lead.name}</strong>
-                      <small style={{color: "#888", fontSize: "0.75rem"}}>{lead.phone}</small>
-                      <small style={{color: "#888", fontSize: "0.75rem"}}>{lead.email}</small>
+                    <span style={{ display: 'flex', flexDirection: 'column', gap: '2px' }}>
+                      <strong style={{ fontSize: '14px' }}>{lead.name}</strong>
+                      <small style={{color: "#64748b", fontSize: "12px"}}>{lead.phone}</small>
+                      <small style={{color: "#64748b", fontSize: "12px"}}>{lead.email}</small>
                     </span>
                     <span style={{fontWeight: 500}}>{lead.service || "General"}</span>
                     <span style={{display:"flex", flexDirection:"column", gap:"0.25rem"}}>
@@ -722,23 +722,22 @@ async function logContact(id: string, channel: string) {
                       </select>
                     </span>
                     <span style={{fontSize: "0.8rem", color: "#666"}}>{formatDate(lead.nextFollowUpAt)}</span>
-                    <span className="quick-actions" style={{display: "flex", gap: "8px", alignItems: "center"}}>
-                      <button className="crm-row-button primary" onClick={() => openLead(lead)}>Open</button>
+                    <span className="quick-actions" style={{display: "flex", gap: "6px", alignItems: "center"}}>
+                      <button className="crm-row-button primary" onClick={() => openLead(lead)} title="Open Profile" style={{ padding: '6px 12px', fontSize: '13px', borderRadius: '6px', cursor: 'pointer', border: '1px solid #e2e8f0', background: '#ffffff', color: '#0f172a' }}>Open</button>
+                      <button className="icon-btn" onClick={() => { window.location.href = `tel:${lead.phone}`; setActioningCall(lead._id); }} title="Call" style={{ border: 'none', background: 'transparent', cursor: 'pointer', fontSize: '16px' }}>📞</button>
+                      {lead.phone && <button className="icon-btn" onClick={() => setActioningWhatsApp(lead)} title="WhatsApp" style={{ border: 'none', background: 'transparent', cursor: 'pointer', fontSize: '16px' }}>💬</button>}
                       <select 
                         className="crm-action-dropdown"
                         value="" 
                         onChange={(e) => {
                           const action = e.target.value;
                           if (!action) return;
-                          if (action === "call") { window.location.href = `tel:${lead.phone}`; setActioningCall(lead._id); }
-                          if (action === "wa" && lead.phone) setActioningWhatsApp(lead);
                           if (action === "snooze") snoozeLead(lead._id);
                           if (action === "complete") completeFollowUp(lead._id);
                         }}
+                        style={{ border: 'none', background: 'transparent', color: '#64748b', cursor: 'pointer', width: '20px' }}
                       >
                         <option value="">⋮</option>
-                        <option value="call">Call</option>
-                        {lead.phone && <option value="wa">WhatsApp</option>}
                         <option value="snooze">Snooze 24h</option>
                         <option value="complete">Mark Complete</option>
                       </select>
@@ -778,12 +777,7 @@ async function logContact(id: string, channel: string) {
               </div>
             </div>
 
-            <div className="crm-panel">
-              <div className="crm-next-box">
-                <span>Manager view</span>
-                <p>Next layer: create telecaller users, assign leads, daily call targets, and manager reports.</p>
-              </div>
-            </div>
+
           </aside>
         </section>
         
@@ -826,9 +820,13 @@ async function logContact(id: string, channel: string) {
               <button onClick={closeLead}>Close</button>
             </header>
 
-            <div className="crm-drawer-actions">
-              <a href={`tel:${activeLead.phone}`} onClick={() => void logContact(activeLead._id, "call")}>Call</a>
-              <a href={`https://wa.me/${phoneDigits(activeLead.phone)}`} target="_blank" rel="noreferrer" onClick={() => void logContact(activeLead._id, "whatsapp")}>WhatsApp</a>
+            <div className="crm-drawer-actions" style={{ display: 'flex', gap: '12px', margin: '20px 0' }}>
+              <a href={`tel:${activeLead.phone}`} onClick={() => void logContact(activeLead._id, "call")} style={{ flex: 1, textAlign: 'center', background: '#3b82f6', color: 'white', padding: '10px', borderRadius: '8px', textDecoration: 'none', fontWeight: 600, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px' }}>
+                📞 Call
+              </a>
+              <a href={`https://wa.me/${phoneDigits(activeLead.phone)}`} target="_blank" rel="noreferrer" onClick={() => void logContact(activeLead._id, "whatsapp")} style={{ flex: 1, textAlign: 'center', background: '#10b981', color: 'white', padding: '10px', borderRadius: '8px', textDecoration: 'none', fontWeight: 600, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px' }}>
+                💬 WhatsApp
+              </a>
             </div>
 
             <section className="crm-drawer-grid">

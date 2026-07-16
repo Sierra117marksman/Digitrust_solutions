@@ -178,10 +178,10 @@ export default function TeamManagement({ admin }: { admin: Admin }) {
                   <td>
                     {admin.id !== u.id && (
                       <div style={{ display: "flex", gap: "12px", alignItems: "center" }}>
-                        <button onClick={() => resetPassword(u.id)} style={{ color: "var(--ice)", background: "transparent", border: "none", cursor: "pointer", textDecoration: "underline" }}>
+                        <button onClick={() => resetPassword(u.id)} style={{ color: "#3b82f6", background: "transparent", border: "none", cursor: "pointer", textDecoration: "underline", fontWeight: 500 }}>
                           Reset Password
                         </button>
-                        <button onClick={() => deleteUser(u.id)} style={{ color: "var(--red)", background: "transparent", border: "none", cursor: "pointer", textDecoration: "underline" }}>
+                        <button onClick={() => deleteUser(u.id)} style={{ color: "#dc2626", background: "transparent", border: "none", cursor: "pointer", textDecoration: "underline", fontWeight: 500 }}>
                           Deactivate
                         </button>
                       </div>
