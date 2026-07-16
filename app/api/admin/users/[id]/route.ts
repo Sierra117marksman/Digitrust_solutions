@@ -52,7 +52,7 @@ export const PATCH = requirePermission(PERMISSIONS.EDIT_USER, async (req, contex
 
     const updates: Record<string, unknown> = {};
     if (name) updates.name = name;
-    if (email) updates.email = email.toLowerCase();
+    if (email) updates.email = String(email).toLowerCase();
     if (status) updates.status = status;
     if (role) updates.role = role;
     let tempPassword = undefined;

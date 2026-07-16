@@ -15,12 +15,16 @@ export const GET = requirePermission(PERMISSIONS.VIEW_USERS, async (req, context
   const client = await getMongoClient();
   const db = client.db(process.env.MONGODB_DB || "adybabacrm");
 
+  const role = searchParams.get("role")?.toLowerCase();
+
   // Construct query based on PBAC ownership rules
-  const query: any = { status: { $ne: "deleted" } }; // or we can use $in: ["active", "inactive", "suspended"]
+  const query: Record<string, unknown> = { status: { $ne: "deleted" } };
 
   if (admin.role === "manager") {
     // Managers can only see employees
     query.role = "employee";
+  } else if (role) {
+    query.role = role;
   }
 
   if (search) {
@@ -86,7 +90,7 @@ export const POST = requirePermission(PERMISSIONS.CREATE_USER, async (req, conte
     const db = client.db(process.env.MONGODB_DB || "adybabacrm");
 
     // Check if user exists
-    const existingUser = await db.collection("admin_users").findOne({ email: email.toLowerCase() });
+    const existingUser = await db.collection("admin_users").findOne({ email: String(email).toLowerCase() });
     if (existingUser) {
       return NextResponse.json({ error: "User with this email already exists." }, { status: 400 });
     }
@@ -96,7 +100,7 @@ export const POST = requirePermission(PERMISSIONS.CREATE_USER, async (req, conte
 
     const newUser = {
       name,
-      email: email.toLowerCase(),
+      email: String(email).toLowerCase(),
       role,
       passwordHash,
       status: "active",
@@ -114,7 +118,7 @@ export const POST = requirePermission(PERMISSIONS.CREATE_USER, async (req, conte
       actorId: admin.id,
       actorName: admin.name,
       targetId: result.insertedId.toString(),
-      targetName: email,
+      targetName: String(email),
       action: "created",
       resource: "User",
       newValue: { role },

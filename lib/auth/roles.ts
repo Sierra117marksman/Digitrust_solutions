@@ -18,7 +18,6 @@ export const ROLE_PERMISSIONS: Record<Role, Permission[]> = {
   
   developer: [
     PERMISSIONS.VIEW_USERS,
-    PERMISSIONS.VIEW_LEADS,
   ],
   
   employee: [

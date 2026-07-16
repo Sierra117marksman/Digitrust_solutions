@@ -49,6 +49,8 @@ export async function GET(request: Request) {
   const service = clean(searchParams.get("service"), 100);
   const timeline = clean(searchParams.get("timeline"), 30);
 
+  const assignedToFilter = clean(searchParams.get("assignedTo"), 40);
+
   const query: Record<string, unknown> = {};
   if (search) {
     query.$or = [
@@ -63,6 +65,17 @@ export async function GET(request: Request) {
   if (priority) query.priority = priority;
   if (leadTemperature) query.leadTemperature = leadTemperature;
   if (service) query.service = service;
+
+  // Data Scoping
+  if (admin.role === "employee") {
+    query.assignedTo = admin.id;
+  } else if (assignedToFilter) {
+    if (assignedToFilter === "unassigned") {
+      query.assignedTo = { $in: [null, "", { $exists: false }] };
+    } else {
+      query.assignedTo = assignedToFilter;
+    }
+  }
 
   const today = new Date();
   const startOfToday = new Date(today.getFullYear(), today.getMonth(), today.getDate());
@@ -89,7 +102,7 @@ export async function GET(request: Request) {
   const collection = database.collection("website_enquiries");
   const skip = (page - 1) * limit;
 
-  const [leads, totalLeads, basicStats, timelineStats, idleCount, services] = await Promise.all([
+  const [leads, totalLeads, basicStats, timelineStats, idleCount, services, assignmentStats] = await Promise.all([
     collection.find(query).sort({ createdAt: -1 }).skip(skip).limit(limit).toArray(),
     collection.countDocuments(query),
     collection.aggregate<{ _id: string; count: number; totalWon: number }>([
@@ -108,6 +121,10 @@ export async function GET(request: Request) {
     ]).toArray(),
     collection.countDocuments({ status: { $in: ["New", "new"] }, createdAt: { $lt: idleThreshold } }),
     collection.distinct("service"),
+    collection.aggregate<{ _id: string | null; count: number }>([
+      { $match: { status: { $nin: ["Won", "Lost"] } } },
+      { $group: { _id: "$assignedTo", count: { $sum: 1 } } }
+    ]).toArray(),
   ]);
 
   const counts = Object.fromEntries(statuses.map((item) => [item, 0]));
@@ -119,6 +136,15 @@ export async function GET(request: Request) {
   }
   const timelineTotals = timelineStats[0] || { overdue: 0, dueToday: 0, upcoming: 0 };
   const total = basicStats.reduce((sum, item) => sum + item.count, 0);
+
+  let unassigned = 0;
+  const employeeStats: Record<string, number> = {};
+  if (assignmentStats) {
+    for (const stat of assignmentStats) {
+      if (!stat._id) unassigned += stat.count;
+      else employeeStats[stat._id] = stat.count;
+    }
+  }
 
   return NextResponse.json({
     leads: leads.map((lead) => serializeLead(lead)),
@@ -137,6 +163,8 @@ export async function GET(request: Request) {
       dueToday: timelineTotals.dueToday || 0,
       upcoming: timelineTotals.upcoming || 0,
       idle: idleCount,
+      unassigned,
+      employeeStats,
       totalWonValue,
     },
   });
@@ -158,8 +186,43 @@ export async function PATCH(request: Request) {
   const lead = await collection.findOne({ _id: new ObjectId(id) });
   if (!lead) return NextResponse.json({ message: "Lead not found." }, { status: 404 });
 
+  const { canEditLead } = await import("@/lib/auth/ownership");
+  if (!canEditLead(admin, lead as { assignedTo?: string })) {
+    return NextResponse.json({ message: "Forbidden. You do not own this lead." }, { status: 403 });
+  }
+
+  // Optimistic Concurrency Check (Locking)
+  if (body.updatedAt !== undefined) {
+    const clientUpdatedAt = new Date(body.updatedAt as string).getTime();
+    const serverUpdatedAt = lead.updatedAt ? new Date(lead.updatedAt).getTime() : 0;
+    if (serverUpdatedAt > clientUpdatedAt + 1000) {
+      return NextResponse.json({ message: "Lead was updated by someone else. Please refresh." }, { status: 409 });
+    }
+  }
+
   const updates: Record<string, unknown> = { updatedAt: new Date() };
   const logs: ReturnType<typeof activity>[] = [];
+
+  // Assignment Logic
+  if (body.assignedTo !== undefined) {
+    const { computePermissions, hasPermission } = await import("@/lib/auth/roles");
+    const { PERMISSIONS } = await import("@/lib/auth/permissions");
+    type Role = import("@/lib/auth/roles").Role;
+    const permissions = computePermissions(admin.role as Role);
+    
+    if (hasPermission(permissions, PERMISSIONS.ASSIGN_LEADS)) {
+      const nextAssignedTo = clean(body.assignedTo, 60);
+      if (nextAssignedTo !== lead.assignedTo) {
+        updates.assignedTo = nextAssignedTo;
+        updates.assignedBy = admin.id;
+        updates.lastAssignedAt = new Date();
+        if (!lead.assignedAt) updates.assignedAt = new Date();
+        updates.reassignedCount = (lead.reassignedCount || 0) + 1;
+        
+        logs.push(activity(`Assigned to ${nextAssignedTo === "unassigned" || !nextAssignedTo ? "Unassigned" : "Employee"}`, "assignment", admin.email));
+      }
+    }
+  }
 
   if (body.status !== undefined) {
     const next = clean(body.status, 40);

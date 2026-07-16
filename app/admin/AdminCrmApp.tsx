@@ -47,6 +47,11 @@ type Lead = {
   lostReason?: string;
   createdAt: string;
   updatedAt?: string;
+  assignedTo?: string;
+  assignedBy?: string;
+  assignedAt?: string;
+  lastAssignedAt?: string;
+  reassignedCount?: number;
   activityLog?: ActivityLog[];
 };
 
@@ -63,6 +68,8 @@ type Stats = {
   dueToday: number;
   upcoming: number;
   idle: number;
+  unassigned?: number;
+  employeeStats?: Record<string, number>;
   totalWonValue: number;
 };
 
@@ -135,9 +142,12 @@ export function AdminCrmApp({ admin }: { admin: Admin }) {
     dueToday: 0,
     upcoming: 0,
     idle: 0,
+    unassigned: 0,
+    employeeStats: {},
     totalWonValue: 0,
   });
   const [services, setServices] = useState<string[]>([]);
+  const [employees, setEmployees] = useState<Admin[]>([]);
   const [pagination, setPagination] = useState({ totalLeads: 0, page: 1, limit: pageSize, totalPages: 1 });
   const [search, setSearch] = useState("");
   const [statusFilter, setStatusFilter] = useState("");
@@ -145,6 +155,7 @@ export function AdminCrmApp({ admin }: { admin: Admin }) {
   const [temperatureFilter, setTemperatureFilter] = useState("");
   const [serviceFilter, setServiceFilter] = useState("");
   const [timelineFilter, setTimelineFilter] = useState("");
+  const [assignedToFilter, setAssignedToFilter] = useState("");
   const [view, setView] = useState<"table" | "kanban">("table");
   const [page, setPage] = useState(1);
   const [loading, setLoading] = useState(true);
@@ -178,6 +189,20 @@ export function AdminCrmApp({ admin }: { admin: Admin }) {
     setNote("");
   }
 
+  const canAssignLeads = admin.role === "owner" || admin.role === "manager";
+
+  useEffect(() => {
+    if (!canAssignLeads) return;
+    fetch("/api/admin/users?role=employee")
+      .then((res) => res.json())
+      .then((data) => {
+        if (data.users) {
+          setEmployees(data.users.filter((u: Admin & { status: string }) => u.status !== "deleted"));
+        }
+      })
+      .catch(console.error);
+  }, [canAssignLeads]);
+
   useEffect(() => {
     if (!hasUnsavedChanges) return;
     const handleBeforeUnload = (e: BeforeUnloadEvent) => {
@@ -201,24 +226,26 @@ export function AdminCrmApp({ admin }: { admin: Admin }) {
     if (temperatureFilter) params.set("leadTemperature", temperatureFilter);
     if (serviceFilter) params.set("service", serviceFilter);
     if (timelineFilter) params.set("timeline", timelineFilter);
+    if (assignedToFilter) params.set("assignedTo", assignedToFilter);
 
-    const response = await fetch(`/api/admin/leads?${params.toString()}`, { cache: "no-store" });
-    if (response.status === 401) {
-      window.location.href = "/admin/login";
-      return;
-    }
-    const data = (await response.json()) as Partial<LeadsResponse> & { message?: string };
-    if (!response.ok) {
-      setError(data.message || "Could not load CRM leads.");
-      setLoading(false);
-      return;
-    }
-    const nextLeads = data.leads || [];
-    setLeads(nextLeads);
-    setActiveLead((current) => {
-      if (!current) return current;
-      return nextLeads.find((lead) => lead._id === current._id) || current;
-    });
+    try {
+      const response = await fetch(`/api/admin/leads?${params.toString()}`, { cache: "no-store" });
+      if (response.status === 401) {
+        window.location.href = "/admin/login";
+        return;
+      }
+      const data = (await response.json()) as Partial<LeadsResponse> & { message?: string };
+      if (!response.ok) {
+        setError(data.message || "Could not load CRM leads.");
+        setLoading(false);
+        return;
+      }
+      const nextLeads = data.leads || [];
+      setLeads(nextLeads);
+      setActiveLead((current) => {
+        if (!current) return current;
+        return nextLeads.find((lead) => lead._id === current._id) || current;
+      });
       setStats(data.stats || {
         total: 0,
         active: 0,
@@ -235,9 +262,14 @@ export function AdminCrmApp({ admin }: { admin: Admin }) {
         totalWonValue: 0,
       });
       setPagination(data.pagination || { totalLeads: 0, page: 1, limit: pageSize, totalPages: 1 });
-    setServices(data.services || []);
-    setLoading(false);
-  }, [page, priorityFilter, search, serviceFilter, statusFilter, temperatureFilter, timelineFilter]);
+      setServices(data.services || []);
+    } catch (err) {
+      console.error(err);
+      setError("Could not load CRM leads.");
+    } finally {
+      setLoading(false);
+    }
+  }, [page, priorityFilter, search, serviceFilter, statusFilter, temperatureFilter, timelineFilter, assignedToFilter]);
 
   useEffect(() => {
     const timeout = window.setTimeout(() => {
@@ -272,7 +304,7 @@ export function AdminCrmApp({ admin }: { admin: Admin }) {
       const response = await fetch("/api/admin/leads", {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ id, ...payload }),
+        body: JSON.stringify({ id, updatedAt: previousLead?.updatedAt, ...payload }),
         signal: abortControllerRef.current.signal
       });
       const data = await response.json();
@@ -411,12 +443,41 @@ export function AdminCrmApp({ admin }: { admin: Admin }) {
         {error && <p className="crm-error">{error}</p>}
 
         <section className="crm-kpi-grid" id="dashboard">
-          <button onClick={() => setTimelineFilter("")}><span>Total leads</span><strong>{stats.total}</strong><small>All captured enquiries</small></button>
-          <button onClick={() => setStatusFilter("New")}><span>New</span><strong>{stats.new}</strong><small>Awaiting first action</small></button>
-          <button onClick={() => setTimelineFilter("dueToday")}><span>Due today</span><strong>{stats.dueToday}</strong><small>Follow-ups scheduled</small></button>
-          <button onClick={() => setTimelineFilter("overdue")}><span>Overdue</span><strong>{stats.overdue}</strong><small>Needs attention now</small></button>
-          <button onClick={() => setStatusFilter("Won")}><span>Won value</span><strong>{formatMoney(stats.totalWonValue)}</strong><small>{stats.won} closed deals</small></button>
+          {admin.role === "employee" ? (
+            <>
+              <button onClick={() => { setTimelineFilter(""); setStatusFilter(""); }}><span>My Leads</span><strong>{stats.total}</strong><small>All assigned</small></button>
+              <button onClick={() => { setTimelineFilter("dueToday"); setStatusFilter(""); }}><span>Today&apos;s Calls</span><strong>{stats.dueToday}</strong><small>Follow-ups scheduled</small></button>
+              <button onClick={() => { setTimelineFilter("overdue"); setStatusFilter(""); }}><span>Pending Follow-ups</span><strong>{stats.overdue}</strong><small>Needs attention now</small></button>
+              <button onClick={() => { setTimelineFilter(""); setStatusFilter("Interested"); }}><span>Interested</span><strong>{stats.qualified || 0}</strong><small>Qualified leads</small></button>
+              <button onClick={() => { setTimelineFilter(""); setStatusFilter("Won"); }}><span>Closed</span><strong>{stats.won}</strong><small>Won deals</small></button>
+            </>
+          ) : (
+            <>
+              <button onClick={() => setTimelineFilter("")}><span>Total leads</span><strong>{stats.total}</strong><small>All captured enquiries</small></button>
+              <button onClick={() => setStatusFilter("New")}><span>New</span><strong>{stats.new}</strong><small>Awaiting first action</small></button>
+              <button onClick={() => setTimelineFilter("dueToday")}><span>Due today</span><strong>{stats.dueToday}</strong><small>Follow-ups scheduled</small></button>
+              <button onClick={() => setTimelineFilter("overdue")}><span>Overdue</span><strong>{stats.overdue}</strong><small>Needs attention now</small></button>
+              <button onClick={() => setStatusFilter("Won")}><span>Won value</span><strong>{formatMoney(stats.totalWonValue)}</strong><small>{stats.won} closed deals</small></button>
+            </>
+          )}
         </section>
+
+        {canAssignLeads && (
+          <section className="crm-kpi-grid" style={{ marginTop: "1rem" }}>
+            <button onClick={() => setAssignedToFilter("unassigned")} className={assignedToFilter === "unassigned" ? "active" : ""}>
+              <span>Unassigned</span>
+              <strong>{stats.unassigned || 0}</strong>
+              <small>Needs assignment</small>
+            </button>
+            {employees.map(emp => (
+              <button key={emp.id} onClick={() => setAssignedToFilter(emp.id)} className={assignedToFilter === emp.id ? "active" : ""}>
+                <span>{emp.name}</span>
+                <strong>{(stats.employeeStats && stats.employeeStats[emp.id]) || 0} Leads</strong>
+                <small>Active pipeline</small>
+              </button>
+            ))}
+          </section>
+        )}
 
         <section className="crm-main-grid">
           <div className="crm-panel crm-leads-panel" id="leads">
@@ -456,6 +517,15 @@ export function AdminCrmApp({ admin }: { admin: Admin }) {
                 <option value="upcoming">Upcoming</option>
                 <option value="idle">Idle 48h+</option>
               </select>
+              {canAssignLeads && (
+                <select value={assignedToFilter} onChange={(event) => { setAssignedToFilter(event.target.value); setPage(1); }}>
+                  <option value="">All Assignees</option>
+                  <option value="unassigned">Unassigned</option>
+                  {employees.map(emp => (
+                    <option key={emp.id} value={emp.id}>{emp.name}</option>
+                  ))}
+                </select>
+              )}
               <button 
                 onClick={() => { setSearch(""); setStatusFilter(""); setPriorityFilter(""); setTemperatureFilter(""); setServiceFilter(""); setTimelineFilter(""); setPage(1); }}
                 disabled={!(search || statusFilter || priorityFilter || temperatureFilter || serviceFilter || timelineFilter)}
@@ -565,6 +635,22 @@ export function AdminCrmApp({ admin }: { admin: Admin }) {
             </div>
 
             <section className="crm-drawer-grid">
+              {canAssignLeads && (
+                <label style={{ gridColumn: "1 / -1" }}>
+                  Assigned To
+                  <select 
+                    value={activeLead.assignedTo || ""} 
+                    onChange={(event) => void updateLead(activeLead._id, { assignedTo: event.target.value })}
+                  >
+                    <option value="">Unassigned</option>
+                    {employees.map(emp => (
+                      <option key={emp.id} value={emp.id}>
+                        👤 {emp.name} - {(stats.employeeStats && stats.employeeStats[emp.id]) || 0} Active Leads
+                      </option>
+                    ))}
+                  </select>
+                </label>
+              )}
               <label>Status<select value={activeLead.status} onChange={(event) => void updateLead(activeLead._id, { status: event.target.value })}>{statuses.map((status) => <option key={status}>{status}</option>)}</select></label>
               <label>Priority<select value={activeLead.priority} onChange={(event) => void updateLead(activeLead._id, { priority: event.target.value })}>{priorities.map((priority) => <option key={priority}>{priority}</option>)}</select></label>
               <label>Temperature<select value={activeLead.leadTemperature} onChange={(event) => void updateLead(activeLead._id, { leadTemperature: event.target.value })}>{temperatures.map((temperature) => <option key={temperature}>{temperature}</option>)}</select></label>
