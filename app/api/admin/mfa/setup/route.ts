@@ -66,7 +66,6 @@ export async function POST(request: Request) {
       email: admin.email as string,
       name: admin.name as string,
       role: admin.role as string,
-      permissions: admin.permissions as string[],
       authVersion: admin.authVersion as number,
     }), sessionCookieOptions());
     response.cookies.delete(MFA_CHALLENGE_COOKIE);

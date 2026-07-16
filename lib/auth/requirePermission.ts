@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { getCurrentAdmin, CurrentAdmin } from "./session";
-import { Permission, hasPermission } from "./roles";
+import { hasPermission } from "./roles";
+import { Permission } from "./permissions";
 
 export type AuthenticatedRouteHandler = (
   req: Request,

@@ -2,7 +2,8 @@ import crypto from "crypto";
 import { cookies } from "next/headers";
 import { ObjectId } from "mongodb";
 import { getMongoClient } from "../mongodb";
-import { computePermissions, Permission, Role } from "./roles";
+import { computePermissions, Role } from "./roles";
+import { Permission } from "./permissions";
 
 export const ADMIN_SESSION_COOKIE = "digitrust_admin_session";
 export const MFA_CHALLENGE_COOKIE = "digitrust_mfa_challenge";
