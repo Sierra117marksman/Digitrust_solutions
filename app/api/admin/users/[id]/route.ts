@@ -4,6 +4,7 @@ import { requirePermission } from "@/lib/auth/requirePermission";
 import { PERMISSIONS } from "@/lib/auth/permissions";
 import { logAudit } from "@/lib/auth/audit";
 import { canManageUser } from "@/lib/auth/ownership";
+import { generateTempPassword, hashPassword } from "@/lib/password";
 import { ObjectId } from "mongodb";
 
 // PATCH /api/admin/users/[id] - Edit User
@@ -54,7 +55,12 @@ export const PATCH = requirePermission(PERMISSIONS.EDIT_USER, async (req, contex
     if (email) updates.email = email.toLowerCase();
     if (status) updates.status = status;
     if (role) updates.role = role;
-    if (forceReset) updates.mustResetPassword = true;
+    let tempPassword = undefined;
+    if (forceReset) {
+      updates.mustResetPassword = true;
+      tempPassword = generateTempPassword();
+      updates.passwordHash = await hashPassword(tempPassword);
+    }
 
     // If role or status changes, or force reset, invalidate existing sessions by incrementing authVersion
     if (role || status || forceReset) {
@@ -77,7 +83,7 @@ export const PATCH = requirePermission(PERMISSIONS.EDIT_USER, async (req, contex
       newValue: { role: updates.role || targetUser.role, status: updates.status || targetUser.status }
     });
 
-    return NextResponse.json({ success: true });
+    return NextResponse.json({ success: true, tempPassword });
   } catch (error) {
     console.error("[Edit User Error]", error);
     return NextResponse.json({ error: "Internal Server Error" }, { status: 500 });

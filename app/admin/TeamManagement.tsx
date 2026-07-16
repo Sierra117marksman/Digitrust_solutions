@@ -97,6 +97,29 @@ export default function TeamManagement({ admin }: { admin: Admin }) {
     }
   }
 
+  async function resetPassword(id: string) {
+    if (!confirm("Are you sure you want to force a password reset for this user? They will be locked out until they log in with the new temporary password.")) return;
+    const t = toast.loading("Resetting password...");
+    try {
+      const res = await fetch(`/api/admin/users/${id}`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ forceReset: true })
+      });
+      const data = await res.json();
+      if (res.ok) {
+        toast.success("Password reset successfully.", { id: t });
+        setTempPassword(data.tempPassword);
+        setShowModal(true);
+        fetchUsers();
+      } else {
+        toast.error(data.error || "Failed to reset password.", { id: t });
+      }
+    } catch (e) {
+      toast.error("Internal error.", { id: t });
+    }
+  }
+
   if (admin.role !== "owner" && admin.role !== "manager") {
     return null; // Should not render
   }
@@ -153,9 +176,14 @@ export default function TeamManagement({ admin }: { admin: Admin }) {
                   <td>{u.totpEnabled ? "Enabled" : "Disabled"}</td>
                   <td>
                     {admin.id !== u.id && (
-                      <button onClick={() => deleteUser(u.id)} style={{ color: "var(--red)", background: "transparent", border: "none", cursor: "pointer", textDecoration: "underline" }}>
-                        Deactivate
-                      </button>
+                      <div style={{ display: "flex", gap: "12px", alignItems: "center" }}>
+                        <button onClick={() => resetPassword(u.id)} style={{ color: "var(--ice)", background: "transparent", border: "none", cursor: "pointer", textDecoration: "underline" }}>
+                          Reset Password
+                        </button>
+                        <button onClick={() => deleteUser(u.id)} style={{ color: "var(--red)", background: "transparent", border: "none", cursor: "pointer", textDecoration: "underline" }}>
+                          Deactivate
+                        </button>
+                      </div>
                     )}
                   </td>
                 </tr>
