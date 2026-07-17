@@ -204,17 +204,6 @@ export function AdminCrmApp({ admin }: { admin: Admin }) {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [message, setMessage] = useState("");
   
-  const [activeLead, setActiveLead] = useState<Lead | null>(null);
-  const [note, setNote] = useState("");
-
-  const [originalLead, setOriginalLead] = useState<Lead | null>(null);
-  const [isCreatingLead, setIsCreatingLead] = useState(false);
-  const [actioningCall, setActioningCall] = useState<string | null>(null);
-  const [showGlossary, setShowGlossary] = useState(false);
-  const [activeTab, setActiveTab] = useState<"dashboard" | "leads" | "queue" | "activity" | "analytics" | "team" | "recovery">("dashboard");
-  const [selectedLeads, setSelectedLeads] = useState<Set<string>>(new Set());
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const [recentFeed, setRecentFeed] = useState<Record<string, unknown>[]>([]);
 
   const isSavingRef = useRef(false);
   const abortControllerRef = useRef<AbortController | null>(null);
