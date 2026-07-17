@@ -1,11 +1,10 @@
-/* eslint-disable */
 import { NextResponse } from "next/server";
 import { getCurrentAdmin } from "@/lib/admin-auth";
 import { getMongoClient } from "@/lib/mongodb";
 
 export const runtime = "nodejs";
 
-export async function GET(request: Request) {
+export async function GET() {
   const admin = await getCurrentAdmin();
   if (!admin) return NextResponse.json({ message: "Unauthorized." }, { status: 401 });
 
@@ -18,7 +17,7 @@ export async function GET(request: Request) {
     const endOfToday = new Date(today.getFullYear(), today.getMonth(), today.getDate(), 23, 59, 59, 999);
 
     // Filter by assignment if employee
-    const baseQuery: any = { status: { $nin: ["Won", "Lost", "Archived"] } };
+    const baseQuery: Record<string, unknown> = { status: { $nin: ["Won", "Lost", "Archived"] } };
     if (admin.role === "employee") {
       baseQuery.assignedTo = admin.id;
     }

@@ -34,12 +34,10 @@ export default function TeamManagement({ admin }: { admin: Admin }) {
   const [formEmail, setFormEmail] = useState("");
   const [formRole, setFormRole] = useState("employee");
 
-  useEffect(() => {
-    fetchUsers();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+   
 
-  async function fetchUsers() {
+  const fetchUsers = useCallback(async () => {
+    await Promise.resolve();
     setLoading(true);
     try {
       const res = await fetch(`/api/admin/users?search=${encodeURIComponent(search)}`);
@@ -52,7 +50,12 @@ export default function TeamManagement({ admin }: { admin: Admin }) {
     } finally {
       setLoading(false);
     }
-  }
+  }, [search]);
+
+  useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    fetchUsers();
+  }, [fetchUsers]); // Search changes -> refetch
 
   async function createUser(e: React.FormEvent) {
     e.preventDefault();

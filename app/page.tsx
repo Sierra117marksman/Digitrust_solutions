@@ -1,5 +1,4 @@
-/* eslint-disable */
-import Image from "next/image";
+
 import Link from "next/link";
 import { ContactForm } from "./components/ContactForm";
 import { ScrollLink } from "./components/ScrollLink";

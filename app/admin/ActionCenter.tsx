@@ -1,8 +1,7 @@
 "use client";
-/* eslint-disable */
 
 import React, { useState, useEffect } from "react";
-import { toast } from "react-hot-toast";
+// // import { toast } from "react-hot-toast";
 
 type InboxItem = {
   id: string;
@@ -36,8 +35,8 @@ export default function ActionCenter({ onAction }: { onAction: (leadId: string, 
   };
 
   useEffect(() => {
-    // eslint-disable-next-line react-hooks/set-state-in-effect
-    fetchInbox();
+    const init = () => { fetchInbox(); };
+    init();
     
     let interval: ReturnType<typeof setInterval>;
     

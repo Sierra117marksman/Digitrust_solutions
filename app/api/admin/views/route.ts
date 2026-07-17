@@ -1,12 +1,11 @@
-/* eslint-disable */
 import { NextResponse } from "next/server";
 import { getMongoClient } from "@/lib/mongodb";
 import { getCurrentAdmin } from "@/lib/admin-auth";
-import { ObjectId } from "mongodb";
+import {  } from "mongodb";
 
 export const runtime = "nodejs";
 
-export async function GET(request: Request) {
+export async function GET() {
   const admin = await getCurrentAdmin();
   if (!admin) return NextResponse.json({ message: "Unauthorized." }, { status: 401 });
 

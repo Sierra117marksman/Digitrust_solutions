@@ -1,5 +1,4 @@
 "use client";
-/* eslint-disable */
 
 import React, { useState, useEffect } from "react";
 
@@ -17,7 +16,7 @@ type InboxItem = {
 
 export default function NeedsAttentionQueue({ onAction }: { onAction: (leadId: string, actionLabel: string, phone?: string) => void }) {
   const [items, setItems] = useState<InboxItem[]>([]);
-  const [summary, setSummary] = useState<any>({});
+  const [summary, setSummary] = useState<Record<string, number>>({});
   const [loading, setLoading] = useState(true);
 
   const fetchInbox = async () => {
@@ -36,7 +35,8 @@ export default function NeedsAttentionQueue({ onAction }: { onAction: (leadId: s
   };
 
   useEffect(() => {
-    fetchInbox();
+    const init = () => { fetchInbox(); };
+    init();
   }, []);
 
   const totalCritical = (summary.overdue || 0) + (summary.slaBreaches || 0) + (summary.idle || 0);

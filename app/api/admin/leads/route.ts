@@ -1,4 +1,3 @@
-/* eslint-disable */
 import { NextResponse } from "next/server";
 import { ObjectId } from "mongodb";
 import { getCurrentAdmin } from "@/lib/admin-auth";
@@ -224,7 +223,7 @@ export async function PATCH(request: Request) {
   }
 
   const updates: Record<string, unknown> = { updatedAt: new Date() };
-  const logs: any[] = [];
+  const logs: unknown[] = [];
 
   // Assignment Logic
   if (body.assignedTo !== undefined) {

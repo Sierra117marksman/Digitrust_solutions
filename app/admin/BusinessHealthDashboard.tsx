@@ -1,10 +1,9 @@
 "use client";
-/* eslint-disable */
 
 import React, { useState, useEffect } from "react";
 import { AnalyticsSnapshot } from "@/lib/analytics";
 
-export default function BusinessHealthDashboard({ onAction }: { onAction: (actionType: string, payload?: any) => void }) {
+export default function BusinessHealthDashboard({ onAction }: { onAction: (actionType: string, payload?: unknown) => void }) {
   const [data, setData] = useState<AnalyticsSnapshot | null>(null);
   const [loading, setLoading] = useState(true);
 
@@ -22,7 +21,7 @@ export default function BusinessHealthDashboard({ onAction }: { onAction: (actio
   }, []);
 
   if (loading) return <div style={{ padding: "2rem", color: "#888" }}>Loading Insights...</div>;
-  if (!data || (data as any).message) return <div style={{ padding: "2rem", color: "#ff4444" }}>Failed to load insights.</div>;
+  if (!data || ("message" in (data as object))) return <div style={{ padding: "2rem", color: "#ff4444" }}>Error loading metrics.</div>;
 
   const getHealthColor = (status: string) => {
     if (status === "Excellent" || status === "Healthy") return "#00ff88";

@@ -1,5 +1,4 @@
 "use client";
-/* eslint-disable */
 
 import React, { useState } from "react";
 import { toast } from "react-hot-toast";
@@ -7,7 +6,7 @@ import { toast } from "react-hot-toast";
 interface CallOutcomeModalProps {
   leadId: string;
   onClose: () => void;
-  onSuccess: (updates: Record<string, any>) => void;
+  onSuccess: (updates: Record<string, unknown>) => void;
 }
 
 export default function CallOutcomeModal({ leadId, onClose, onSuccess }: CallOutcomeModalProps) {
@@ -50,7 +49,7 @@ export default function CallOutcomeModal({ leadId, onClose, onSuccess }: CallOut
   const handleSubmit = async (selectedOutcome: string, timeStr: string, statusOverride?: string) => {
     setLoading(true);
     
-    const updates: any = {
+    const updates: Record<string, unknown> = {
       callOutcome: selectedOutcome,
       followUpStatus: "Completed"
     };
@@ -76,8 +75,8 @@ export default function CallOutcomeModal({ leadId, onClose, onSuccess }: CallOut
       
       toast.success("Outcome saved");
       onSuccess(updates);
-    } catch (e: any) {
-      toast.error(e.message);
+    } catch (e: unknown) {
+      toast.error((e as Error).message || "An error occurred");
     } finally {
       setLoading(false);
     }

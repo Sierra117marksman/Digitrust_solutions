@@ -1,10 +1,8 @@
-/* eslint-disable */
 "use client";
 import React, { useState } from "react";
-import { toast } from "react-hot-toast";
 
 interface WhatsAppTemplateModalProps {
-  lead: any;
+  lead: { _id: string; name?: string; service?: string; phone: string; [key: string]: unknown };
   employeeName: string;
   onClose: () => void;
   onSuccess: (channel: string) => void;

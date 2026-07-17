@@ -1,12 +1,11 @@
 "use client";
-/* eslint-disable */
 
 
 import Link from "next/link";
 import { ScrollLink } from "./ScrollLink";
 
 // Ensure these exist or can be resolved. Wait, I should make sure I import what exists.
-// Let's import the data objects but define them correctly or assume they export what we need.
+// Let&apos;s import the data objects but define them correctly or assume they export what we need.
 // Since this is in components, the relative path to content is `../../content/...` or `../content/...`
 // The page.tsx is in `app/`, so `app/content/` is `../content/...` from `app/components/`.
 
@@ -18,7 +17,7 @@ export function Footer() {
     <>
       <section className="pre-footer-cta">
         <div className="container pre-footer-content">
-          <h2>Let's discuss your project.</h2>
+          <h2>Let&apos;s discuss your project.</h2>
           <ScrollLink targetId="contact" className="button button-primary pre-footer-button">
             Book a free consultation
           </ScrollLink>
@@ -28,13 +27,13 @@ export function Footer() {
       <footer className="site-footer">
         <div className="container">
           <div className="footer-top-cta">
-            <h3>Let's Build Your Next Digital Success Story.</h3>
+            <h3>Let&apos;s Build Your Next Digital Success Story.</h3>
           </div>
 
           <div className="footer-grid">
             <div className="footer-col brand-col">
               <Link href="/" className="footer-brand" aria-label="Digitrust Solutions home">
-                {/* Fallback text if logo doesn't load, though SVG is preferred. Let's use text to make it simpler and premium */}
+                {/* Fallback text if logo doesn't load, though SVG is preferred. Let&apos;s use text to make it simpler and premium */}
                 <span className="brand-text">Digitrust</span>
               </Link>
               <p className="footer-bio">

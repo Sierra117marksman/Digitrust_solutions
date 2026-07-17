@@ -1,10 +1,9 @@
 "use client";
-/* eslint-disable */
-
 
 import { useState, useEffect } from "react";
 import Image from "next/image";
 import { ScrollLink } from "./ScrollLink";
+import Link from "next/link";
 
 const NAV_LINKS = [
   { label: "Services", id: "services" },
@@ -111,44 +110,44 @@ export function Navbar() {
                     <div className="nav-dropdown-inner">
                       <div className="dropdown-col">
                         <span className="dropdown-heading">Marketing & Growth</span>
-                        <a href="/services/meta-ads" className="dropdown-link">
+                        <Link href="/services/meta-ads" className="dropdown-link">
                           <span className="dropdown-icon">📣</span>
                           <div>
                             <strong>Meta Ads Specialty</strong>
                             <span>High-ROAS campaigns</span>
                           </div>
-                        </a>
-                        <a href="/services/seo-marketing" className="dropdown-link">
+                        </Link>
+                        <Link href="/services/seo-marketing" className="dropdown-link">
                           <span className="dropdown-icon">📈</span>
                           <div>
                             <strong>SEO & Marketing</strong>
                             <span>Organic traffic growth</span>
                           </div>
-                        </a>
+                        </Link>
                       </div>
                       <div className="dropdown-col">
                         <span className="dropdown-heading">Development</span>
-                        <a href="/services/full-stack-development" className="dropdown-link">
+                        <Link href="/services/full-stack-development" className="dropdown-link">
                           <span className="dropdown-icon">⚡</span>
                           <div>
                             <strong>Custom Development</strong>
                             <span>Web apps & APIs</span>
                           </div>
-                        </a>
-                        <a href="/services/web-development" className="dropdown-link">
+                        </Link>
+                        <Link href="/services/web-development" className="dropdown-link">
                           <span className="dropdown-icon">💻</span>
                           <div>
                             <strong>Web Development</strong>
                             <span>High-performance sites</span>
                           </div>
-                        </a>
-                        <a href="/services/shopify-ecommerce" className="dropdown-link">
+                        </Link>
+                        <Link href="/services/shopify-ecommerce" className="dropdown-link">
                           <span className="dropdown-icon">🛒</span>
                           <div>
                             <strong>Shopify & E-commerce</strong>
                             <span>Store optimization</span>
                           </div>
-                        </a>
+                        </Link>
                       </div>
                     </div>
                   </div>

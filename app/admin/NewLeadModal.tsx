@@ -1,5 +1,4 @@
 "use client";
-/* eslint-disable */
 
 
 import { useState } from "react";
@@ -44,8 +43,8 @@ export default function NewLeadModal({ onClose, onSuccess }: NewLeadModalProps) 
       
       toast.success("Lead created!");
       onSuccess();
-    } catch (error: any) {
-      toast.error(error.message);
+    } catch (error: unknown) {
+      toast.error((error as Error).message);
     } finally {
       setLoading(false);
     }

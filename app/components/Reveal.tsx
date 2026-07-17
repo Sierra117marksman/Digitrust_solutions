@@ -1,5 +1,4 @@
 "use client";
-/* eslint-disable */
 
 
 import { useEffect, useRef, useState, ReactNode } from "react";
@@ -23,12 +22,13 @@ export function Reveal({
   const [isRevealed, setIsRevealed] = useState(false);
 
   useEffect(() => {
+    const currentRef = ref.current;
     const observer = new IntersectionObserver(
       ([entry]) => {
         if (entry.isIntersecting) {
           setIsRevealed(true);
-          if (ref.current) {
-            observer.unobserve(ref.current);
+          if (currentRef) {
+            observer.unobserve(currentRef);
           }
         }
       },
@@ -44,7 +44,7 @@ export function Reveal({
     }
 
     return () => {
-      if (ref.current) observer.unobserve(ref.current);
+      if (currentRef) observer.unobserve(currentRef);
     };
   }, []);
 

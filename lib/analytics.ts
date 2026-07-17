@@ -1,4 +1,3 @@
-/* eslint-disable */
 import { getMongoClient } from "./mongodb";
 
 export interface AnalyticsSnapshot {
@@ -65,8 +64,8 @@ export class AnalyticsService {
     return snapshot;
   }
 
-  private static async computeMetrics(db: any): Promise<AnalyticsSnapshot> {
-    const collection = db.collection("website_enquiries");
+  private static async computeMetrics(db: { collection: (name: string) => unknown }): Promise<AnalyticsSnapshot> {
+    const collection = db.collection("website_enquiries") as { aggregate: (args: unknown[]) => { toArray: () => Promise<Record<string, unknown>[]> }, countDocuments: (args: unknown) => Promise<number> };
     
     const now = new Date();
     const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
@@ -77,7 +76,7 @@ export class AnalyticsService {
       { $group: { _id: "$status", count: { $sum: 1 } } }
     ]).toArray();
     
-    const pipeMap = Object.fromEntries(pipelineStats.map((s: any) => [s._id, s.count]));
+    const pipeMap = Object.fromEntries(pipelineStats.map((s: Record<string, unknown>) => [s._id, s.count]));
     const pipeline = {
       new: pipeMap["New"] || 0,
       contacted: pipeMap["Contacted"] || 0,
@@ -98,17 +97,17 @@ export class AnalyticsService {
       }
     ]).toArray();
     
-    const sourceROI = sourceStats.map((s: any) => ({
-      source: s._id || "Unknown",
-      leads: s.leads,
-      won: s.won,
-      conversion: s.leads > 0 ? (s.won / s.leads) * 100 : 0,
-      revenue: s.revenue
-    })).sort((a: any, b: any) => b.revenue - a.revenue);
+    const sourceROI = sourceStats.map((s: Record<string, unknown>) => ({
+      source: (s._id as string) || "Unknown",
+      leads: (s.leads as number),
+      won: (s.won as number),
+      conversion: (s.leads as number) > 0 ? ((s.won as number) / (s.leads as number)) * 100 : 0,
+      revenue: (s.revenue as number)
+    })).sort((a: Record<string, unknown>, b: Record<string, unknown>) => (b.revenue as number) - (a.revenue as number));
 
     // 3. Team Scorecards
     // We fetch users to map IDs to names
-    const users = await db.collection("admin_users").find({ role: "employee" }).toArray();
+    const users = await (db.collection("admin_users") as { find: (args: unknown) => { toArray: () => Promise<Record<string, unknown>[]> } }).find({ role: "employee" }).toArray();
     
     // Aggregate wins this month per employee
     const monthlyWins = await collection.aggregate([
@@ -125,13 +124,13 @@ export class AnalyticsService {
     ]).toArray();
 
     // Mapping name to ID is tricky if events use Name. We will try our best.
-    const scorecards = users.map((u: any) => {
-      const wins = monthlyWins.find((w: any) => w._id === u._id.toString())?.wins || 0;
-      const calls = todayCalls.find((c: any) => c._id === u.name)?.calls || 0;
+    const scorecards = users.map((u: Record<string, unknown>) => {
+      const wins = monthlyWins.find((w: Record<string, unknown>) => w._id === (u._id as { toString: () => string }).toString())?.wins as number || 0;
+      const calls = todayCalls.find((c: Record<string, unknown>) => c._id === u.name)?.calls as number || 0;
       
       return {
-        id: u._id.toString(),
-        name: u.name,
+        id: (u._id as { toString: () => string }).toString(),
+        name: u.name as string,
         callsMade: calls,
         wins: wins,
         winRate: 20, // Mock for now until we build robust history
@@ -142,8 +141,8 @@ export class AnalyticsService {
     });
 
     // 4. Goals
-    const totalWinsThisMonth = monthlyWins.reduce((sum: number, w: any) => sum + w.wins, 0);
-    const totalCallsToday = todayCalls.reduce((sum: number, c: any) => sum + c.calls, 0);
+    const totalWinsThisMonth = monthlyWins.reduce((sum: number, w: Record<string, unknown>) => sum + (w.wins as number), 0);
+    const totalCallsToday = todayCalls.reduce((sum: number, c: Record<string, unknown>) => sum + (c.calls as number), 0);
     
     const goals = {
       monthlyWins: totalWinsThisMonth,
@@ -153,10 +152,10 @@ export class AnalyticsService {
     };
 
     // 5. Business Health & Recommendations
-    let teamHealth: any = "Healthy";
-    if (scorecards.some((s: any) => s.followUpRate < 80)) teamHealth = "Needs Attention";
+    let teamHealth: "Healthy" | "Needs Attention" | "Critical" = "Healthy";
+    if (scorecards.some((s: Record<string, unknown>) => (s.followUpRate as number) < 80)) teamHealth = "Needs Attention";
     
-    let pipeHealth: any = "Healthy";
+    let pipeHealth: "Healthy" | "Needs Attention" | "Critical" = "Healthy";
     if (pipeline.new > 50) pipeHealth = "Needs Attention";
     
     const recommendations = [];

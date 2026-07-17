@@ -1,10 +1,9 @@
 "use client";
-/* eslint-disable */
 
 import React from "react";
 
 interface ExportPreviewModalProps {
-  leads: any[];
+  leads: { _id: string; name?: string; status?: string; source?: string; phone?: string; [key: string]: unknown }[];
   onClose: () => void;
   onConfirm: () => void;
 }
@@ -33,7 +32,7 @@ export default function ExportPreviewModal({ leads, onClose, onConfirm }: Export
               </tr>
             </thead>
             <tbody>
-              {previewRows.map((l: any) => (
+              {previewRows.map((l) => (
                 <tr key={l._id}>
                   <td>{l.name}</td>
                   <td>{l.status}</td>

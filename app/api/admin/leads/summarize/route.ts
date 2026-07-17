@@ -1,4 +1,3 @@
-/* eslint-disable */
 import { NextResponse } from "next/server";
 import { getMongoClient } from "@/lib/mongodb";
 import { ObjectId } from "mongodb";
@@ -21,6 +20,7 @@ export async function POST(request: Request) {
     if (!lead) return NextResponse.json({ message: "Lead not found" }, { status: 404 });
 
     // Mock AI summarization using lead data
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const lastEvent = lead.events && lead.events.length > 0 ? lead.events[lead.events.length - 1] : null;
     const idleDays = lead.lastContactedAt ? Math.floor((Date.now() - new Date(lead.lastContactedAt).getTime()) / 86400000) : 0;
     

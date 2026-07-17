@@ -1,28 +1,24 @@
 "use client";
-/* eslint-disable */
+
 
 
 import { useCallback, useEffect, useMemo, useState, useRef } from "react";
 import toast from "react-hot-toast";
 import NewLeadModal from "./NewLeadModal";
-import ActionCenter from "./ActionCenter";
 import CallOutcomeModal from "./CallOutcomeModal";
 import WhatsAppTemplateModal from "./WhatsAppTemplateModal";
 import NeedsAttentionQueue from "./NeedsAttentionQueue";
-import ExportPreviewModal from "./ExportPreviewModal";
-import SavedViewsBar from "./SavedViewsBar";
-import BusinessHealthDashboard from "./BusinessHealthDashboard";
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 import { contactInfo } from "@/content/contact";
 import { logError } from "../utils/logger";
 import TeamManagement from "./TeamManagement";
 import ReminderProvider from "../components/ReminderEngine/ReminderProvider";
 import LeadContextAlert from "../components/ReminderEngine/LeadContextAlert";
+import RecoveryCenter from "./RecoveryCenter";
 
 const statuses = ["New", "Contacted", "Qualified", "Proposal Sent", "Won", "Lost"];
 const priorities = ["High", "Medium", "Low"];
 const temperatures = ["Hot", "Warm", "Cold"];
-const budgets = ["", "25k-50k", "50k-1l", "1l-3l", "3l+"];
-const lostReasons = ["", "Budget", "No Response", "Chose Competitor", "Timeline", "Project Cancelled", "Not Qualified", "Other"];
 const pageSize = 25;
 
 type Admin = {
@@ -102,7 +98,7 @@ type LeadsResponse = {
   stats: Stats;
   pagination: { totalLeads: number; page: number; limit: number; totalPages: number };
   services: string[];
-  recentActivityFeed?: any[]; // eslint-disable-line @typescript-eslint/no-explicit-any
+  recentActivityFeed?: unknown[];
 };
 
 function formatDate(value?: string) {
@@ -138,6 +134,7 @@ function formatDateTime(value?: string) {
   }).format(new Date(value));
 }
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 function formatMoney(value = 0) {
   return new Intl.NumberFormat("en-IN", {
     style: "currency",
@@ -146,6 +143,7 @@ function formatMoney(value = 0) {
   }).format(value);
 }
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 function budgetLabel(value?: string) {
   if (!value) return "Not specified";
   const labels: Record<string, string> = {
@@ -163,6 +161,7 @@ function phoneDigits(phone = "") {
   return `91${digits}`;
 }
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 function todayInputValue(value?: string) {
   if (!value) return "";
   return new Date(value).toISOString().split("T")[0];
@@ -202,6 +201,7 @@ export function AdminCrmApp({ admin }: { admin: Admin }) {
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState("");
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [message, setMessage] = useState("");
   
   const [activeLead, setActiveLead] = useState<Lead | null>(null);
@@ -211,12 +211,10 @@ export function AdminCrmApp({ admin }: { admin: Admin }) {
   const [isCreatingLead, setIsCreatingLead] = useState(false);
   const [actioningCall, setActioningCall] = useState<string | null>(null);
   const [showGlossary, setShowGlossary] = useState(false);
-  const [activeTab, setActiveTab] = useState<"dashboard" | "leads" | "queue" | "activity" | "analytics" | "team">("dashboard");
-  const [generatingSummary, setGeneratingSummary] = useState(false);
-  const [showExportPreview, setShowExportPreview] = useState(false);
-  const [actioningWhatsApp, setActioningWhatsApp] = useState<Lead | null>(null);
+  const [activeTab, setActiveTab] = useState<"dashboard" | "leads" | "queue" | "activity" | "analytics" | "team" | "recovery">("dashboard");
   const [selectedLeads, setSelectedLeads] = useState<Set<string>>(new Set());
-  const [recentFeed, setRecentFeed] = useState<any[]>([]); // eslint-disable-line @typescript-eslint/no-explicit-any
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const [recentFeed, setRecentFeed] = useState<Record<string, unknown>[]>([]);
 
   const isSavingRef = useRef(false);
   const abortControllerRef = useRef<AbortController | null>(null);
@@ -254,8 +252,8 @@ export function AdminCrmApp({ admin }: { admin: Admin }) {
       toast.success(`Bulk ${action} complete`, { id: loadingToast });
       setSelectedLeads(new Set());
       loadLeads(true);
-    } catch (e: any) { // eslint-disable-line @typescript-eslint/no-explicit-any
-      toast.error(e.message, { id: loadingToast });
+    } catch (e: unknown) {
+      toast.error((e as Error).message, { id: loadingToast });
     }
   };
 
@@ -347,7 +345,7 @@ export function AdminCrmApp({ admin }: { admin: Admin }) {
       });
       setPagination(data.pagination || { totalLeads: 0, page: 1, limit: pageSize, totalPages: 1 });
       setServices(data.services || []);
-      if (data.recentActivityFeed) setRecentFeed(data.recentActivityFeed);
+      if (data.recentActivityFeed) setRecentFeed(data.recentActivityFeed as Record<string, unknown>[]);
     } catch (err) {
       console.error(err);
       setError("Could not load CRM leads.");
@@ -467,6 +465,7 @@ async function logContact(id: string, channel: string) {
     await updateLead(id, { lastContactedAt: new Date().toISOString(), contactChannel: channel });
   }
 
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   function exportCsv() {
     const headers = ["Name", "Email", "Phone", "Company", "Service", "Status", "Priority", "Temperature", "Budget", "Source", "Follow Up", "Last Contacted", "Notes"];
     const rows = leads.map((lead) => [
@@ -497,7 +496,7 @@ async function logContact(id: string, channel: string) {
 
   const recentActivity = useMemo(() => {
     return leads
-      .flatMap((lead) => (lead.events || (lead as any).activityLog || []).map((item: Event) => ({ ...item, leadName: lead.name })))
+      .flatMap((lead) => (lead.events || (lead as Record<string, unknown>).activityLog as Event[] || []).map((item: Event) => ({ ...item, leadName: lead.name })))
       .sort((a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime())
       .slice(0, 8);
   }, [leads]);
@@ -533,6 +532,7 @@ async function logContact(id: string, channel: string) {
       `}</style>
       <aside className="crm-os-sidebar">
         <div>
+          {/* eslint-disable-next-line @next/next/no-img-element */}
           <img src="/brand/logo.png" alt="Digitrust Logo" style={{ width: '48px', height: '48px', objectFit: 'contain', marginBottom: '1rem', background: 'white', borderRadius: '8px', padding: '4px' }} />
           <h1>Digitrust CRM</h1>
           <p>{admin.name}</p>
@@ -548,6 +548,9 @@ async function logContact(id: string, channel: string) {
               <button onClick={() => setActiveTab("analytics")} className={activeTab === "analytics" ? "active" : ""}>Analytics</button>
               <button onClick={() => setActiveTab("team")} className={activeTab === "team" ? "active" : ""}>Team</button>
             </>
+          )}
+          {admin.role === "owner" && (
+            <button onClick={() => setActiveTab("recovery")} className={activeTab === "recovery" ? "active" : ""}>Recovery Center</button>
           )}
         </nav>
 
@@ -624,7 +627,7 @@ async function logContact(id: string, channel: string) {
                 return sum + 5000;
               }, 0);
               
-              const formatMoney = (v: number) => {
+              const formatMoneyVal = (v: number) => {
                 if (v >= 10000000) return "₹" + (v / 10000000).toFixed(2) + "Cr";
                 if (v >= 100000) return "₹" + (v / 100000).toFixed(2) + "L";
                 if (v >= 1000) return "₹" + (v / 1000).toFixed(1) + "k";
@@ -634,7 +637,7 @@ async function logContact(id: string, channel: string) {
               const cards = [
                 { title: "Total Leads", val: totalLeads.toLocaleString(), badge: "+12%", color: "#9333ea", icon: "👥", path: "M0,35 C20,35 30,15 50,25 C70,35 80,5 100,5" },
                 { title: "New Leads", val: newLeads.toLocaleString(), badge: "+8%", color: "#3b82f6", icon: "👤", path: "M0,25 C20,25 30,35 50,20 C70,5 80,15 100,10" },
-                { title: "Pipeline Value", val: formatMoney(pipelineVal), badge: "↑ 2%", color: "#f59e0b", icon: "💰", path: "M0,35 C20,35 30,25 50,30 C70,35 80,10 100,5" },
+                { title: "Pipeline Value", val: formatMoneyVal(pipelineVal), badge: "↑ 2%", color: "#f59e0b", icon: "💰", path: "M0,35 C20,35 30,25 50,30 C70,35 80,10 100,5" },
                 { title: "Deals Won", val: wonLeads.toLocaleString(), badge: "+15%", color: "#10b981", icon: "🏆", path: "M0,30 C20,30 30,15 50,25 C70,35 80,5 100,5" }
               ];
 
@@ -786,7 +789,7 @@ async function logContact(id: string, channel: string) {
                         className="crm-select-badge"
                         value={lead.status}
                         onChange={(e) => {
-                          let val = e.target.value;
+                          const val = e.target.value;
                           let wonVal = lead.wonValue;
                           if (val === "Won") {
                             const input = window.prompt("Enter final project value (₹):", "0");
@@ -877,10 +880,10 @@ async function logContact(id: string, channel: string) {
              onAction={(leadId, action, phone) => {
                if (action === "Call Now" && phone) {
                  window.location.href = `tel:${phone}`;
-                 const l = leads.find((l: any) => l._id === leadId);
+                 const l = leads.find((l) => l._id === leadId);
                  if (l) setActioningCall(l._id);
                } else {
-                 const l = leads.find((l: any) => l._id === leadId);
+                 const l = leads.find((l) => l._id === leadId);
                  if (l) openLead(l);
                }
              }}
@@ -897,7 +900,7 @@ async function logContact(id: string, channel: string) {
             </div>
           </div>
           <div className="crm-recent-list" style={{ padding: '24px' }}>
-            {recentActivity.length ? recentActivity.map((event: any, i: number) => (
+            {recentActivity.length ? recentActivity.map((event: { leadName?: string; action?: string; timestamp?: string; performedBy?: string }, i: number) => (
               <div key={i} style={{ marginBottom: '16px', paddingBottom: '16px', borderBottom: '1px solid #edf5f8' }}>
                 <strong>{event.leadName}</strong> - {event.action}
                 <div style={{ color: '#888', fontSize: '0.8rem', marginTop: '4px' }}>{formatDateTime(event.timestamp)} • {event.performedBy}</div>
@@ -958,7 +961,7 @@ async function logContact(id: string, channel: string) {
             <section className="crm-drawer-section">
               <h4>Timeline</h4>
               <div className="crm-timeline-slack">
-                {(activeLead.events || (activeLead as any).activityLog || []).slice().reverse().map((item: Event, index: number) => (
+                {(activeLead.events || (activeLead as Record<string, unknown>).activityLog as Event[] || []).slice().reverse().map((item: Event, index: number) => (
                   <div key={`${item.timestamp}-${index}`} className="timeline-event">
                     <span className="timeline-icon">
                       {item.type === "creation" ? "🟢" : item.type === "status" ? "🟡" : item.type === "assignment" ? "🔵" : "⚪"}
@@ -1024,7 +1027,7 @@ async function logContact(id: string, channel: string) {
               <h4>Lead Qualification</h4>
               <div className="crm-drawer-grid">
                 <label>Date & Time<input type="datetime-local" value={activeLead.nextFollowUpAt ? new Date(new Date(activeLead.nextFollowUpAt).getTime() - new Date().getTimezoneOffset() * 60000).toISOString().slice(0, 16) : ""} onChange={(event) => void updateLead(activeLead._id, { nextFollowUpAt: new Date(event.target.value).toISOString() })} /></label>
-                <label>Type<select value={activeLead.followUpType || "Call"} onChange={(event) => void updateLead(activeLead._id, { followUpType: event.target.value as any })}><option>Call</option><option>WhatsApp</option><option>Email</option><option>Meeting</option></select></label>
+                <label>Type<select value={activeLead.followUpType || "Call"} onChange={(event) => void updateLead(activeLead._id, { followUpType: event.target.value as "Call" | "WhatsApp" | "Email" | "Meeting" })}><option>Call</option><option>WhatsApp</option><option>Email</option><option>Meeting</option></select></label>
                 <label style={{ gridColumn: "1 / -1" }}>Reason<input type="text" value={activeLead.followUpReason || ""} onChange={(event) => void updateLead(activeLead._id, { followUpReason: event.target.value })} placeholder="Why are we following up?" /></label>
               </div>
             </section>
@@ -1196,6 +1199,12 @@ async function logContact(id: string, channel: string) {
       {activeTab === "team" && (
         <div style={{ padding: '32px' }}>
           <TeamManagement admin={admin} />
+        </div>
+      )}
+
+      {activeTab === "recovery" && admin.role === "owner" && (
+        <div style={{ padding: '32px' }}>
+          <RecoveryCenter />
         </div>
       )}
 

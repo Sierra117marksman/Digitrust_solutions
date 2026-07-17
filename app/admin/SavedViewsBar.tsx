@@ -1,5 +1,4 @@
 "use client";
-/* eslint-disable */
 
 import React, { useState, useEffect } from "react";
 import { toast } from "react-hot-toast";
@@ -21,8 +20,8 @@ export default function SavedViewsBar({
   currentFilters,
   role
 }: { 
-  onApplyView: (filters: any) => void, 
-  currentFilters: any,
+  onApplyView: (filters: unknown) => void, 
+  currentFilters: unknown,
   role: string 
 }) {
   const [views, setViews] = useState<View[]>([]);

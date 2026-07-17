@@ -1,4 +1,3 @@
-/* eslint-disable */
 import { NextResponse } from "next/server";
 import { ObjectId } from "mongodb";
 import { getCurrentAdmin } from "@/lib/admin-auth";
@@ -23,6 +22,7 @@ export async function POST(request: Request) {
     }
 
     const objectIds = leadIds.map(id => {
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
       try { return new ObjectId(id); } catch (e) { return null; }
     }).filter(id => id !== null) as ObjectId[];
 
@@ -60,7 +60,7 @@ export async function POST(request: Request) {
           $set: updates,
           $inc: { reassignedCount: 1 },
           $push: { events: { $each: logs } }
-        } as any
+        } as unknown as Parameters<typeof collection.updateMany>[1]
       );
     } else if (action === "archive") {
       // Must be owner or manager
@@ -76,7 +76,7 @@ export async function POST(request: Request) {
         { 
           $set: updates,
           $push: { events: { $each: logs } }
-        } as any
+        } as unknown as Parameters<typeof collection.updateMany>[1]
       );
     } else {
       return NextResponse.json({ message: "Invalid bulk action." }, { status: 400 });
