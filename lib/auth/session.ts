@@ -135,7 +135,8 @@ export async function getCurrentAdmin(): Promise<CurrentAdmin | null> {
     email: session.email,
     status: "active",
     // authVersion checks ensure sessions are invalidated if authVersion is incremented
-    authVersion: session.authVersion,
+    // If session.authVersion is 1, the DB might not have the field yet (e.g. legacy data/restored backup)
+    authVersion: session.authVersion === 1 ? { $in: [1, null] } : session.authVersion,
   });
 
   if (!admin) return null;
