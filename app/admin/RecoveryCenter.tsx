@@ -531,16 +531,51 @@ export default function RecoveryCenter() {
         <div className="bg-white p-8 border rounded-lg shadow-sm">
           <h2 className="text-xl font-bold mb-4">Disaster Recovery Library</h2>
           <p className="text-gray-600 mb-6">
-            The documentation files are located in your repository at <code>docs/Recovery/</code>. 
+            The raw documentation files are located in your repository at <code>docs/Recovery/</code>. 
             Ensure your team has access to these files outside of this CRM in case the server goes offline.
           </p>
+          
+          <div className="mb-8 p-6 bg-blue-50 rounded-lg border border-blue-100">
+            <h3 className="text-lg font-bold text-blue-900 mb-3 flex items-center">
+              <CheckCircle2 className="w-5 h-5 mr-2" />
+              How to Test the Recovery Engine
+            </h3>
+            <div className="space-y-4 text-blue-800">
+              <div>
+                <p className="font-bold">Step 1: Take a Baseline Snapshot</p>
+                <p className="text-sm">Go to the <strong>Snapshot</strong> tab and click <strong>Download Recovery Snapshot</strong>. Save the <code>.enc</code> file to your computer. This file is encrypted with your AES-256-GCM key.</p>
+              </div>
+              
+              <div>
+                <p className="font-bold">Step 2: Simulate Data Loss (Optional but Recommended for Testing)</p>
+                <p className="text-sm">Go to your CRM dashboard or leads list. Edit a lead, change a status, or delete a test lead. Note the changes so you can verify they revert.</p>
+              </div>
+
+              <div>
+                <p className="font-bold">Step 3: Upload for Validation</p>
+                <p className="text-sm">Go to the <strong>Restore</strong> tab. Upload the <code>.enc</code> file you downloaded. The system will decrypt it in-memory and compare the snapshot counts to the live database counts. You will see a "Difference" column highlighting exactly what changed since the snapshot.</p>
+              </div>
+
+              <div>
+                <p className="font-bold">Step 4: Execute Atomic Restore</p>
+                <p className="text-sm">Click <strong>Proceed to Restore</strong>. Check the box for <code>leads</code> (and any other collections you want to roll back). Type <code>RESTORE</code> in the confirmation box and click <strong>Perform Atomic Restore</strong>.</p>
+              </div>
+
+              <div>
+                <p className="font-bold">Step 5: Verify Integrity</p>
+                <p className="text-sm">The system will instantly take an emergency backup, extract the data, and execute the atomic namespace swap. Once complete, check the <strong>Timeline</strong> tab to see the audit logs. Return to your leads list and verify that the data has perfectly reverted to its original state.</p>
+              </div>
+            </div>
+          </div>
+
+          <h3 className="font-bold text-lg mb-3">Offline Runbook Files</h3>
           <ul className="space-y-3">
-            <li className="flex items-center text-blue-600"><AlertCircle className="w-5 h-5 mr-2" /> Runbook.md</li>
-            <li className="flex items-center text-blue-600"><AlertCircle className="w-5 h-5 mr-2" /> Backup.md</li>
-            <li className="flex items-center text-blue-600"><AlertCircle className="w-5 h-5 mr-2" /> Restore.md</li>
-            <li className="flex items-center text-blue-600"><AlertCircle className="w-5 h-5 mr-2" /> DisasterChecklist.md</li>
-            <li className="flex items-center text-blue-600"><AlertCircle className="w-5 h-5 mr-2" /> KeyRotation.md</li>
-            <li className="flex items-center text-blue-600"><AlertCircle className="w-5 h-5 mr-2" /> FAQ.md</li>
+            <li className="flex items-center text-blue-600"><AlertCircle className="w-5 h-5 mr-2" /> Runbook.md - Executive overview</li>
+            <li className="flex items-center text-blue-600"><AlertCircle className="w-5 h-5 mr-2" /> Backup.md - Details on encryption and export architecture</li>
+            <li className="flex items-center text-blue-600"><AlertCircle className="w-5 h-5 mr-2" /> Restore.md - Atomic swap mechanics</li>
+            <li className="flex items-center text-blue-600"><AlertCircle className="w-5 h-5 mr-2" /> DisasterChecklist.md - Step-by-step crisis response</li>
+            <li className="flex items-center text-blue-600"><AlertCircle className="w-5 h-5 mr-2" /> KeyRotation.md - Encryption key management</li>
+            <li className="flex items-center text-blue-600"><AlertCircle className="w-5 h-5 mr-2" /> FAQ.md - Common troubleshooting</li>
           </ul>
         </div>
       )}
