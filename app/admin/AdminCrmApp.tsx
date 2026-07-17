@@ -15,6 +15,8 @@ import BusinessHealthDashboard from "./BusinessHealthDashboard";
 import { contactInfo } from "@/content/contact";
 import { logError } from "../utils/logger";
 import TeamManagement from "./TeamManagement";
+import ReminderProvider from "../components/ReminderEngine/ReminderProvider";
+import LeadContextAlert from "../components/ReminderEngine/LeadContextAlert";
 
 const statuses = ["New", "Contacted", "Qualified", "Proposal Sent", "Won", "Lost"];
 const priorities = ["High", "Medium", "Low"];
@@ -202,84 +204,6 @@ export function AdminCrmApp({ admin }: { admin: Admin }) {
   const [error, setError] = useState("");
   const [message, setMessage] = useState("");
   
-  // Reminder State
-  const [activeReminders, setActiveReminders] = useState<Lead[]>([]);
-  const [snoozedReminders, setSnoozedReminders] = useState<Record<string, number>>({});
-
-  // Soft notification sound
-  const playSoftNotificationSound = () => {
-    try {
-      const audioCtx = new (window.AudioContext || (window as any).webkitAudioContext)();
-      const oscillator = audioCtx.createOscillator();
-      const gainNode = audioCtx.createGain();
-      oscillator.type = 'sine';
-      oscillator.frequency.setValueAtTime(600, audioCtx.currentTime);
-      oscillator.frequency.exponentialRampToValueAtTime(1200, audioCtx.currentTime + 0.1);
-      gainNode.gain.setValueAtTime(0, audioCtx.currentTime);
-      gainNode.gain.linearRampToValueAtTime(0.05, audioCtx.currentTime + 0.05); // Very quiet (0.05)
-      gainNode.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.4);
-      oscillator.connect(gainNode);
-      gainNode.connect(audioCtx.destination);
-      oscillator.start(audioCtx.currentTime);
-      oscillator.stop(audioCtx.currentTime + 0.4);
-    } catch(e) {
-      console.log("Audio not supported or blocked", e);
-    }
-  };
-
-  // Reminder Polling Engine (Every 30 seconds)
-  useEffect(() => {
-    if (!admin) return;
-    const interval = setInterval(() => {
-      const now = Date.now();
-      const newReminders: Lead[] = [];
-      let soundPlayed = false;
-
-      leads.forEach(lead => {
-        if (!lead.nextFollowUpAt) return;
-        if (lead.followUpStatus === 'Completed') return;
-        
-        // Is it due within the next 5 minutes? (5 * 60 * 1000 = 300000)
-        const dueTime = new Date(lead.nextFollowUpAt).getTime();
-        const timeUntilDue = dueTime - now;
-        
-        // Show if it's within 5 minutes AND not snoozed currently
-        if (timeUntilDue <= 300000 && timeUntilDue > -86400000) { // Don't show if it's over 1 day old to avoid spam
-          const snoozeUntil = snoozedReminders[lead._id];
-          if (!snoozeUntil || now > snoozeUntil) {
-            newReminders.push(lead);
-          }
-        }
-      });
-
-      // Check if we have NEW reminders that weren't in the active list to play a sound
-      const currentActiveIds = new Set(activeReminders.map(r => r._id));
-      newReminders.forEach(r => {
-        if (!currentActiveIds.has(r._id) && !soundPlayed) {
-          playSoftNotificationSound();
-          soundPlayed = true;
-        }
-      });
-
-      setActiveReminders(newReminders);
-    }, 30000);
-
-    return () => clearInterval(interval);
-  }, [leads, admin, snoozedReminders, activeReminders]);
-
-  const snoozeReminder = (leadId: string) => {
-    setSnoozedReminders(prev => ({
-      ...prev,
-      [leadId]: Date.now() + 5 * 60 * 1000 // 5 minutes
-    }));
-    setActiveReminders(prev => prev.filter(r => r._id !== leadId));
-  };
-
-  const completeReminder = async (leadId: string) => {
-    // Optimistic UI update
-    setActiveReminders(prev => prev.filter(r => r._id !== leadId));
-    await updateLead(leadId, { followUpStatus: 'Completed' });
-  };
   const [activeLead, setActiveLead] = useState<Lead | null>(null);
   const [note, setNote] = useState("");
 
@@ -586,8 +510,22 @@ async function logContact(id: string, channel: string) {
   }, [leads, admin.role]);
 
   return (
-    <main className="crm-os">
-      <style>{`
+    <ReminderProvider
+      items={leads.map(l => ({
+        id: l._id,
+        title: l.name,
+        subtitle: l.phone,
+        details: l.clientSummary || (l.notes && l.notes.length > 0 ? l.notes[0].note : undefined),
+        scheduledAt: l.nextFollowUpAt || '',
+        status: l.followUpStatus || 'Pending',
+        originalPayload: l
+      })).filter(i => i.scheduledAt)}
+      onCompleteItem={async (id) => { await updateLead(id, { followUpStatus: 'Completed' }); }}
+      onOpenItem={(item) => setActiveLead(item.originalPayload as Lead)}
+      contextActiveId={activeLead?._id || null}
+    >
+      <main className="crm-os">
+        <style>{`
         .crm-tooltip-container { position: relative; display: inline-flex; }
         .crm-tooltip-text { visibility: hidden; background-color: #1e293b; color: #f8fafc; text-align: center; border-radius: 8px; padding: 8px 12px; position: absolute; z-index: 99999; bottom: 125%; left: 50%; transform: translateX(-50%) translateY(10px); opacity: 0; transition: opacity 0.2s, transform 0.2s, visibility 0.2s; box-shadow: 0 10px 25px -5px rgba(0,0,0,0.2); font-size: 13px; font-weight: 500; white-space: nowrap; pointer-events: none; }
         .crm-tooltip-text::after { content: ""; position: absolute; top: 100%; left: 50%; margin-left: -6px; border-width: 6px; border-style: solid; border-color: #1e293b transparent transparent transparent; }
@@ -983,6 +921,8 @@ async function logContact(id: string, channel: string) {
               </div>
               <button onClick={closeLead}>Close</button>
             </header>
+            
+            <LeadContextAlert leadId={activeLead._id} />
 
             <div className="crm-drawer-actions" style={{ display: 'flex', gap: '12px', margin: '20px 0' }}>
               <a href={`tel:${activeLead.phone}`} onClick={() => void logContact(activeLead._id, "call")} style={{ flex: 1, textAlign: 'center', background: '#3b82f6', color: 'white', padding: '10px', borderRadius: '8px', textDecoration: 'none', fontWeight: 600, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px' }}>
@@ -1260,58 +1200,7 @@ async function logContact(id: string, channel: string) {
       )}
 
       </section>
-
-      {/* Reminder Popup Stack */}
-      {activeReminders.length > 0 && (
-        <div style={{
-          position: 'fixed', bottom: '24px', right: '24px', zIndex: 10000,
-          display: 'flex', flexDirection: 'column', gap: '12px', width: '360px',
-          pointerEvents: 'none'
-        }}>
-          {activeReminders.map(r => {
-            const isOverdue = new Date(r.nextFollowUpAt!).getTime() < Date.now();
-            return (
-              <div key={r._id} style={{
-                background: '#ffffff', borderRadius: '12px', padding: '16px',
-                boxShadow: '0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1)',
-                borderLeft: `4px solid ${isOverdue ? '#ef4444' : '#f59e0b'}`,
-                pointerEvents: 'auto',
-                animation: 'modal-pop 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards'
-              }}>
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '8px' }}>
-                  <h4 style={{ margin: 0, color: '#0f172a', fontSize: '15px' }}>
-                    {isOverdue ? '⚠️ Overdue Call' : '⏰ Call Reminder'}
-                  </h4>
-                  <span style={{ fontSize: '12px', color: '#64748b', fontWeight: 500 }}>
-                    {new Date(r.nextFollowUpAt!).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}
-                  </span>
-                </div>
-                
-                <p style={{ margin: '0 0 4px 0', fontWeight: 600, color: '#1e293b' }}>{r.name}</p>
-                <p style={{ margin: '0 0 12px 0', fontSize: '13px', color: '#3b82f6', fontWeight: 500 }}>📞 {r.phone}</p>
-                
-                {r.clientSummary ? (
-                  <div style={{ background: '#f8fafc', padding: '10px', borderRadius: '6px', fontSize: '13px', color: '#334155', marginBottom: '16px', border: '1px solid #e2e8f0', maxHeight: '80px', overflowY: 'auto' }}>
-                    <strong>Client Needs:</strong><br/>
-                    {r.clientSummary}
-                  </div>
-                ) : (
-                  <div style={{ background: '#f8fafc', padding: '10px', borderRadius: '6px', fontSize: '13px', color: '#94a3b8', fontStyle: 'italic', marginBottom: '16px', border: '1px solid #e2e8f0' }}>
-                    No executive summary provided.
-                  </div>
-                )}
-
-                <div style={{ display: 'flex', gap: '8px' }}>
-                  <button onClick={() => { setActiveLead(r); setActiveReminders(prev => prev.filter(rem => rem._id !== r._id)); }} style={{ flex: 1, padding: '8px', background: '#e2e8f0', color: '#0f172a', borderRadius: '6px', fontSize: '13px', fontWeight: 600 }}>Open Lead</button>
-                  <button onClick={() => snoozeReminder(r._id)} style={{ flex: 1, padding: '8px', background: '#fef3c7', color: '#d97706', borderRadius: '6px', fontSize: '13px', fontWeight: 600 }}>Snooze 5m</button>
-                  <button onClick={() => void completeReminder(r._id)} style={{ flex: 1, padding: '8px', background: '#10b981', color: 'white', borderRadius: '6px', fontSize: '13px', fontWeight: 600 }}>Done</button>
-                </div>
-              </div>
-            );
-          })}
-        </div>
-      )}
-
-    </main>
+      </main>
+    </ReminderProvider>
   );
 }
