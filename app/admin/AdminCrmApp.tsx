@@ -240,8 +240,11 @@ export function AdminCrmApp({ admin }: { admin: Admin }) {
     else setSelectedLeads(new Set(leads.map(l => l._id)));
   };
 
-  const handleBulkAction = async (action: 'assign' | 'archive', assignedTo?: string) => {
+  const handleBulkAction = async (action: 'assign' | 'archive' | 'unarchive' | 'delete', assignedTo?: string) => {
     if (selectedLeads.size === 0) return;
+    if (action === 'delete') {
+      if (!confirm("Are you sure you want to permanently delete the selected leads? This cannot be undone.")) return;
+    }
     const loadingToast = toast.loading(`Bulk ${action}ing...`);
     try {
       const res = await fetch("/api/admin/leads/bulk", {
@@ -1053,7 +1056,14 @@ async function logContact(id: string, channel: string) {
               {employees.map(e => <option key={e.id} value={e.id}>{e.name}</option>)}
             </select>
           )}
-          {canAssignLeads && (
+          {statusFilter === "Archived" ? (
+            <>
+              <button onClick={() => handleBulkAction('unarchive')} style={{ background: "black", color: "white", border: "none", padding: "0.5rem 1rem", borderRadius: "4px", cursor: "pointer" }}>Unarchive</button>
+              {admin.role === "owner" && (
+                <button onClick={() => handleBulkAction('delete')} style={{ background: "red", color: "white", border: "none", padding: "0.5rem 1rem", borderRadius: "4px", cursor: "pointer" }}>Delete</button>
+              )}
+            </>
+          ) : (
             <button onClick={() => handleBulkAction('archive')} style={{ background: "black", color: "white", border: "none", padding: "0.5rem 1rem", borderRadius: "4px", cursor: "pointer" }}>Archive</button>
           )}
           <button onClick={() => setSelectedLeads(new Set())} style={{ background: "transparent", border: "none", color: "black", cursor: "pointer", fontSize: "1.2rem" }}>✕</button>

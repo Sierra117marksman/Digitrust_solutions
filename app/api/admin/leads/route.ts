@@ -210,7 +210,12 @@ export async function PATCH(request: Request) {
   const client = await getMongoClient();
   const database = client.db(process.env.MONGODB_DB || "adybabacrm");
   const collection = database.collection("website_enquiries");
-  const lead = await collection.findOne({ _id: new ObjectId(id) });
+  
+  let objectId;
+  try { objectId = new ObjectId(id); } catch {}
+  const query = objectId ? { $or: [{ _id: objectId }, { _id: id }] } : { _id: id };
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const lead = await collection.findOne(query as any);
   if (!lead) return NextResponse.json({ message: "Lead not found." }, { status: 404 });
 
   const { canEditLead } = await import("@/lib/auth/ownership");
@@ -341,7 +346,8 @@ export async function PATCH(request: Request) {
     updates.events = [...existingEvents, ...logs];
   }
 
-  await collection.updateOne({ _id: new ObjectId(id) }, { $set: updates });
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  await collection.updateOne(query as any, { $set: updates });
   return NextResponse.json({ success: true });
 }
 

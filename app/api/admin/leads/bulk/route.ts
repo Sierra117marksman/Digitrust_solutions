@@ -34,7 +34,8 @@ export async function POST(request: Request) {
     const collection = client.db(process.env.MONGODB_DB || "adybabacrm").collection("website_enquiries");
 
     const updates: Record<string, unknown> = { updatedAt: new Date() };
-    const logs = [];
+    const logs: unknown[] = [];
+    const query = { $or: [{ _id: { $in: objectIds } }, { _id: { $in: leadIds } }] };
 
     if (action === "assign") {
       const { computePermissions, hasPermission } = await import("@/lib/auth/roles");
@@ -55,29 +56,34 @@ export async function POST(request: Request) {
       logs.push(activity(`Bulk assigned to ${nextAssignedTo === "unassigned" || !nextAssignedTo ? "Unassigned" : "Employee"}`, "assignment", admin.email));
 
       await collection.updateMany(
-        { _id: { $in: objectIds } },
+        query as unknown as Parameters<typeof collection.updateMany>[0],
         { 
           $set: updates,
           $inc: { reassignedCount: 1 },
           $push: { events: { $each: logs } }
         } as unknown as Parameters<typeof collection.updateMany>[1]
       );
-    } else if (action === "archive") {
+    } else if (action === "archive" || action === "unarchive") {
       // Must be owner or manager
       if (admin.role !== "owner" && admin.role !== "manager") {
-         return NextResponse.json({ message: "Forbidden. Cannot archive leads." }, { status: 403 });
+         return NextResponse.json({ message: `Forbidden. Cannot ${action} leads.` }, { status: 403 });
       }
       
-      updates.status = "Archived";
-      logs.push(activity("Lead archived in bulk operation", "system", admin.name));
+      updates.status = action === "archive" ? "Archived" : "New";
+      logs.push(activity(`Lead ${action}d in bulk operation`, "system", admin.name));
       
       await collection.updateMany(
-        { _id: { $in: objectIds } },
+        query as unknown as Parameters<typeof collection.updateMany>[0],
         { 
           $set: updates,
           $push: { events: { $each: logs } }
         } as unknown as Parameters<typeof collection.updateMany>[1]
       );
+    } else if (action === "delete") {
+      if (admin.role !== "owner") {
+         return NextResponse.json({ message: "Forbidden. Only owners can delete leads." }, { status: 403 });
+      }
+      await collection.deleteMany(query as unknown as Parameters<typeof collection.deleteMany>[0]);
     } else {
       return NextResponse.json({ message: "Invalid bulk action." }, { status: 400 });
     }
