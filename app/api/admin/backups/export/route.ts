@@ -30,7 +30,7 @@ export const POST = requireAuthenticated(async (req, context) => {
     const db = client.db(process.env.MONGODB_DB || "adybabacrm");
 
     // Fetch Collections
-    const collectionsToExport = ["leads", "admin_users", "notes", "activity_logs", "backup_logs", "settings"];
+    const collectionsToExport = ["website_enquiries", "admin_users", "backup_logs", "crm_views"];
     const databaseFiles: Record<string, unknown[]> = {};
     const collectionManifest: { name: string; documents: number; checksum: string }[] = [];
     let totalDocs = 0;

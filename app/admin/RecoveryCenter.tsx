@@ -558,7 +558,7 @@ export default function RecoveryCenter() {
 
               <div>
                 <p className="font-bold">Step 4: Execute Atomic Restore</p>
-                <p className="text-sm">Click <strong>Proceed to Restore</strong>. Check the box for <code>leads</code> (and any other collections you want to roll back). Type <code>RESTORE</code> in the confirmation box and click <strong>Perform Atomic Restore</strong>.</p>
+                <p className="text-sm">Click <strong>Proceed to Restore</strong>. Check the box for <code>website_enquiries</code> (and any other collections you want to roll back). Type <code>RESTORE</code> in the confirmation box and click <strong>Perform Atomic Restore</strong>.</p>
               </div>
 
               <div>

@@ -5,7 +5,7 @@ import { getMongoClient } from "@/lib/mongodb";
 
 export const runtime = "nodejs";
 
-const statuses = ["New", "Contacted", "Qualified", "Proposal Sent", "Won", "Lost"];
+const statuses = ["New", "Contacted", "Qualified", "Proposal Sent", "Won", "Lost", "Archived"];
 const priorities = ["High", "Medium", "Low"];
 const temperatures = ["Hot", "Warm", "Cold"];
 const lostReasons = ["", "Budget", "No Response", "Chose Competitor", "Timeline", "Project Cancelled", "Not Qualified", "Other"];
