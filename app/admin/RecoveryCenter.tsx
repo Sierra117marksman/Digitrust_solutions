@@ -553,7 +553,7 @@ export default function RecoveryCenter() {
 
               <div>
                 <p className="font-bold">Step 3: Upload for Validation</p>
-                <p className="text-sm">Go to the <strong>Restore</strong> tab. Upload the <code>.enc</code> file you downloaded. The system will decrypt it in-memory and compare the snapshot counts to the live database counts. You will see a "Difference" column highlighting exactly what changed since the snapshot.</p>
+                <p className="text-sm">Go to the <strong>Restore</strong> tab. Upload the <code>.enc</code> file you downloaded. The system will decrypt it in-memory and compare the snapshot counts to the live database counts. You will see a &quot;Difference&quot; column highlighting exactly what changed since the snapshot.</p>
               </div>
 
               <div>
