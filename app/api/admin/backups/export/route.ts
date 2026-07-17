@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { getMongoClient } from "@/lib/mongodb";
+import { EJSON } from "bson";
 import { requireAuthenticated } from "@/lib/auth/requirePermission";
 import { ObjectId } from "mongodb";
 import crypto from "crypto";
@@ -39,7 +40,7 @@ export const POST = requireAuthenticated(async (req, context) => {
       const docs = await db.collection(collName).find({}).toArray();
       databaseFiles[collName] = docs;
       
-      const buffer = Buffer.from(JSON.stringify(docs, null, 2), "utf8");
+      const buffer = Buffer.from(EJSON.stringify(docs, { relaxed: false }), "utf8");
       const colChecksum = crypto.createHash("sha256").update(buffer).digest("hex");
       
       collectionManifest.push({

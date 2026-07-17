@@ -3,6 +3,7 @@ import { getMongoClient } from "@/lib/mongodb";
 import { requireAuthenticated } from "@/lib/auth/requirePermission";
 import crypto from "crypto";
 import AdmZip from "adm-zip";
+import { EJSON } from "bson";
 
 function getEncryptionKey() {
   const keyHex = process.env.BACKUP_ENCRYPTION_KEY;
@@ -83,7 +84,7 @@ export const POST = requireAuthenticated(async (req, context) => {
     if (!manifestEntry) {
       return NextResponse.json({ error: "Missing metadata/manifest.json in archive." }, { status: 400 });
     }
-    const manifest = JSON.parse(manifestEntry.getData().toString("utf8"));
+    const manifest = EJSON.parse(manifestEntry.getData().toString("utf8")) as Record<string, unknown>;
 
     const client = await getMongoClient();
     const db = client.db(process.env.MONGODB_DB || "adybabacrm");
@@ -106,7 +107,7 @@ export const POST = requireAuthenticated(async (req, context) => {
       if (!dataEntry) {
         throw new Error(`Collection ${coll} selected but missing in backup archive.`);
       }
-      const docs = JSON.parse(dataEntry.getData().toString("utf8"));
+      const docs = EJSON.parse(dataEntry.getData().toString("utf8")) as Record<string, unknown>[];
       const tempCollName = `restore_tmp_${coll}_${timestamp}`;
       
       if (docs.length > 0) {

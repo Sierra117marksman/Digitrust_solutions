@@ -130,14 +130,19 @@ export async function getCurrentAdmin(): Promise<CurrentAdmin | null> {
 
   const client = await getMongoClient();
   const database = client.db(process.env.MONGODB_DB || "adybabacrm");
+  const adminIdStr = session.sub;
+  let adminIdObj: ObjectId | undefined;
+  try { adminIdObj = new ObjectId(adminIdStr); } catch {}
+
   const admin = await database.collection("admin_users").findOne({
-    _id: new ObjectId(session.sub),
+    $or: adminIdObj ? [{ _id: adminIdObj }, { _id: adminIdStr }] : [{ _id: adminIdStr }],
     email: session.email,
     status: "active",
     // authVersion checks ensure sessions are invalidated if authVersion is incremented
     // If session.authVersion is 1, the DB might not have the field yet (e.g. legacy data/restored backup)
     authVersion: session.authVersion === 1 ? { $in: [1, null] } : session.authVersion,
-  });
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  } as any);
 
   if (!admin) return null;
 
