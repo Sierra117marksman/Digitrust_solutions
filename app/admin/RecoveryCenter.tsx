@@ -40,6 +40,12 @@ export default function RecoveryCenter() {
   const [loading, setLoading] = useState(true);
   const [exporting, setExporting] = useState(false);
   
+  const [uploadedFile, setUploadedFile] = useState<File | null>(null);
+  const [showRestoreWizard, setShowRestoreWizard] = useState(false);
+  const [selectedCollections, setSelectedCollections] = useState<Set<string>>(new Set());
+  const [restoreConfirmation, setRestoreConfirmation] = useState("");
+  const [restoring, setRestoring] = useState(false);
+  
   // Restore Wizard state
   const [validating, setValidating] = useState(false);
   const [simulationReport, setSimulationReport] = useState<{
@@ -106,6 +112,7 @@ export default function RecoveryCenter() {
   const handleUploadBackup = async (e: React.ChangeEvent<HTMLInputElement>) => {
     if (!e.target.files || e.target.files.length === 0) return;
     const file = e.target.files[0];
+    setUploadedFile(file);
     
     setValidating(true);
     setSimulationReport(null);
@@ -131,6 +138,47 @@ export default function RecoveryCenter() {
       setValidating(false);
       // Reset input so it can be uploaded again
       e.target.value = '';
+    }
+  };
+
+  
+  const handleRestore = async () => {
+    if (!uploadedFile) return;
+    if (restoreConfirmation !== "RESTORE") {
+      alert("Please type RESTORE exactly to confirm.");
+      return;
+    }
+    if (selectedCollections.size === 0) {
+      alert("Please select at least one collection to restore.");
+      return;
+    }
+
+    setRestoring(true);
+    const formData = new FormData();
+    formData.append("file", uploadedFile);
+    formData.append("confirmation", restoreConfirmation);
+    formData.append("collections", JSON.stringify(Array.from(selectedCollections)));
+
+    try {
+      const res = await fetch("/api/admin/backups/restore", {
+        method: "POST",
+        body: formData
+      });
+      const data = await res.json();
+      if (!res.ok) {
+        alert(data.error || "Restore Failed");
+      } else {
+        alert("Restore completed successfully! " + JSON.stringify(data.integrity));
+        setSimulationReport(null);
+        setShowRestoreWizard(false);
+        setUploadedFile(null);
+        fetchHistory();
+      }
+    } catch {
+      alert("An unexpected error occurred during restore.");
+    } finally {
+      setRestoring(false);
+      setRestoreConfirmation("");
     }
   };
 
@@ -350,9 +398,75 @@ export default function RecoveryCenter() {
               </div>
 
               <div className="flex justify-end pt-4">
-                <button disabled className="px-6 py-2 bg-gray-300 text-gray-600 font-bold rounded-md cursor-not-allowed">
-                  Validation Complete — Restore functionality coming in Phase 1C
-                </button>
+                {!showRestoreWizard ? (
+                  <button 
+                    onClick={() => {
+                      const cols = new Set<string>();
+                      (simulationReport.manifest.collections as {name: string}[] | undefined)?.forEach(c => cols.add(c.name));
+                      setSelectedCollections(cols);
+                      setShowRestoreWizard(true);
+                    }}
+                    className="px-6 py-2 bg-blue-600 text-white font-bold rounded-md hover:bg-blue-700"
+                  >
+                    Proceed to Restore
+                  </button>
+                ) : (
+                  <div className="w-full bg-white border rounded-lg p-6 mt-4 shadow-lg">
+                    <h3 className="text-xl font-bold text-red-600 mb-4 flex items-center">
+                      <ShieldAlert className="mr-2" />
+                      Atomic Namespace Swap (Phase 1C)
+                    </h3>
+                    
+                    <div className="mb-4">
+                      <p className="font-bold mb-2 text-gray-700">1. Select Collections to Restore:</p>
+                      <div className="grid grid-cols-2 gap-2">
+                        {(simulationReport.manifest.collections as {name: string}[] | undefined)?.map(c => (
+                          <label key={c.name} className="flex items-center space-x-2 bg-gray-50 p-2 rounded border">
+                            <input 
+                              type="checkbox" 
+                              checked={selectedCollections.has(c.name)}
+                              onChange={(e) => {
+                                const newSet = new Set(selectedCollections);
+                                if (e.target.checked) newSet.add(c.name);
+                                else newSet.delete(c.name);
+                                setSelectedCollections(newSet);
+                              }}
+                            />
+                            <span className="font-medium">{c.name}</span>
+                          </label>
+                        ))}
+                      </div>
+                    </div>
+
+                    <div className="mb-6">
+                      <p className="font-bold mb-2 text-gray-700">2. Confirm Action:</p>
+                      <p className="text-sm text-gray-500 mb-2">This will drop the current live collections and instantly swap in the backup data. An emergency snapshot of the current state will be taken first.</p>
+                      <input 
+                        type="text" 
+                        placeholder="Type RESTORE to confirm" 
+                        value={restoreConfirmation}
+                        onChange={(e) => setRestoreConfirmation(e.target.value)}
+                        className="w-full p-3 border border-red-300 rounded focus:ring-red-500 focus:border-red-500"
+                      />
+                    </div>
+
+                    <div className="flex justify-between items-center">
+                      <button 
+                        onClick={() => setShowRestoreWizard(false)}
+                        className="text-gray-500 hover:underline font-medium"
+                      >
+                        Cancel
+                      </button>
+                      <button 
+                        onClick={handleRestore}
+                        disabled={restoring || restoreConfirmation !== "RESTORE" || selectedCollections.size === 0}
+                        className="px-8 py-3 bg-red-600 text-white font-bold rounded-md hover:bg-red-700 disabled:opacity-50 disabled:cursor-not-allowed flex items-center"
+                      >
+                        {restoring ? "Restoring..." : "Perform Atomic Restore"}
+                      </button>
+                    </div>
+                  </div>
+                )}
               </div>
             </div>
           )}
