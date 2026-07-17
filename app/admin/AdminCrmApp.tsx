@@ -209,6 +209,7 @@ export function AdminCrmApp({ admin }: { admin: Admin }) {
 
   const [originalLead, setOriginalLead] = useState<Lead | null>(null);
   const [isCreatingLead, setIsCreatingLead] = useState(false);
+  const [actioningWhatsApp, setActioningWhatsApp] = useState<Lead | null>(null);
   const [actioningCall, setActioningCall] = useState<string | null>(null);
   const [showGlossary, setShowGlossary] = useState(false);
   const [activeTab, setActiveTab] = useState<"dashboard" | "leads" | "queue" | "activity" | "analytics" | "team" | "recovery">("dashboard");
