@@ -61,7 +61,11 @@ export async function GET(request: Request) {
       { service: { $regex: search, $options: "i" } },
     ];
   }
-  if (status) query.status = status === "New" ? { $in: ["New", "new"] } : status;
+  if (status) {
+    query.status = status === "New" ? { $in: ["New", "new"] } : status;
+  } else {
+    query.status = { $ne: "Archived" };
+  }
   if (priority) query.priority = priority;
   if (leadTemperature) query.leadTemperature = leadTemperature;
   if (service) query.service = service;
@@ -85,7 +89,7 @@ export async function GET(request: Request) {
   const endOfYesterday = new Date(today.getFullYear(), today.getMonth(), today.getDate() - 1, 23, 59, 59, 999);
   
   const idleThreshold = new Date(Date.now() - 48 * 60 * 60 * 1000);
-  const openStatus = { $nin: ["Won", "Lost"] };
+  const openStatus = { $nin: ["Won", "Lost", "Archived"] };
 
   if (timeline === "dueToday") {
     query.followUpDate = { $gte: startOfToday, $lte: endOfToday };
@@ -110,6 +114,7 @@ export async function GET(request: Request) {
     collection.find(query).sort({ createdAt: -1 }).skip(skip).limit(limit).toArray(),
     collection.countDocuments(query),
     collection.aggregate<{ _id: string; count: number; totalWon: number }>([
+      { $match: { status: { $ne: "Archived" } } },
       { $group: { _id: "$status", count: { $sum: 1 }, totalWon: { $sum: { $cond: [{ $eq: ["$status", "Won"] }, { $ifNull: ["$wonValue", 0] }, 0] } } } },
     ]).toArray(),
     collection.aggregate<{ _id: null; overdue: number; dueToday: number; upcoming: number }>([

@@ -16,7 +16,7 @@ import ReminderProvider from "../components/ReminderEngine/ReminderProvider";
 import LeadContextAlert from "../components/ReminderEngine/LeadContextAlert";
 import RecoveryCenter from "./RecoveryCenter";
 
-const statuses = ["New", "Contacted", "Qualified", "Proposal Sent", "Won", "Lost"];
+const statuses = ["New", "Contacted", "Qualified", "Proposal Sent", "Won", "Lost", "Archived"];
 const priorities = ["High", "Medium", "Low"];
 const temperatures = ["Hot", "Warm", "Cold"];
 const pageSize = 25;
