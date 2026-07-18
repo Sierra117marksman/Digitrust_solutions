@@ -58,7 +58,7 @@ export default function BusinessHealthDashboard({ onAction }: { onAction: (actio
         <div style={{ background: "rgba(255,255,255,0.05)", padding: "1.5rem", borderRadius: "8px", border: "1px solid rgba(255,255,255,0.1)" }}>
           <h4 style={{ margin: "0 0 0.5rem 0", color: "#aaa", fontSize: "0.9rem" }}>Expected Wins</h4>
           <div style={{ fontSize: "1.5rem", fontWeight: "bold", color: "white" }}>
-            {Math.round(data.pipeline.new * 0.22)} <span style={{ fontSize: "0.9rem", color: "#888", fontWeight: "normal" }}>This Month</span>
+            {data.pipeline.expectedWins} <span style={{ fontSize: "0.9rem", color: "#888", fontWeight: "normal" }}>Based on Conv. Rate</span>
           </div>
         </div>
       </section>
@@ -90,15 +90,11 @@ export default function BusinessHealthDashboard({ onAction }: { onAction: (actio
             <div key={score.id} style={{ background: "#111", padding: "1rem", borderRadius: "8px", border: "1px solid #333" }}>
               <div style={{ display: "flex", justifyContent: "space-between", marginBottom: "1rem" }}>
                 <strong style={{ color: "white" }}>{score.name}</strong>
-                <span style={{ color: "#ffcc00" }}>⭐⭐⭐⭐☆</span>
               </div>
               <div style={{ display: "flex", justifyContent: "space-between", fontSize: "0.85rem", marginBottom: "0.5rem" }}>
                 <span style={{ color: "#888" }}>Follow-up Rate</span>
                 <span>
                   <strong style={{ color: "white", marginRight: "0.5rem" }}>{score.followUpRate}%</strong>
-                  <span style={{ color: score.trend.calls > 0 ? "#00ff88" : "#ff4444" }}>
-                    {score.trend.calls > 0 ? "↑" : "↓"} {Math.abs(score.trend.calls)}%
-                  </span>
                 </span>
               </div>
               <div style={{ display: "flex", justifyContent: "space-between", fontSize: "0.85rem", marginBottom: "0.5rem" }}>

@@ -23,6 +23,7 @@ export interface AnalyticsSnapshot {
     interested: number;
     proposal: number;
     won: number;
+    expectedWins: number;
   };
   sourceROI: Array<{
     source: string;
@@ -77,12 +78,17 @@ export class AnalyticsService {
     ]).toArray();
     
     const pipeMap = Object.fromEntries(pipelineStats.map((s: Record<string, unknown>) => [s._id, s.count]));
+    const totalPipeLeads = Object.values(pipeMap).reduce((a, b) => (a as number) + (b as number), 0) as number;
+    const totalPipeWon = pipeMap["Won"] || 0;
+    const avgConv = totalPipeLeads > 0 ? (totalPipeWon as number) / totalPipeLeads : 0;
+    
     const pipeline = {
-      new: pipeMap["New"] || 0,
-      contacted: pipeMap["Contacted"] || 0,
-      interested: pipeMap["Qualified"] || 0, // Assuming Qualified = Interested
-      proposal: pipeMap["Proposal Sent"] || 0,
-      won: pipeMap["Won"] || 0,
+      new: pipeMap["New"] as number || 0,
+      contacted: pipeMap["Contacted"] as number || 0,
+      interested: pipeMap["Qualified"] as number || 0,
+      proposal: pipeMap["Proposal Sent"] as number || 0,
+      won: pipeMap["Won"] as number || 0,
+      expectedWins: Math.round((pipeMap["New"] as number || 0) * avgConv)
     };
 
     // 2. Source ROI
@@ -123,20 +129,41 @@ export class AnalyticsService {
       { $group: { _id: "$events.performedBy", calls: { $sum: 1 } } } // performedBy is usually the Name, not ID
     ]).toArray();
 
+    // Employee Stats for win rate and follow up rate
+    const employeeStats = await collection.aggregate([
+      { 
+        $group: { 
+          _id: "$assignedTo",
+          totalLeads: { $sum: 1 },
+          wonLeads: { $sum: { $cond: [{ $eq: ["$status", "Won"] }, 1, 0] } },
+          contactedLeads: { $sum: { $cond: [{ $ne: ["$status", "New"] }, 1, 0] } }
+        }
+      }
+    ]).toArray();
+
     // Mapping name to ID is tricky if events use Name. We will try our best.
     const scorecards = users.map((u: Record<string, unknown>) => {
-      const wins = monthlyWins.find((w: Record<string, unknown>) => w._id === (u._id as { toString: () => string }).toString())?.wins as number || 0;
+      const uid = (u._id as { toString: () => string }).toString();
+      const wins = monthlyWins.find((w: Record<string, unknown>) => w._id === uid)?.wins as number || 0;
       const calls = todayCalls.find((c: Record<string, unknown>) => c._id === u.name)?.calls as number || 0;
       
+      const stats = employeeStats.find((s: Record<string, unknown>) => s._id === uid) || { totalLeads: 0, wonLeads: 0, contactedLeads: 0 };
+      const total = (stats.totalLeads as number) || 0;
+      const wonLeads = (stats.wonLeads as number) || 0;
+      const contactedLeads = (stats.contactedLeads as number) || 0;
+
+      const winRate = total > 0 ? Math.round((wonLeads / total) * 100) : 0;
+      const followUpRate = total > 0 ? Math.round((contactedLeads / total) * 100) : 0;
+      
       return {
-        id: (u._id as { toString: () => string }).toString(),
+        id: uid,
         name: u.name as string,
         callsMade: calls,
         wins: wins,
-        winRate: 20, // Mock for now until we build robust history
-        followUpRate: 85 + Math.floor(Math.random() * 10), // Mocked for demonstration
-        slaCompliance: 90 + Math.floor(Math.random() * 10), // Mocked
-        trend: { wins: 2, calls: 5 } // vs last period
+        winRate,
+        followUpRate,
+        slaCompliance: followUpRate, // Approximation based on whether they were contacted
+        trend: { wins: 0, calls: 0 } // Real trend calculation would require historical aggregation
       };
     });
 
@@ -160,11 +187,11 @@ export class AnalyticsService {
     
     const recommendations = [];
     if (pipeline.new > 30) recommendations.push("High volume of New leads. Consider assigning to available reps.");
-    if (sourceROI.length > 0 && sourceROI[0].conversion > 20) recommendations.push(`\${sourceROI[0].source} is converting well. Focus efforts here.`);
+    if (sourceROI.length > 0 && sourceROI[0].conversion > 20) recommendations.push(`${sourceROI[0].source} is converting well. Focus efforts here.`);
     
     // Add SLA breach warnings
     const breached = await collection.countDocuments({ status: "New", createdAt: { $lt: new Date(Date.now() - 8 * 3600000) } });
-    if (breached > 0) recommendations.push(`\${breached} new leads have breached the 8-hour SLA.`);
+    if (breached > 0) recommendations.push(`${breached} new leads have breached the 8-hour SLA.`);
 
     return {
       timestamp: now,
