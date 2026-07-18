@@ -42,7 +42,7 @@ export class GoogleDriveProvider implements BackupStorageProvider {
   }
 
   async upload(fileBuffer: Buffer, fileName: string, metadata: Partial<BackupAuditLog>): Promise<string> {
-    const fileMetadata: Record<string, any> = {
+    const fileMetadata: Record<string, string | string[]> = {
       name: fileName,
       parents: [this.folderId]
     };
