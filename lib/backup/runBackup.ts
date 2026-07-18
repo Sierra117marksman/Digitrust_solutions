@@ -133,7 +133,7 @@ export async function runBackup(params: RunBackupParams): Promise<{ buffer: Buff
       createdBy: params.adminId ? new ObjectId(params.adminId) : 'System'
     };
 
-    await db.collection('backup_logs').insertOne(logEntry);
+    await db.collection('backup_logs').insertOne(logEntry as Record<string, unknown>);
 
     // Safeguard: Only execute purge AFTER successful verification and log save
     try {
@@ -159,7 +159,7 @@ export async function runBackup(params: RunBackupParams): Promise<{ buffer: Buff
     };
 
     try {
-      await db.collection('backup_logs').insertOne(logEntry);
+      await db.collection('backup_logs').insertOne(logEntry as Record<string, unknown>);
     } catch {
       // Ignore inner db error
     }

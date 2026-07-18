@@ -59,7 +59,7 @@ export interface BackupManifest {
   crmVersion: string;
   schemaVersion: string;
   mongoVersion: string;
-  collections: string[];
+  collections: ({name: string, documents: number, checksum: string} | string)[];
   documentCounts: Record<string, number>;
   createdBy: string;
   hostname: string;
