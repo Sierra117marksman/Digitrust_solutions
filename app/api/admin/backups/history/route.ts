@@ -23,67 +23,83 @@ export const GET = requireAuthenticated(async (req, context) => {
     // Map to a clean timeline format
     const timeline = logs.map(log => ({
       id: log._id.toString(),
-      backupId: log.backupId,
-      fingerprint: log.fingerprint,
+      backupId: log.backupId || log.id,
+      fingerprint: log.fingerprint || log.checksum,
       type: log.backupType,
       status: log.status,
       timestamp: log.startedAt || log.createdAt,
       durationMs: log.durationMs,
       sizeBytes: log.sizeBytes,
-      error: log.error
+      error: log.error,
+      label: log.label
     }));
 
-    // Calculate Recovery Score based on the formula
-    let score = 0;
+    // Checklist Evaluation
+    const latestCron = timeline.find(l => l.type === 'cron' || l.label === 'daily');
+    const latestAny = timeline.find(l => l.status === 'verified' || l.status === 'Success');
     
-    // Check 1: Last backup < 24h (+25)
-    const latestManual = timeline.find(l => l.type === 'manual' && l.status === 'Success');
     let lastSnapshot = "Never";
-    if (latestManual) {
-      const msSince = Date.now() - new Date(latestManual.timestamp).getTime();
+    if (latestAny) {
+      const msSince = Date.now() - new Date(latestAny.timestamp).getTime();
       if (msSince < 24 * 60 * 60 * 1000) {
-        score += 25;
-        lastSnapshot = "Today";
+        lastSnapshot = Math.floor(msSince / (60 * 60 * 1000)) + " hours ago";
+        if (lastSnapshot === "0 hours ago") lastSnapshot = "Just now";
       } else {
-        lastSnapshot = Math.floor(msSince / (24 * 60 * 60 * 1000)) + " Days Ago";
+        lastSnapshot = Math.floor(msSince / (24 * 60 * 60 * 1000)) + " days ago";
       }
     }
 
-    // Check 2: Last Restore Test < 30d (+20)
+    // Last Verification
+    let lastVerification = "Never";
+    const latestVerifiable = timeline.find(l => l.status === 'verified' || l.status === 'failed');
+    if (latestVerifiable) {
+      lastVerification = latestVerifiable.status === 'verified' ? 'Passed' : 'Failed';
+    }
+
+    // Last Restore Test
     const latestTest = timeline.find(l => l.type === 'restore_test' && l.status === 'Success');
     let restoreTested = "Never";
     if (latestTest) {
       const msSinceTest = Date.now() - new Date(latestTest.timestamp).getTime();
-      if (msSinceTest < 30 * 24 * 60 * 60 * 1000) {
-        score += 20;
-      }
-      restoreTested = Math.floor(msSinceTest / (24 * 60 * 60 * 1000)) + " Days Ago";
+      restoreTested = Math.floor(msSinceTest / (24 * 60 * 60 * 1000)) + " days ago";
+      if (restoreTested === "0 days ago") restoreTested = "Today";
     }
 
-    // Phase 1A defaults
-    // Google/Dropbox not yet implemented, assume 0 for now or skip
-    // Encryption Enabled (+15)
-    const hasKey = !!process.env.BACKUP_ENCRYPTION_KEY;
-    if (hasKey) score += 15;
-    
-    // Manifest Valid (+10) - Assumed true if latest backup is success
-    if (latestManual) score += 10;
-    
-    // Since Phase 2 isn't live, let's normalize the score out of 70 points for Phase 1A to hit 100%
-    // Max Phase 1A score = 25 + 20 + 15 + 10 = 70.
-    // If we want it to be /100, let's just use fixed points:
-    const finalScore = Math.min(100, Math.round((score / 70) * 100));
-    
-    const readiness = finalScore >= 90 ? "PASS" : (finalScore >= 50 ? "WARNING" : "FAIL");
+    // Encryption
+    const encryptionEnabled = !!process.env.BACKUP_ENCRYPTION_KEY;
+
+    // Cloud Sync
+    let cloudSync = "Unknown";
+    if (latestCron) {
+      cloudSync = latestCron.status === 'verified' ? 'Healthy' : 'Failing';
+    }
+
+    // Overall Status
+    const isReady = encryptionEnabled && lastVerification === 'Passed' && cloudSync !== 'Failing';
+
+    // Retention Metrics
+    const verifiedLogs = logs.filter(l => l.status === 'verified');
+    const verifiedCount = verifiedLogs.length;
+    let oldestVerified = "None";
+    if (verifiedCount > 0) {
+      const oldest = verifiedLogs[verifiedCount - 1]; // Because it's sorted descending
+      const oldestDate = new Date(oldest.createdAt || oldest.startedAt);
+      oldestVerified = oldestDate.toLocaleDateString("en-GB", { day: 'numeric', month: 'short', year: 'numeric' });
+    }
 
     return NextResponse.json({
       timeline,
       health: {
-        score: finalScore,
-        readiness,
+        status: isReady ? 'Ready' : 'Attention Needed',
         lastSnapshot,
+        lastVerification,
         restoreTested,
-        encryptionEnabled: hasKey
+        encryptionEnabled,
+        cloudSync,
+        retentionDays: Number(process.env.BACKUP_RETENTION_DAYS || 30),
+        retentionCount: Number(process.env.BACKUP_RETENTION_COUNT || 30),
+        verifiedCount,
+        oldestVerified
       }
     });
 

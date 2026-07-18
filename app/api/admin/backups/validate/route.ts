@@ -90,8 +90,9 @@ export const POST = requireAuthenticated(async (req, context) => {
     const collections = manifest.collections || [];
 
     for (const coll of collections) {
-      const collName = coll.name;
-      const backupCount = coll.documents;
+      // Backwards compatibility for early bug where collections was string[]
+      const collName = typeof coll === 'string' ? coll : coll.name;
+      const backupCount = typeof coll === 'string' ? (manifest.documentCounts?.[coll] || 0) : coll.documents;
       
       const liveDocs = await db.collection(collName).countDocuments();
       diff[collName] = {

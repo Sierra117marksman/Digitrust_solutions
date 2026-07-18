@@ -1,5 +1,5 @@
 'use client';
-import React, { createContext, useContext, useState, useEffect, useMemo, useCallback } from 'react';
+import React, { createContext, useContext, useState, useEffect, useMemo, useCallback, useRef } from 'react';
 import { ReminderItem, EngineReminder, ReminderEngineAPI } from './ReminderTypes';
 import { calculateReminderState, sortReminders } from './ReminderScheduler';
 import { loadPreferences, ReminderPreferences } from './ReminderPreferences';
@@ -28,6 +28,8 @@ export default function ReminderProvider({ children, items, onCompleteItem, onOp
   const [snoozed, setSnoozed] = useState<Record<string, number>>({});
   const [acknowledged, setAcknowledged] = useState<Record<string, number>>({});
   const [activeReminders, setActiveReminders] = useState<EngineReminder[]>([]);
+
+  const prevActivesRef = useRef<EngineReminder[]>([]);
 
   // The core Engine Tick
   useEffect(() => {
@@ -59,7 +61,7 @@ export default function ReminderProvider({ children, items, onCompleteItem, onOp
             newActives.push(engineItem);
             
             // Check if this just transitioned into a visible state that we haven't seen before
-            const previousState = activeReminders.find(r => r.id === item.id)?.engineState;
+            const previousState = prevActivesRef.current.find(r => r.id === item.id)?.engineState;
             if (!previousState || previousState === 'Scheduled') {
               soundToPlay = true;
             }
@@ -68,7 +70,12 @@ export default function ReminderProvider({ children, items, onCompleteItem, onOp
       });
       
       const sortedActives = sortReminders(newActives);
-      setActiveReminders(sortedActives);
+      
+      // Only set state if it actually changed to prevent infinite loops
+      if (JSON.stringify(prevActivesRef.current) !== JSON.stringify(sortedActives)) {
+        setActiveReminders(sortedActives);
+        prevActivesRef.current = sortedActives;
+      }
       
       if (soundToPlay && prefs.soundEnabled) {
         playSoftNotificationSound();
@@ -79,7 +86,7 @@ export default function ReminderProvider({ children, items, onCompleteItem, onOp
     tick();
     const interval = setInterval(tick, 10000);
     return () => clearInterval(interval);
-  }, [items, prefs, snoozed, acknowledged, contextActiveId, activeReminders]);
+  }, [items, prefs, snoozed, acknowledged, contextActiveId]);
 
   const acknowledgeReminder = useCallback((id: string) => {
     setAcknowledged(prev => ({ ...prev, [id]: Date.now() }));

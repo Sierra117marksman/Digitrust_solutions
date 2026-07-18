@@ -6,9 +6,6 @@ import {
   ShieldCheck,
   ShieldAlert,
   Download,
-  Clock,
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  History,
   CheckCircle2,
   AlertCircle
 } from "lucide-react";
@@ -26,11 +23,16 @@ interface TimelineEvent {
 }
 
 interface HealthStats {
-  score: number;
-  readiness: "PASS" | "WARNING" | "FAIL";
+  status: "Ready" | "Attention Needed";
   lastSnapshot: string;
+  lastVerification: string;
   restoreTested: string;
   encryptionEnabled: boolean;
+  cloudSync: string;
+  retentionDays?: number;
+  retentionCount?: number;
+  verifiedCount?: number;
+  oldestVerified?: string;
 }
 
 export default function RecoveryCenter() {
@@ -219,59 +221,88 @@ export default function RecoveryCenter() {
       {activeTab === "dashboard" && health && (
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div className="bg-white p-6 border rounded-lg shadow-sm">
-            <h3 className="text-lg font-bold text-gray-900 border-b pb-3 mb-4">Executive Summary</h3>
+            <h3 className="text-lg font-bold text-gray-900 border-b pb-3 mb-4">Recovery Status</h3>
             <div className="space-y-4">
-              <div className="flex justify-between items-center">
-                <span className="text-gray-600 flex items-center"><CheckCircle2 className="w-5 h-5 mr-2 text-green-500" /> Recovery Score</span>
-                <span className="font-mono text-lg font-bold text-green-700">{health.score}% (Healthy)</span>
+              <div className="flex justify-between items-center mb-4">
+                <span className="text-gray-600 flex items-center">
+                  {health.status === 'Ready' ? (
+                    <CheckCircle2 className="w-5 h-5 mr-2 text-green-500" />
+                  ) : (
+                    <AlertCircle className="w-5 h-5 mr-2 text-yellow-500" />
+                  )}
+                  Overall Readiness
+                </span>
+                <span className={`font-mono text-lg font-bold ${health.status === 'Ready' ? 'text-green-700' : 'text-yellow-700'}`}>
+                  {health.status === 'Ready' ? '🟢 Ready' : '🟡 Attention Needed'}
+                </span>
               </div>
               
-              <details className="group border rounded-md overflow-hidden cursor-pointer">
-                <summary className="flex justify-between items-center p-3 bg-gray-50 group-open:bg-gray-100 hover:bg-gray-100 transition-colors">
-                  <span className="text-gray-900 font-medium flex items-center">
-                    <ShieldCheck className="w-5 h-5 mr-2 text-blue-600" /> 
-                    Recovery Readiness
-                  </span>
-                  <span className={`font-bold ${health.readiness === 'PASS' ? 'text-green-600' : 'text-red-600'}`}>
-                    {health.readiness} ▾
-                  </span>
-                </summary>
-                <div className="p-4 bg-white space-y-2 text-sm border-t">
-                  <div className="flex justify-between"><span className="text-gray-600">✓ Encryption</span><span className="text-green-600 font-medium">Verified</span></div>
-                  <div className="flex justify-between"><span className="text-gray-600">✓ Manifest</span><span className="text-green-600 font-medium">Valid</span></div>
-                  <div className="flex justify-between"><span className="text-gray-600">✓ Checksums</span><span className="text-green-600 font-medium">Valid</span></div>
-                  <div className="flex justify-between"><span className="text-gray-600">✓ Snapshot Age</span><span className="text-green-600 font-medium">{health.lastSnapshot !== 'Never' ? 'Recent' : 'N/A'}</span></div>
-                  <div className="flex justify-between"><span className="text-gray-600">✓ Last Validation</span><span className="text-gray-400 font-medium">Pending (Phase 1B)</span></div>
-                  <div className="flex justify-between"><span className="text-gray-600">✓ Restore Tested</span><span className="text-gray-400 font-medium">Pending (Phase 1B)</span></div>
+              <div className="border rounded-md overflow-hidden">
+                <div className="p-4 bg-white space-y-3 text-sm">
+                  <div className="flex justify-between">
+                    <span className="text-gray-600">✓ Last Snapshot</span>
+                    <span className="font-medium text-gray-900">{health.lastSnapshot}</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-gray-600">✓ Last Verification</span>
+                    <span className={`font-medium ${health.lastVerification === 'Passed' ? 'text-green-600' : 'text-red-600'}`}>{health.lastVerification}</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-gray-600">✓ Last Restore Test</span>
+                    <span className="font-medium text-gray-900">{health.restoreTested}</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-gray-600">✓ Encryption</span>
+                    <span className={`font-medium ${health.encryptionEnabled ? 'text-green-600' : 'text-red-600'}`}>{health.encryptionEnabled ? 'Enabled' : 'Missing Key'}</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-gray-600">✓ Cloud Sync</span>
+                    <span className={`font-medium ${health.cloudSync === 'Healthy' ? 'text-green-600' : 'text-red-600'}`}>{health.cloudSync}</span>
+                  </div>
                 </div>
-              </details>
+              </div>
+            </div>
 
-              <div className="flex justify-between items-center">
-                <span className="text-gray-600 flex items-center"><Clock className="w-5 h-5 mr-2 text-gray-400" /> Last Snapshot</span>
-                <span className="font-medium text-gray-900">{health.lastSnapshot}</span>
+            {/* Retention Widget */}
+            <h3 className="text-lg font-bold text-gray-900 border-b pb-3 mt-6 mb-4">Retention Policy</h3>
+            <div className="border rounded-md overflow-hidden">
+              <div className="p-4 bg-white space-y-3 text-sm">
+                <div className="flex justify-between">
+                  <span className="text-gray-600">✓ Limit (Days)</span>
+                  <span className="font-medium text-gray-900">{health.retentionDays} Days</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-gray-600">✓ Limit (Count)</span>
+                  <span className="font-medium text-gray-900">Min {health.retentionCount}</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-gray-600">✓ Backups Stored</span>
+                  <span className="font-medium text-blue-700">{health.verifiedCount} Verified</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-gray-600">✓ Oldest Backup</span>
+                  <span className="font-medium text-gray-900">{health.oldestVerified}</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-gray-600">✓ Next Purge</span>
+                  <span className="font-medium text-gray-900">Tomorrow 2:00 AM</span>
+                </div>
               </div>
             </div>
           </div>
           
           <div className="bg-white p-6 border rounded-lg shadow-sm">
-            <h3 className="text-lg font-bold text-gray-900 border-b pb-3 mb-4">System Status</h3>
+            <h3 className="text-lg font-bold text-gray-900 border-b pb-3 mb-4">Quick Actions</h3>
             <div className="space-y-4">
-              <div className="flex justify-between items-center">
-                <span className="text-gray-600">Encryption (AES-256-GCM)</span>
-                {health.encryptionEnabled ? (
-                  <span className="text-green-600 font-bold bg-green-50 px-2 py-1 rounded">ENABLED</span>
-                ) : (
-                  <span className="text-red-600 font-bold bg-red-50 px-2 py-1 rounded">MISSING KEY</span>
-                )}
-              </div>
-              <div className="flex justify-between items-center">
-                <span className="text-gray-600">Daily Pipeline (Google)</span>
-                <span className="text-gray-400">Phase 2</span>
-              </div>
-              <div className="flex justify-between items-center">
-                <span className="text-gray-600">Monthly Pipeline (Dropbox)</span>
-                <span className="text-gray-400">Phase 2</span>
-              </div>
+              <p className="text-sm text-gray-600">
+                The automatic Google Drive backup runs daily at 2:00 AM UTC. You can manually run the backup pipeline now.
+              </p>
+              <button
+                onClick={() => { setActiveTab("snapshot"); }}
+                className="w-full py-2 bg-blue-50 text-blue-700 font-bold rounded border border-blue-200 hover:bg-blue-100 transition"
+              >
+                Run Backup Now &rarr;
+              </button>
             </div>
           </div>
         </div>
@@ -285,8 +316,8 @@ export default function RecoveryCenter() {
             <div className="flex">
               <ShieldAlert className="h-6 w-6 text-yellow-600 mr-3" />
               <p className="text-sm text-yellow-700">
-                This will export a full, AES-256-GCM encrypted archive of the database. 
-                Ensure you have the encryption key saved safely before proceeding, otherwise this file will be permanently unreadable.
+                This will trigger the full backup pipeline synchronously (Snapshot &rarr; Encrypt &rarr; Upload &rarr; Verify). 
+                Once complete, you will also automatically download a local offline copy.
               </p>
             </div>
           </div>
@@ -296,11 +327,11 @@ export default function RecoveryCenter() {
             className="flex items-center justify-center w-full md:w-auto px-6 py-3 bg-blue-600 text-white font-medium rounded-md hover:bg-blue-700 disabled:opacity-50"
           >
             {exporting ? (
-              "Generating Snapshot..."
+              "Running Backup Pipeline..."
             ) : (
               <>
                 <Download className="w-5 h-5 mr-2" />
-                Download Recovery Snapshot
+                Run Backup Now
               </>
             )}
           </button>
@@ -402,7 +433,7 @@ export default function RecoveryCenter() {
                   <button 
                     onClick={() => {
                       const cols = new Set<string>();
-                      (simulationReport.manifest.collections as {name: string}[] | undefined)?.forEach(c => cols.add(c.name));
+                      (simulationReport.manifest.collections as ({name: string} | string)[] | undefined)?.forEach(c => cols.add(typeof c === 'string' ? c : c.name));
                       setSelectedCollections(cols);
                       setShowRestoreWizard(true);
                     }}
@@ -420,21 +451,24 @@ export default function RecoveryCenter() {
                     <div className="mb-4">
                       <p className="font-bold mb-2 text-gray-700">1. Select Collections to Restore:</p>
                       <div className="grid grid-cols-2 gap-2">
-                        {(simulationReport.manifest.collections as {name: string}[] | undefined)?.map(c => (
-                          <label key={c.name} className="flex items-center space-x-2 bg-gray-50 p-2 rounded border">
-                            <input 
-                              type="checkbox" 
-                              checked={selectedCollections.has(c.name)}
-                              onChange={(e) => {
-                                const newSet = new Set(selectedCollections);
-                                if (e.target.checked) newSet.add(c.name);
-                                else newSet.delete(c.name);
-                                setSelectedCollections(newSet);
-                              }}
-                            />
-                            <span className="font-medium">{c.name}</span>
-                          </label>
-                        ))}
+                        {(simulationReport.manifest.collections as ({name: string} | string)[] | undefined)?.map(c => {
+                          const collName = typeof c === 'string' ? c : c.name;
+                          return (
+                            <label key={collName} className="flex items-center space-x-2 bg-gray-50 p-2 rounded border">
+                              <input 
+                                type="checkbox" 
+                                checked={selectedCollections.has(collName)}
+                                onChange={(e) => {
+                                  const newSet = new Set(selectedCollections);
+                                  if (e.target.checked) newSet.add(collName);
+                                  else newSet.delete(collName);
+                                  setSelectedCollections(newSet);
+                                }}
+                              />
+                              <span className="font-medium">{collName}</span>
+                            </label>
+                          );
+                        })}
                       </div>
                     </div>
 
@@ -475,24 +509,25 @@ export default function RecoveryCenter() {
 
       {/* Timeline View */}
       {activeTab === "timeline" && (
-        <div className="bg-white border rounded-lg shadow-sm">
+        <div className="bg-white border rounded-lg shadow-sm overflow-hidden">
           <div className="p-6 border-b">
             <h3 className="text-lg font-bold">Recovery Timeline</h3>
           </div>
-          <div className="p-0">
+          <div className="overflow-x-auto">
             <table className="w-full text-left">
               <thead className="bg-gray-50 border-b">
                 <tr>
                   <th className="px-6 py-3 text-xs font-medium text-gray-500 uppercase tracking-wider">Date</th>
-                  <th className="px-6 py-3 text-xs font-medium text-gray-500 uppercase tracking-wider">Event</th>
+                  <th className="px-6 py-3 text-xs font-medium text-gray-500 uppercase tracking-wider">Type</th>
                   <th className="px-6 py-3 text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
-                  <th className="px-6 py-3 text-xs font-medium text-gray-500 uppercase tracking-wider">Fingerprint</th>
+                  <th className="px-6 py-3 text-xs font-medium text-gray-500 uppercase tracking-wider">Duration</th>
+                  <th className="px-6 py-3 text-xs font-medium text-gray-500 uppercase tracking-wider">Details</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-gray-200">
                 {timeline.length === 0 ? (
                   <tr>
-                    <td colSpan={4} className="px-6 py-8 text-center text-gray-500">
+                    <td colSpan={5} className="px-6 py-8 text-center text-gray-500">
                       No recovery events recorded yet.
                     </td>
                   </tr>
@@ -500,22 +535,29 @@ export default function RecoveryCenter() {
                   timeline.map((event) => (
                     <tr key={event.id} className="hover:bg-gray-50">
                       <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                        {format(new Date(event.timestamp), "MMM dd, yyyy HH:mm:ss")}
+                        {format(new Date(event.timestamp), "MMM dd, HH:mm")}
                       </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
-                        {event.type === "manual" ? "Manual Snapshot" : 
-                         event.type === "emergency" ? "Emergency Snapshot" : 
-                         event.type}
+                      <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 capitalize">
+                        {event.type || 'Unknown'}
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap">
                         <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
-                          event.status === "Success" ? "bg-green-100 text-green-800" : "bg-red-100 text-red-800"
+                          event.status === "verified" || event.status === "Success" ? "bg-green-100 text-green-800" : 
+                          event.status === "purged" ? "bg-gray-200 text-gray-800" :
+                          "bg-red-100 text-red-800"
                         }`}>
-                          {event.status}
+                          {event.status === 'purged' ? '🗑️ Purged' : event.status}
                         </span>
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 font-mono">
-                        {event.fingerprint || "N/A"}
+                        {event.durationMs ? `${event.durationMs.toFixed(1)}s` : '—'}
+                      </td>
+                      <td className="px-6 py-4 text-sm text-gray-500 max-w-xs truncate">
+                        {event.error ? (
+                          <span className="text-red-500" title={event.error}>{event.error}</span>
+                        ) : (
+                          <span>{event.sizeBytes ? `${(event.sizeBytes / 1024 / 1024).toFixed(1)} MB` : ''} <span className="text-gray-300 ml-2">{event.fingerprint}</span></span>
+                        )}
                       </td>
                     </tr>
                   ))

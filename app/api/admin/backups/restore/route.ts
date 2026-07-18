@@ -137,8 +137,16 @@ export const POST = requireAuthenticated(async (req, context) => {
     const integrityResults: Record<string, { status: string; expected: number; actual: number }> = {};
     for (const plan of swapPlan) {
       const actual = await db.collection(plan.original).countDocuments();
-      const expectedObj = (manifest.collections as { name: string; documents: number }[] | undefined)?.find(c => c.name === plan.original);
-      const expected = expectedObj ? expectedObj.documents : 0;
+      
+      let expected = 0;
+      if (Array.isArray(manifest.collections)) {
+        if (typeof manifest.collections[0] === 'string') {
+          expected = (manifest.documentCounts as Record<string, number>)?.[plan.original] || 0;
+        } else {
+          const expectedObj = (manifest.collections as { name: string; documents: number }[]).find(c => c.name === plan.original);
+          expected = expectedObj ? expectedObj.documents : 0;
+        }
+      }
       
       integrityResults[plan.original] = {
         status: actual === expected ? "PASS" : "FAIL",
