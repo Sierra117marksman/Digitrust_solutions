@@ -48,6 +48,13 @@ export const POST = requireAuthenticated(async (req, context) => {
       return NextResponse.json({ error: "No collections selected for restore." }, { status: 400 });
     }
 
+    const ALLOWED_COLLECTIONS = new Set(["website_enquiries", "admin_users", "audit_logs", "views"]);
+    for (const coll of selectedCollections) {
+      if (!ALLOWED_COLLECTIONS.has(coll)) {
+        return NextResponse.json({ error: `Forbidden: Collection '${coll}' is not permitted for restore.` }, { status: 400 });
+      }
+    }
+
     const arrayBuffer = await file.arrayBuffer();
     const buffer = Buffer.from(arrayBuffer);
 

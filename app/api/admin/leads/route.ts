@@ -53,12 +53,13 @@ export async function GET(request: Request) {
 
   const query: Record<string, unknown> = {};
   if (search) {
+    const escapedSearch = search.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
     query.$or = [
-      { name: { $regex: search, $options: "i" } },
-      { email: { $regex: search, $options: "i" } },
-      { phone: { $regex: search, $options: "i" } },
-      { company: { $regex: search, $options: "i" } },
-      { service: { $regex: search, $options: "i" } },
+      { name: { $regex: escapedSearch, $options: "i" } },
+      { email: { $regex: escapedSearch, $options: "i" } },
+      { phone: { $regex: escapedSearch, $options: "i" } },
+      { company: { $regex: escapedSearch, $options: "i" } },
+      { service: { $regex: escapedSearch, $options: "i" } },
     ];
   }
   if (status) {
@@ -237,12 +238,10 @@ export async function PATCH(request: Request) {
 
   // Assignment Logic
   if (body.assignedTo !== undefined) {
-    const { computePermissions, hasPermission } = await import("@/lib/auth/roles");
+    const { hasPermission } = await import("@/lib/auth/roles");
     const { PERMISSIONS } = await import("@/lib/auth/permissions");
-    type Role = import("@/lib/auth/roles").Role;
-    const permissions = computePermissions(admin.role as Role);
     
-    if (hasPermission(permissions, PERMISSIONS.ASSIGN_LEADS)) {
+    if (hasPermission(admin.permissions, PERMISSIONS.ASSIGN_LEADS)) {
       const nextAssignedTo = clean(body.assignedTo, 60);
       if (nextAssignedTo !== lead.assignedTo) {
         updates.assignedTo = nextAssignedTo;

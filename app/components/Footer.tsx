@@ -1,4 +1,5 @@
 "use client";
+import { companyConfig } from "@/config/company";
 
 
 import Link from "next/link";
@@ -32,9 +33,9 @@ export function Footer() {
 
           <div className="footer-grid">
             <div className="footer-col brand-col">
-              <Link href="/" className="footer-brand" aria-label="Digitrust Solutions home">
+              <Link href="/" className="footer-brand" aria-label={`${companyConfig.company.name} home`}>
                 {/* Fallback text if logo doesn't load, though SVG is preferred. Let&apos;s use text to make it simpler and premium */}
-                <span className="brand-text">Digitrust</span>
+                <span className="brand-text">{companyConfig.company.shortName}</span>
               </Link>
               <p className="footer-bio">
                 Ready to transform your digital presence? Let&apos;s build something extraordinary together.
@@ -69,7 +70,7 @@ export function Footer() {
             <div className="footer-col">
               <h4>Company</h4>
               <nav aria-label="Company links">
-                <ScrollLink targetId="about">Why Digitrust</ScrollLink>
+                <ScrollLink targetId="about">Why {companyConfig.company.shortName}</ScrollLink>
                 <ScrollLink targetId="team">Meet the Team</ScrollLink>
                 <Link href="/policies/privacy-policy">Privacy Policy</Link>
               </nav>
@@ -78,8 +79,8 @@ export function Footer() {
             <div className="footer-col contact-col">
               <h4>Contact</h4>
               <address>
-                <a href="mailto:hello@digitrust.in" className="contact-link">
-                  hello@digitrust.in
+                <a href={`mailto:${companyConfig.contact.email}`} className="contact-link">
+                  {companyConfig.contact.email}
                 </a>
                 <a href={contactInfo.phones[0].href} className="contact-link">
                   {contactInfo.phones[0].display}
@@ -100,7 +101,7 @@ export function Footer() {
               <span>Dedicated Support</span>
             </div>
             <div className="footer-legal">
-              <span>© {new Date().getFullYear()} Digitrust Solutions.</span>
+              <span>© {new Date().getFullYear()} {companyConfig.company.name}.</span>
               <nav aria-label="Legal links">
                 {policies.map((policy) => (
                   <Link href={`/policies/${policy.slug}`} key={policy.slug}>

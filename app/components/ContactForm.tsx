@@ -86,6 +86,13 @@ export function ContactForm({
     isSubmittingRef.current = true;
     setStatus("submitting");
 
+    const formEl = event.currentTarget;
+    const consentInput = formEl.elements.namedItem("consent") as HTMLInputElement | null;
+    if (!consentInput?.checked) {
+      toast.error("Please agree to be contacted about this enquiry.");
+      return;
+    }
+
     const payload = {
       name: fields.name.value,
       company: fields.company.value,
@@ -93,6 +100,8 @@ export function ContactForm({
       phone: fields.phone.value,
       service: fields.service.value,
       message: fields.message.value,
+      consent: "accepted",
+      website: (formEl.elements.namedItem("website") as HTMLInputElement)?.value || "",
     };
 
     const loadingToast = toast.loading("Sending enquiry...");

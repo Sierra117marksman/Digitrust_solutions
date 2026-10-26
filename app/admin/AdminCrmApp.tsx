@@ -1,4 +1,5 @@
 "use client";
+import { companyConfig } from "@/config/company";
 
 
 
@@ -537,8 +538,8 @@ async function logContact(id: string, channel: string) {
       <aside className="crm-os-sidebar">
         <div>
           {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img src="/brand/logo.png" alt="Digitrust Logo" style={{ width: '48px', height: '48px', objectFit: 'contain', marginBottom: '1rem', background: 'white', borderRadius: '8px', padding: '4px' }} />
-          <h1>Digitrust CRM</h1>
+          <img src={companyConfig.branding.logo} alt="Digitrust Logo" style={{ width: '48px', height: '48px', objectFit: 'contain', marginBottom: '1rem', background: 'white', borderRadius: '8px', padding: '4px' }} />
+          <h1>{companyConfig.company.shortName} CRM</h1>
           <p>{admin.name}</p>
           <small>{admin.role.replace(/_/g, " ")}</small>
         </div>

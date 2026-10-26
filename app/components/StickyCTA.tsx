@@ -1,11 +1,11 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { contactInfo } from "../../content/contact";
 
 export function StickyCTA() {
   const [isVisible, setIsVisible] = useState(false);
-  const [lastScrollY, setLastScrollY] = useState(0);
+  const lastScrollY = useRef(0);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -15,7 +15,7 @@ export function StickyCTA() {
       if (currentScrollY < 300) {
         // Hide at the very top of the page
         setIsVisible(false);
-      } else if (currentScrollY < lastScrollY || isAtBottom) {
+      } else if (currentScrollY < lastScrollY.current || isAtBottom) {
         // Show if scrolling up or at the very bottom
         setIsVisible(true);
       } else {
@@ -23,12 +23,12 @@ export function StickyCTA() {
         setIsVisible(false);
       }
       
-      setLastScrollY(currentScrollY);
+      lastScrollY.current = currentScrollY;
     };
 
     window.addEventListener("scroll", handleScroll, { passive: true });
     return () => window.removeEventListener("scroll", handleScroll);
-  }, [lastScrollY]);
+  }, []);
 
   return (
     <div className={`sticky-mobile-cta ${isVisible ? "visible" : ""}`}>

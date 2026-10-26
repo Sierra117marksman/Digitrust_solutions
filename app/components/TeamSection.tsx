@@ -1,3 +1,4 @@
+import { companyConfig } from "@/config/company";
 import React from 'react';
 import Image from "next/image";
 
@@ -6,7 +7,7 @@ export default function TeamSection() {
     <section className="section team-section" id="team">
       <div className="container">
         <div className="team-header">
-          <h2>Meet the People Behind DigiTrust</h2>
+          <h2>Meet the People Behind {companyConfig.company.shortName}</h2>
           <p className="team-lead">
             The experts dedicated to turning your ideas into measurable business growth.
           </p>
@@ -16,7 +17,7 @@ export default function TeamSection() {
           {/* CEO Card */}
           <article className="team-card ceo-card">
             <div className="team-photo-wrap">
-              <Image src="/team-ceo.webp" alt="Tarun Yadav - CEO & Founder" fill className="team-photo" />
+              <Image src="/team-ceo.webp" alt="Tarun Yadav - CEO & Founder" fill sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 350px" className="team-photo" />
               <div className="team-accent founder-accent">★ Founder</div>
             </div>
             <div className="team-content">
@@ -36,7 +37,7 @@ export default function TeamSection() {
           {/* Developer Card */}
           <article className="team-card">
             <div className="team-photo-wrap">
-              <Image src="/team-ajay.png" alt="Ajay Thakkar - Lead Developer" fill className="team-photo" />
+              <Image src="/team-ajay.png" alt="Ajay Thakkar - Lead Developer" fill sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 350px" className="team-photo" />
               <div className="team-accent code-accent">&lt;/&gt;</div>
             </div>
             <div className="team-content">
@@ -57,7 +58,7 @@ export default function TeamSection() {
           {/* Project Manager Card */}
           <article className="team-card">
             <div className="team-photo-wrap">
-              <Image src="/team-pm.jpg" alt="Manisha Sherma - Project Manager" fill className="team-photo" />
+              <Image src="/team-pm.jpg" alt="Manisha Sharma - Project Manager" fill sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 350px" className="team-photo" />
               <div className="team-accent pm-accent">📅</div>
             </div>
             <div className="team-content">

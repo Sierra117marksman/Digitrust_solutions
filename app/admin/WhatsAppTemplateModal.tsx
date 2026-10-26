@@ -1,4 +1,5 @@
 "use client";
+import { companyConfig } from "@/config/company";
 import React, { useState } from "react";
 
 interface WhatsAppTemplateModalProps {
@@ -12,7 +13,7 @@ const templates = [
   {
     id: "initial",
     category: "Initial Contact",
-    content: "Hello {{name}}, this is {{employee}} from DigiTrust. I saw your enquiry regarding {{service}}. Let me know a good time to connect!"
+    content: `Hello {{name}}, this is {{employee}} from ${companyConfig.company.shortName}. I saw your enquiry regarding {{service}}. Let me know a good time to connect!`
   },
   {
     id: "followup",

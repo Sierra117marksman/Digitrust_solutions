@@ -1,3 +1,4 @@
+import { companyConfig } from "@/config/company";
 import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
@@ -27,7 +28,7 @@ export async function generateMetadata({ params }: ServicePageProps): Promise<Me
     description: service.seoDescription,
     alternates: { canonical: `/services/${service.slug}` },
     openGraph: {
-      title: `${service.seoTitle} | Digitrust Solutions`,
+      title: `${service.seoTitle} | ${companyConfig.company.name}`,
       description: service.seoDescription,
       url: `/services/${service.slug}`,
       type: "website",
@@ -57,7 +58,7 @@ export default async function ServicePage({ params }: ServicePageProps) {
         areaServed: { "@type": "AdministrativeArea", name: "Gurugram, Haryana, India" },
         provider: {
           "@type": "Organization",
-          name: "Digitrust Solutions",
+          name: companyConfig.company.name,
           telephone: contactInfo.phones[0].display,
           sameAs: [contactInfo.instagram.href],
           address: {
@@ -98,8 +99,8 @@ export default async function ServicePage({ params }: ServicePageProps) {
 
       <header className="site-header">
         <div className="container nav-wrap">
-          <Link className="brand" href="/" aria-label="Digitrust Solutions home">
-            <Image src="/brand/logo.png" alt="Digitrust Solutions" width={500} height={500} priority />
+          <Link className="brand" href="/" aria-label={`${companyConfig.company.name} home`}>
+            <Image src={companyConfig.branding.logo} alt={companyConfig.company.name} width={500} height={500} priority />
           </Link>
           <nav className="desktop-nav" aria-label="Primary navigation">
             <Link href="/#services">Services</Link>
@@ -280,7 +281,7 @@ export default async function ServicePage({ params }: ServicePageProps) {
           <div className="footer-links"><Link href="/#services">Services</Link><Link href="/#technology">Technology</Link><Link href="/#testimonials">Reviews</Link><a href="#service-contact">Contact</a><Link href={contactInfo.instagram.href}>Instagram</Link></div>
         </div>
         <div className="container footer-bottom policy-footer-bottom">
-          <span>© {new Date().getFullYear()} Digitrust Solutions. All rights reserved.</span>
+          <span>© {new Date().getFullYear()} {companyConfig.company.name}. All rights reserved.</span>
           <nav aria-label="Legal links">{policies.map((policy) => <Link href={`/policies/${policy.slug}`} key={policy.slug}>{policy.shortTitle}</Link>)}</nav>
         </div>
       </footer>

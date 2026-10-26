@@ -1,4 +1,5 @@
 "use client";
+import { companyConfig } from "@/config/company";
 
 import Image from "next/image";
 import { useState, useRef, useMemo, FormEvent } from "react";
@@ -185,7 +186,7 @@ export function LoginForm() {
   return (
     <div className="admin-login-panel">
       <div>
-        <p className="admin-kicker">Digitrust CRM</p>
+        <p className="admin-kicker">{companyConfig.company.shortName} CRM</p>
         <h1>Admin Login</h1>
         <p className="admin-muted">
           Sign in with your admin password, then confirm the 6 digit code from Google Authenticator.

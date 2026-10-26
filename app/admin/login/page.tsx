@@ -1,3 +1,4 @@
+import { companyConfig } from "@/config/company";
 import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
@@ -19,7 +20,7 @@ export default async function AdminLoginPage() {
   return (
     <main className="admin-login-page">
       <Link className="admin-login-brand" href="/">
-        <Image src="/brand/logo.png" alt="Digitrust Solutions" width={500} height={500} priority />
+        <Image src={companyConfig.branding.logo} alt={companyConfig.company.name} width={500} height={500} priority />
       </Link>
       <LoginForm />
     </main>

@@ -1,3 +1,4 @@
+import { companyConfig } from "@/config/company";
 import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
@@ -37,7 +38,7 @@ export default async function PolicyPage({ params }: PolicyPageProps) {
     description: policy.description,
     url: `${siteUrl}/policies/${policy.slug}`,
     dateModified: "2026-07-12",
-    isPartOf: { "@type": "WebSite", name: "Digitrust Solutions", url: siteUrl },
+    isPartOf: { "@type": "WebSite", name: companyConfig.company.name, url: siteUrl },
   };
 
   return (
@@ -47,7 +48,7 @@ export default async function PolicyPage({ params }: PolicyPageProps) {
       <header className="site-header">
         <div className="container nav-wrap">
           <Link href="/" className="logo-link">
-            <Image src="/brand/logo.png" alt="Digitrust Solutions" width={500} height={500} priority />
+            <Image src={companyConfig.branding.logo} alt={companyConfig.company.name} width={500} height={500} priority />
           </Link>
           <nav className="desktop-nav" aria-label="Primary navigation">
             <Link href="/#services">Services</Link>
@@ -85,7 +86,7 @@ export default async function PolicyPage({ params }: PolicyPageProps) {
                 <Link className={item.slug === policy.slug ? "active" : ""} href={`/policies/${item.slug}`} key={item.slug}>{item.shortTitle}</Link>
               ))}
             </nav>
-            <div className="policy-business-card"><span>Digitrust Solutions</span><p>Palam Vihar, Gurugram, Haryana - 122017</p><strong>GSTIN: 06DUYPD9228L1ZT</strong></div>
+            <div className="policy-business-card"><span>{companyConfig.company.name}</span><p>{companyConfig.contact.address}</p><strong>GSTIN: {companyConfig.company.gst}</strong></div>
           </aside>
 
           <article className="policy-document">
@@ -113,7 +114,7 @@ export default async function PolicyPage({ params }: PolicyPageProps) {
           <div className="footer-links"><Link href="/#services">Services</Link><Link href="/#testimonials">Reviews</Link><Link href="/#contact">Contact</Link></div>
         </div>
         <div className="container footer-bottom policy-footer-bottom">
-          <span>© {new Date().getFullYear()} Digitrust Solutions.</span>
+          <span>© {new Date().getFullYear()} {companyConfig.company.name}.</span>
           <nav aria-label="Legal links">{policies.map((item) => <Link href={`/policies/${item.slug}`} key={item.slug}>{item.shortTitle}</Link>)}</nav>
         </div>
       </footer>
