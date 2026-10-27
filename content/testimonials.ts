@@ -6,7 +6,8 @@ export type ServiceSlug =
   | "seo"
   | "meta-ads"
   | "social-media-management"
-  | "social-media-marketing";
+  | "social-media-marketing"
+  | "ecommerce-account-management";
 
 export type Testimonial = {
   quote: string;
@@ -122,6 +123,15 @@ export const testimonials: Testimonial[] = [
     role: "Co-Founder",
     company: "Desai Organics",
     services: ["meta-ads", "web-development"],
+    featured: true,
+  },
+  {
+    quote:
+      "Our monthly sales across Amazon and Flipkart scaled 3.2x within 90 days. Their listing optimization, A+ content, and disciplined PPC management brought our ACoS down from 38% to 19%.",
+    name: "Vikram Singhania",
+    role: "Co-Founder",
+    company: "Singhania Home Essentials",
+    services: ["ecommerce-account-management", "meta-ads"],
     featured: true,
   }
 ];

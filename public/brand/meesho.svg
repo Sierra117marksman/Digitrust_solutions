@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 145 40" fill="none">
+  <!-- Meesho Container -->
+  <rect x="2" y="5" width="30" height="30" rx="8" fill="#580A46"/>
+  <!-- Meesho modern 'm' mark -->
+  <path d="M8.5 25.5V15C8.5 13.6 9.6 12.5 11 12.5C12.4 12.5 13.5 13.6 13.5 15V25.5M13.5 18.5C14.2 16.8 15.6 15.5 17.5 15.5C19.8 15.5 21 17.2 21 19.5V25.5M21 18.5C21.7 16.8 23.1 15.5 25 15.5C27.3 15.5 28.5 17.2 28.5 19.5V25.5" stroke="#F43397" stroke-width="2.6" stroke-linecap="round"/>
+  <!-- Meesho Wordmark -->
+  <text x="40" y="26" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-weight="800" font-size="22" fill="#580A46" letter-spacing="-0.5">meesho</text>
+</svg>

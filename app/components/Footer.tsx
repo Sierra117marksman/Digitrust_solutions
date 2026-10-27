@@ -53,6 +53,7 @@ export function Footer() {
               <nav aria-label="Services links">
                 <ScrollLink targetId="services">Web Development</ScrollLink>
                 <ScrollLink targetId="services">Shopify & E-commerce</ScrollLink>
+                <ScrollLink targetId="services">Marketplace Management</ScrollLink>
                 <ScrollLink targetId="services">SEO & Marketing</ScrollLink>
                 <ScrollLink targetId="services">Meta Ads</ScrollLink>
               </nav>

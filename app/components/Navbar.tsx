@@ -117,11 +117,18 @@ export function Navbar() {
                             <span>High-ROAS campaigns</span>
                           </div>
                         </Link>
-                        <Link href="/services/seo-marketing" className="dropdown-link">
+                        <Link href="/services/seo" className="dropdown-link">
                           <span className="dropdown-icon">📈</span>
                           <div>
                             <strong>SEO & Marketing</strong>
                             <span>Organic traffic growth</span>
+                          </div>
+                        </Link>
+                        <Link href="/services/ecommerce-account-management" className="dropdown-link">
+                          <span className="dropdown-icon">📦</span>
+                          <div>
+                            <strong>Marketplace Management</strong>
+                            <span>Amazon, Flipkart &amp; Meesho</span>
                           </div>
                         </Link>
                       </div>
@@ -141,7 +148,7 @@ export function Navbar() {
                             <span>High-performance sites</span>
                           </div>
                         </Link>
-                        <Link href="/services/shopify-ecommerce" className="dropdown-link">
+                        <Link href="/services/shopify-development" className="dropdown-link">
                           <span className="dropdown-icon">🛒</span>
                           <div>
                             <strong>Shopify & E-commerce</strong>

@@ -106,6 +106,7 @@ export default async function ServicePage({ params }: ServicePageProps) {
             <Link href="/#services">Services</Link>
             <Link href="/#technology">Technology</Link>
             <Link href="/#testimonials">Reviews</Link>
+            {service.pricing && <a href="#service-pricing">Pricing</a>}
             <a href="#service-faqs">FAQs</a>
             <a href="#service-contact" className="nav-cta">Start a project</a>
           </nav>
@@ -115,6 +116,7 @@ export default async function ServicePage({ params }: ServicePageProps) {
               <Link href="/">Home</Link>
               <Link href="/#services">All services</Link>
               <a href="#service-process">Process</a>
+              {service.pricing && <a href="#service-pricing">Pricing</a>}
               <a href="#service-faqs">FAQs</a>
               <a href="#service-contact">Start a project</a>
             </nav>
@@ -135,7 +137,11 @@ export default async function ServicePage({ params }: ServicePageProps) {
               <p className="service-hero-copy">{service.heroCopy}</p>
               <div className="hero-actions">
                 <a className="button button-primary" href="#service-contact">Discuss this service <span aria-hidden="true">↗</span></a>
-                <a className="text-link" href="#service-deliverables">See what&apos;s included <span aria-hidden="true">↓</span></a>
+                {service.pricing ? (
+                  <a className="text-link" href="#service-pricing">View plans &amp; pricing <span aria-hidden="true">↓</span></a>
+                ) : (
+                  <a className="text-link" href="#service-deliverables">See what&apos;s included <span aria-hidden="true">↓</span></a>
+                )}
               </div>
             </div>
             <aside className="service-ideal-card">
@@ -152,6 +158,25 @@ export default async function ServicePage({ params }: ServicePageProps) {
           {service.technologies.map((technology) => <span key={technology}>{technology}</span>)}
         </div>
       </section>
+
+      {service.slug === "ecommerce-account-management" && (
+        <section className="marketplace-logos-strip" aria-label="Supported marketplaces">
+          <div className="container marketplace-logos-container">
+            <span className="marketplace-logos-label">Marketplace Platforms Supported:</span>
+            <div className="marketplace-logos-list">
+              <div className="marketplace-logo-card">
+                <Image src="/brand/amazon.svg" alt="Amazon Seller Central" width={110} height={32} />
+              </div>
+              <div className="marketplace-logo-card">
+                <Image src="/brand/flipkart.svg" alt="Flipkart Seller Hub" width={120} height={32} />
+              </div>
+              <div className="marketplace-logo-card">
+                <Image src="/brand/meesho.svg" alt="Meesho Supplier Panel" width={120} height={32} />
+              </div>
+            </div>
+          </div>
+        </section>
+      )}
 
       <section className="section service-problems">
         <div className="container">
@@ -218,6 +243,64 @@ export default async function ServicePage({ params }: ServicePageProps) {
           title={`What clients say about ${service.title.toLowerCase()}.`}
           intro="Relevant feedback selected from projects and campaigns connected to this service."
         />
+      )}
+
+      {service.pricing && (
+        <section className="section service-pricing" id="service-pricing">
+          <div className="container">
+            <div className="service-section-heading centered-heading">
+              <p className="eyebrow"><span /> Pricing &amp; Retainers</p>
+              <h2>Structured plans to match your scale.</h2>
+              <p>{service.pricing.tagline}</p>
+            </div>
+            <div className="pricing-grid">
+              {service.pricing.plans.map((plan) => (
+                <div
+                  key={plan.name}
+                  className={`pricing-card ${plan.isPopular ? "pricing-card-popular" : ""}`}
+                >
+                  {plan.isPopular && <span className="pricing-badge">Recommended</span>}
+                  <div className="pricing-header">
+                    {plan.logoUrl && (
+                      <div className="pricing-logo-wrap">
+                        <Image
+                          src={plan.logoUrl}
+                          alt={`${plan.platform || plan.name} logo`}
+                          width={130}
+                          height={36}
+                          className="pricing-logo"
+                        />
+                      </div>
+                    )}
+                    <h3>{plan.name}</h3>
+                    <p className="pricing-desc">{plan.description}</p>
+                    <div className="pricing-amount-wrap">
+                      <span className="pricing-amount">{plan.price}</span>
+                      {plan.period && <span className="pricing-period">/ {plan.period}</span>}
+                    </div>
+                  </div>
+                  <ul className="pricing-features">
+                    {plan.features.map((feature) => (
+                      <li key={feature}>
+                        <span className="check-icon" aria-hidden="true">✓</span>
+                        {feature}
+                      </li>
+                    ))}
+                  </ul>
+                  <a
+                    href="#service-contact"
+                    className={`button ${plan.isPopular ? "button-primary" : "button-secondary"}`}
+                  >
+                    Get Started <span aria-hidden="true">↗</span>
+                  </a>
+                </div>
+              ))}
+            </div>
+            <p className="pricing-note">
+              * Note: Individual marketplace management is ₹3,999/month per platform. Managing across Amazon, Flipkart, and Meesho? Ask about our multi-channel bundled discount and high-volume SKU support.
+            </p>
+          </div>
+        </section>
       )}
 
       <section className="section service-faqs" id="service-faqs">

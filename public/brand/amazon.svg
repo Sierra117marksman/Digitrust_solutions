@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 135 40" fill="none">
+  <!-- Amazon Wordmark + Smile Arrow -->
+  <text x="2" y="24" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-weight="900" font-size="25" fill="#131921" letter-spacing="-0.8">amazon</text>
+  <path d="M12 30C32 38.5 70 39.5 95 28.5" stroke="#FF9900" stroke-width="3.2" stroke-linecap="round"/>
+  <path d="M89.5 24.2L97.5 28.5L88.5 33C90 30.8 90.2 26.5 89.5 24.2Z" fill="#FF9900"/>
+</svg>

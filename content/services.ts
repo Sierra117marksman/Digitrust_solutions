@@ -2,6 +2,22 @@ import type { ServiceSlug } from "./testimonials";
 
 export type ServiceFaq = { question: string; answer: string };
 
+export type ServicePricingPlan = {
+  name: string;
+  price: string;
+  period?: string;
+  description: string;
+  features: string[];
+  isPopular?: boolean;
+  logoUrl?: string;
+  platform?: string;
+};
+
+export type ServicePricing = {
+  tagline: string;
+  plans: ServicePricingPlan[];
+};
+
 export type Service = {
   slug: ServiceSlug;
   number: string;
@@ -22,6 +38,7 @@ export type Service = {
   seoTitle: string;
   seoDescription: string;
   featured?: boolean;
+  pricing?: ServicePricing;
 };
 
 export const services: Service[] = [
@@ -338,6 +355,173 @@ export const services: Service[] = [
     ],
     seoTitle: "Social Media Marketing & Campaign Strategy",
     seoDescription: "Social media strategy, campaign concepts, creative direction, organic and paid coordination, launches, and meaningful reporting.",
+  },
+  {
+    slug: "ecommerce-account-management",
+    number: "09",
+    title: "E-Commerce Account Management",
+    cardDescription: "End-to-end account management, catalogue optimization, sponsored ads, and seller operations across Amazon, Flipkart, and Meesho.",
+    tags: ["Amazon & Flipkart", "Meesho", "Catalogue & A+", "Marketplace PPC"],
+    eyebrow: "Multi-channel marketplace growth",
+    heroTitle: "Marketplace management that scales",
+    heroAccent: "on Amazon, Flipkart & Meesho.",
+    heroCopy: "We manage and grow your seller accounts end-to-end—from product listing and high-converting A+ content to sponsored advertising, inventory health, and dispute resolution—so you can scale profitable marketplace revenue.",
+    idealFor: [
+      "Brands expanding or struggling to scale on Amazon, Flipkart, or Meesho",
+      "Manufacturers and distributors launching direct-to-consumer marketplace sales",
+      "Sellers battling high ACoS, suppressed listings, or inventory reconciliation issues",
+      "Growing D2C businesses needing dedicated multi-channel marketplace operations",
+    ],
+    problems: [
+      {
+        title: "Suppressed listings & low organic reach",
+        copy: "Products sit buried on page 3 or get de-indexed due to incomplete attributes, poor category mapping, or missing high-intent backend keywords.",
+      },
+      {
+        title: "Bleeding ad spend & runaway ACoS",
+        copy: "Marketplace sponsored ads waste budget on irrelevant search terms without systematic negative keyword harvesting or automated bid management.",
+      },
+      {
+        title: "Account health & operational disputes",
+        copy: "Customer returns, damaged goods claims, buyer grievances, and policy flags threaten seller performance metrics and Buy Box eligibility.",
+      },
+    ],
+    deliverables: [
+      {
+        title: "Account setup & Brand Registry",
+        copy: "Storefront creation, brand gating, category ungating, trademark registry enrollment, and seller central configuration.",
+      },
+      {
+        title: "Catalogue & listing optimization",
+        copy: "High-converting titles, bullet points, keyword-dense backend search terms, A+ Content / EBC, and lifestyle infographics.",
+      },
+      {
+        title: "Sponsored ads & PPC management",
+        copy: "Amazon Sponsored Products, Brands, and Display campaigns, plus Flipkart PLA/PCA with continuous bid and budget tuning to maintain target ACoS.",
+      },
+      {
+        title: "Inventory, pricing & health monitoring",
+        copy: "FBA/FBF shipment planning, stock alerts, buy-box defense, return claims management (SAFE-T), and day-to-day seller metrics maintenance.",
+      },
+    ],
+    technologies: [
+      "Amazon Seller Central",
+      "Flipkart Seller Hub",
+      "Meesho Supplier Panel",
+      "Amazon Ads",
+      "Flipkart Ads",
+      "A+ Content / EBC",
+      "Helium 10",
+      "SAFE-T Claims",
+    ],
+    outcomes: [
+      "Higher organic search ranking for high-intent category queries",
+      "Lower ACoS and improved blended return on ad spend (ROAS)",
+      "Protection of Buy Box share and pristine seller account health rating",
+      "Hands-off daily operations across Amazon, Flipkart, and Meesho",
+    ],
+    process: [
+      {
+        step: "01",
+        title: "Catalogue & account audit",
+        copy: "We analyze your existing listings, buy-box ownership, indexing gaps, returns rate, and competitor positioning.",
+      },
+      {
+        step: "02",
+        title: "Content & listing enhancement",
+        copy: "We rewrite copy for marketplace search algorithms and produce premium A+ content and graphic banners.",
+      },
+      {
+        step: "03",
+        title: "Advertising & velocity drive",
+        copy: "We structure Sponsored Ads campaigns, harvest converting search queries, and drive reviews compliant with platform policies.",
+      },
+      {
+        step: "04",
+        title: "Operations & continuous scaling",
+        copy: "We handle ongoing order tracking, inventory forecasting, reimbursement claims, and weekly performance reviews.",
+      },
+    ],
+    faqs: [
+      {
+        question: "Which marketplace platforms do you support?",
+        answer: "Our core management covers Amazon India, Flipkart, and Meesho. We also support quick-commerce and specialty marketplaces (such as Blinkit, Zepto, Nykaa, and JioMart) upon review of product category and distribution readiness.",
+      },
+      {
+        question: "How is pricing structured for marketplace management?",
+        answer: "Each marketplace is priced at ₹3,999 per month (Amazon, Flipkart, or Meesho). You can choose individual platform management or combine multiple channels for synchronized multi-channel growth. Contact us for custom high-SKU catalogues or bundled discounts.",
+      },
+      {
+        question: "Can you help with Brand Registry and A+ Content?",
+        answer: "Yes. We assist with brand authorization, Brand Registry enrollment, Brand Store design, and mobile-optimized A+ Content / Enhanced Brand Content (EBC) to lift product conversion rates.",
+      },
+      {
+        question: "Do you manage sponsored advertising (PPC) on Amazon and Flipkart?",
+        answer: "Yes. Comprehensive PPC advertising management is built into our core marketplace retainers. We manage campaign structure, keyword bidding, negative match lists, and sponsored brand campaigns to keep your ACoS profitable.",
+      },
+      {
+        question: "How do you handle returns, reimbursements, and SAFE-T claims?",
+        answer: "We audit customer returns, track missing or damaged inventory across courier partners, and file timely reimbursement and SAFE-T claims to recover lost capital from marketplace platforms.",
+      },
+    ],
+    seoTitle: "E-Commerce Account Management | Amazon, Flipkart & Meesho",
+    seoDescription: "End-to-end marketplace account management for Amazon, Flipkart, and Meesho at ₹3,999/mo. Listing optimization, A+ content, PPC advertising, and seller account health in India.",
+    pricing: {
+      tagline: "Dedicated monthly management at ₹3,999 per marketplace",
+      plans: [
+        {
+          name: "Amazon Account Management",
+          price: "₹3,999",
+          period: "mo / account",
+          logoUrl: "/brand/amazon.svg",
+          platform: "Amazon",
+          description: "End-to-end Amazon Seller Central management, listing SEO, and sponsored ads to scale your sales velocity.",
+          features: [
+            "Amazon Seller Central setup & Brand Registry",
+            "Up to 25 SKU catalogue listing & keyword optimization",
+            "High-converting A+ Content / EBC setup",
+            "Amazon Sponsored Products & Brands (PPC) setup",
+            "FBA shipment creation & inventory forecasting",
+            "Buy Box monitoring & SAFE-T claims filing",
+          ],
+          isPopular: false,
+        },
+        {
+          name: "Flipkart Account Management",
+          price: "₹3,999",
+          period: "mo / account",
+          logoUrl: "/brand/flipkart.svg",
+          platform: "Flipkart",
+          description: "Full Flipkart Seller Hub optimization, catalog tagging, and Flipkart PLA/PCA advertising campaigns.",
+          features: [
+            "Flipkart Seller Hub onboarding & brand approval",
+            "Catalogue listing, category mapping & search tagging",
+            "Enhanced product descriptions & lifestyle imagery",
+            "Flipkart PLA & PCA ads campaign management",
+            "Smart fulfillment / Flipkart Assured optimization",
+            "SLA tracking, returns reconciliation & claims",
+          ],
+          isPopular: true,
+        },
+        {
+          name: "Meesho Supplier Management",
+          price: "₹3,999",
+          period: "mo / account",
+          logoUrl: "/brand/meesho.svg",
+          platform: "Meesho",
+          description: "High-volume Meesho supplier growth, catalog discovery, price benchmarking, and ad tuning.",
+          features: [
+            "Meesho Supplier Panel registration & catalog upload",
+            "Competitive price benchmarking & margin calculation",
+            "High-CTR catalog banners & image optimization",
+            "Meesho Ads campaign setup & bid management",
+            "Order dispatch SLA monitoring & inventory sync",
+            "Return/RTO tracking & payout reconciliation",
+          ],
+          isPopular: false,
+        },
+      ],
+    },
   },
 ];
 
