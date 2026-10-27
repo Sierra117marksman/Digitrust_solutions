@@ -522,6 +522,7 @@ export const services: Service[] = [
         },
       ],
     },
+    featured: true,
   },
 ];
 

@@ -1,4 +1,5 @@
 
+import Image from "next/image";
 import Link from "next/link";
 import { ContactForm } from "./components/ContactForm";
 import { ScrollLink } from "./components/ScrollLink";
@@ -23,8 +24,8 @@ const stackGroups = [
     items: ["Node.js", "REST APIs", "MongoDB", "PostgreSQL", "Authentication", "Integrations"],
   },
   {
-    label: "Commerce & CMS",
-    items: ["Shopify", "Liquid", "WordPress", "WooCommerce", "Headless CMS", "Content Systems"],
+    label: "Commerce & Marketplaces",
+    items: ["Amazon", "Flipkart", "Meesho", "Shopify", "WooCommerce", "Liquid"],
   },
   {
     label: "Growth & Delivery",
@@ -66,6 +67,11 @@ export default function Home() {
         <div className="hero-orbit hero-orbit-two" aria-hidden="true" />
         <div className="container hero-grid">
           <div className="hero-copy">
+            <Link href="/services/ecommerce-account-management" className="hero-announcement-pill">
+              <span className="pill-badge">NEW</span>
+              <span className="pill-text">Amazon, Flipkart &amp; Meesho Management • ₹3,999/mo</span>
+              <span className="pill-arrow" aria-hidden="true">→</span>
+            </Link>
             <p className="eyebrow"><span /> Digital growth, built on trust</p>
             <h1>
               Ideas that move
@@ -132,6 +138,7 @@ export default function Home() {
                 </svg>
               </div>
               <div className="panel-services">
+                <span>E-Commerce</span>
                 <span>Web</span>
                 <span>Social</span>
                 <span>Search</span>
@@ -202,8 +209,24 @@ export default function Home() {
           </Reveal>
 
           {/* Spotlight Cards — Meta Ads & Custom Development */}
-          <div className="spotlight-row">
+          <div className="spotlight-row spotlight-row-three">
             <Reveal delay={100} direction="up" fullWidth>
+              <Link href="/services/ecommerce-account-management" className="spotlight-card spotlight-ecommerce">
+                <div className="spotlight-icon">📦</div>
+                <div className="spotlight-content">
+                  <span className="spotlight-label spotlight-label-new">🔥 New • ₹3,999/mo</span>
+                  <h3>E-Commerce Marketplaces</h3>
+                  <p>Account management, listing optimization, and ads for Amazon, Flipkart, and Meesho.</p>
+                  <div className="spotlight-logos">
+                    <Image src="/brand/amazon.svg" alt="Amazon" width={70} height={18} style={{ height: "16px", width: "auto" }} />
+                    <Image src="/brand/flipkart.svg" alt="Flipkart" width={78} height={18} style={{ height: "15px", width: "auto" }} />
+                    <Image src="/brand/meesho.svg" alt="Meesho" width={78} height={18} style={{ height: "16px", width: "auto" }} />
+                  </div>
+                </div>
+                <span className="spotlight-arrow" aria-hidden="true">→</span>
+              </Link>
+            </Reveal>
+            <Reveal delay={200} direction="up" fullWidth>
               <Link href="/services/meta-ads" className="spotlight-card spotlight-meta">
                 <div className="spotlight-icon">📣</div>
                 <div className="spotlight-content">

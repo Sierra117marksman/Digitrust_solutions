@@ -135,6 +135,22 @@ export default async function ServicePage({ params }: ServicePageProps) {
               <p className="eyebrow"><span /> {service.eyebrow}</p>
               <h1>{service.heroTitle}<span>{service.heroAccent}</span></h1>
               <p className="service-hero-copy">{service.heroCopy}</p>
+              {service.slug === "ecommerce-account-management" && (
+                <div className="hero-marketplace-badges">
+                  <span className="hero-badges-title">Platforms Supported:</span>
+                  <div className="hero-badges-row">
+                    <div className="hero-badge-pill">
+                      <Image src="/brand/amazon.svg" alt="Amazon Seller Central" width={90} height={26} style={{ height: "22px", width: "auto" }} />
+                    </div>
+                    <div className="hero-badge-pill">
+                      <Image src="/brand/flipkart.svg" alt="Flipkart Seller Hub" width={100} height={26} style={{ height: "20px", width: "auto" }} />
+                    </div>
+                    <div className="hero-badge-pill">
+                      <Image src="/brand/meesho.svg" alt="Meesho Supplier Panel" width={100} height={26} style={{ height: "22px", width: "auto" }} />
+                    </div>
+                  </div>
+                </div>
+              )}
               <div className="hero-actions">
                 <a className="button button-primary" href="#service-contact">Discuss this service <span aria-hidden="true">↗</span></a>
                 {service.pricing ? (
