@@ -165,13 +165,13 @@ export default async function ServicePage({ params }: ServicePageProps) {
             <span className="marketplace-logos-label">Marketplace Platforms Supported:</span>
             <div className="marketplace-logos-list">
               <div className="marketplace-logo-card">
-                <Image src="/brand/amazon.svg" alt="Amazon Seller Central" width={110} height={32} />
+                <Image src="/brand/amazon.svg" alt="Amazon Seller Central" width={110} height={32} style={{ height: "26px", width: "auto" }} />
               </div>
               <div className="marketplace-logo-card">
-                <Image src="/brand/flipkart.svg" alt="Flipkart Seller Hub" width={120} height={32} />
+                <Image src="/brand/flipkart.svg" alt="Flipkart Seller Hub" width={120} height={32} style={{ height: "24px", width: "auto" }} />
               </div>
               <div className="marketplace-logo-card">
-                <Image src="/brand/meesho.svg" alt="Meesho Supplier Panel" width={120} height={32} />
+                <Image src="/brand/meesho.svg" alt="Meesho Supplier Panel" width={120} height={32} style={{ height: "26px", width: "auto" }} />
               </div>
             </div>
           </div>
@@ -269,6 +269,7 @@ export default async function ServicePage({ params }: ServicePageProps) {
                           width={130}
                           height={36}
                           className="pricing-logo"
+                          style={{ height: "30px", width: "auto", objectFit: "contain" }}
                         />
                       </div>
                     )}
