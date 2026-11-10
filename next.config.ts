@@ -18,6 +18,20 @@ const nextConfig: NextConfig = {
       },
     ];
   },
+  async redirects() {
+    return [
+      {
+        source: "/results",
+        destination: "/proof",
+        permanent: true,
+      },
+      {
+        source: "/case-studies",
+        destination: "/proof",
+        permanent: false,
+      },
+    ];
+  },
 };
 
 export default nextConfig;

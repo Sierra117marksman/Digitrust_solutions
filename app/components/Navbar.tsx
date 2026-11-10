@@ -172,6 +172,9 @@ export function Navbar() {
               </ScrollLink>
             );
           })}
+          <Link href="/proof" className="nav-item">
+            Proof
+          </Link>
           <ScrollLink targetId="contact" className="nav-cta premium-cta">
             Let&apos;s discuss your project
             <span className="cta-arrow" aria-hidden="true">→</span>
@@ -204,6 +207,14 @@ export function Navbar() {
             </ScrollLink>
             
             <nav className="mobile-panel-nav" aria-label="Mobile navigation">
+              <Link 
+                href="/proof" 
+                onClick={() => setIsMobileMenuOpen(false)}
+                style={{ padding: "10px 0", fontWeight: 700, color: "var(--blue-dark)", display: "flex", alignItems: "center", gap: "6px" }}
+              >
+                <span>⚡</span>
+                <span>Verified Proof &amp; Results</span>
+              </Link>
               {NAV_LINKS.map((link) => (
                 <ScrollLink
                   key={link.id}
