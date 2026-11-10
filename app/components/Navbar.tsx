@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import Image from "next/image";
 import { ScrollLink } from "./ScrollLink";
 import Link from "next/link";
+import { contactInfo } from "../../content/contact";
 
 const NAV_LINKS = [
   { label: "Services", id: "services" },
@@ -228,7 +229,7 @@ export function Navbar() {
             </nav>
 
             <div className="mobile-panel-footer">
-              <a href="mailto:hello@digitrust.in">hello@digitrust.in</a>
+              <a href={contactInfo.phones[0].href}>{contactInfo.phones[0].display}</a>
             </div>
           </div>
         </div>

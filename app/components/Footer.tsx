@@ -83,9 +83,6 @@ export function Footer() {
             <div className="footer-col contact-col">
               <h4>Contact</h4>
               <address>
-                <a href={`mailto:${companyConfig.contact.email}`} className="contact-link">
-                  {companyConfig.contact.email}
-                </a>
                 <a href={contactInfo.phones[0].href} className="contact-link">
                   {contactInfo.phones[0].display}
                 </a>
