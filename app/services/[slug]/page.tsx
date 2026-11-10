@@ -59,6 +59,7 @@ export default async function ServicePage({ params }: ServicePageProps) {
         provider: {
           "@type": "Organization",
           name: companyConfig.company.name,
+          email: contactInfo.email.display,
           telephone: contactInfo.phones[0].display,
           sameAs: [contactInfo.instagram.href],
           address: {
@@ -367,6 +368,7 @@ export default async function ServicePage({ params }: ServicePageProps) {
                   ))}
                 </p>
               </div>
+              <div><span>Email</span><p><a href={contactInfo.email.href}>{contactInfo.email.display}</a></p></div>
               <div><span>WhatsApp leads</span><p><Link href={contactInfo.whatsapp.href}>Message {contactInfo.whatsapp.display}</Link></p></div>
               <div><span>Instagram</span><p><Link href={contactInfo.instagram.href}>{contactInfo.instagram.label}</Link></p></div>
             </div>

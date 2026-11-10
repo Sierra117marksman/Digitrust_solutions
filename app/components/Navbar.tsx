@@ -229,7 +229,7 @@ export function Navbar() {
             </nav>
 
             <div className="mobile-panel-footer">
-              <a href={contactInfo.phones[0].href}>{contactInfo.phones[0].display}</a>
+              <a href={contactInfo.email.href}>{contactInfo.email.display}</a>
             </div>
           </div>
         </div>

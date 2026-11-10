@@ -121,7 +121,7 @@ export const policies: Policy[] = [
       {
         title: "Privacy contact and grievance requests",
         items: [
-          "Privacy, correction, deletion, consent, and grievance requests may be submitted through the contact form on this website or sent by post to Digitrust Solutions, Palam Vihar, Gurugram, Haryana - 122017, India.",
+          "Privacy, correction, deletion, consent, and grievance requests may be submitted through the contact form on this website, by email to digitrustsolutions@gmail.com, or sent by post to Digitrust Solutions, Palam Vihar, Gurugram, Haryana - 122017, India.",
           "Please include your name, contact details, relationship with us, and a clear description of the request. We may ask for information reasonably needed to verify identity and locate the relevant record.",
           "This policy is intended to operate with the Digital Personal Data Protection Act, 2023, the Information Technology Act, 2000, and related rules or provisions as they are brought into force or amended from time to time.",
         ],
@@ -290,7 +290,7 @@ export const policies: Policy[] = [
       {
         title: "Client cancellation, pause or abandonment",
         items: [
-          "Cancellation requests must be submitted in writing through the website contact form or another agreed written channel.",
+          "Cancellation requests must be submitted in writing through the website contact form, by email to digitrustsolutions@gmail.com, or another agreed written channel.",
           "If cancellation occurs after work starts, we may invoice or retain amounts for completed work, work in progress, resource allocation, administrative effort, payment charges, and third-party commitments.",
           "A project paused by the client may be rescheduled subject to availability. A prolonged pause may require revised pricing, technical updates, and a restart fee.",
           "A project may be treated as abandoned after prolonged non-response, missing dependencies, unpaid invoices, or failure to approve next steps after reasonable written reminders.",
@@ -437,7 +437,7 @@ export const policies: Policy[] = [
       {
         title: "Contact and updates",
         items: [
-          "Cookie questions may be submitted through the website contact form or sent by post to our Gurugram business address stated in the Privacy Policy.",
+          "Cookie questions may be submitted through the website contact form, by email to digitrustsolutions@gmail.com, or sent by post to our Gurugram business address stated in the Privacy Policy.",
           "We may update this policy when technologies, providers, or applicable requirements change.",
         ],
       },

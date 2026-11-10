@@ -464,6 +464,10 @@ export default function Home() {
                   </p>
                 </div>
                 <div>
+                  <span>Email</span>
+                  <p><a href={contactInfo.email.href}>{contactInfo.email.display}</a></p>
+                </div>
+                <div>
                   <span>WhatsApp leads</span>
                   <p><Link href={contactInfo.whatsapp.href}>Message {contactInfo.whatsapp.display}</Link></p>
                 </div>
