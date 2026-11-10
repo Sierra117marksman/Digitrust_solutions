@@ -89,7 +89,6 @@ export function Footer() {
                 <a href={contactInfo.phones[0].href} className="contact-link">
                   {contactInfo.phones[0].display}
                 </a>
-                <p>123 Digital Avenue<br />Tech District<br />Mumbai, Maharashtra 400001<br />India</p>
               </address>
             </div>
           </div>

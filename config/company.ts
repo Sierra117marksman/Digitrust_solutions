@@ -9,8 +9,8 @@ export const companyConfig = {
   },
   contact: {
     email: "hello@digitrust.in",
-    phone: "+91 99999 99999",
-    whatsapp: "+91 99999 99999",
+    phone: "+91 92117 34699",
+    whatsapp: "+91 92117 34699",
     address: "Palam Vihar, Gurugram, Haryana - 122017",
     city: "Gurugram",
     state: "Haryana",
