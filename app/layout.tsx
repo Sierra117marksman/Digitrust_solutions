@@ -1,35 +1,53 @@
 import type { Metadata } from "next";
+import { companyConfig } from "@/config/company";
 import "./globals.css";
 
-const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000";
+const siteUrl = companyConfig.seo.siteUrl;
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
   title: {
-    default: "Digitrust Solutions | Digital Growth & Full-Stack Development",
-    template: "%s | Digitrust Solutions", //git comment
+    default: "Digitrust Solutions | Digital Growth & Full-Stack Development Agency Gurugram",
+    template: "%s | Digitrust Solutions",
   },
   description:
-    "Digitrust Solutions is a Gurugram-based digital agency specialising in web development, social media, SEO, Meta ads, and full-stack development.",
+    "Digitrust Solutions is a Gurugram-based digital growth and engineering agency specializing in Meta ads, full-stack development, technical SEO, and e-commerce growth.",
   keywords: [
     "Digitrust Solutions",
+    "Meta ads agency Gurugram",
+    "digital marketing Gurugram",
     "web development Gurugram",
+    "full stack development India",
+    "technical SEO services",
+    "e-commerce account management",
     "social media marketing",
-    "SEO services",
-    "Meta ads",
-    "full stack development",
   ],
+  alternates: {
+    canonical: "/",
+  },
   icons: {
     icon: "/brand/logo.png",
     shortcut: "/brand/logo.png",
     apple: "/brand/logo.png",
   },
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      "max-video-preview": -1,
+      "max-image-preview": "large",
+      "max-snippet": -1,
+    },
+  },
   openGraph: {
     type: "website",
     locale: "en_IN",
-    title: "Digitrust Solutions | Ideas that move business forward",
+    url: siteUrl,
+    title: "Digitrust Solutions | Digital Growth & Engineering Agency",
     description:
-      "Strategy, creative marketing, and full-stack technology for confident digital growth.",
+      "Strategic Meta advertising, full-stack engineering, technical SEO, and high-converting growth systems for modern businesses.",
     siteName: "Digitrust Solutions",
     images: [
       {
@@ -42,9 +60,15 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "Digitrust Solutions",
-    description: "Digital growth, built on trust.",
+    title: "Digitrust Solutions | Digital Growth & Engineering Agency",
+    description: "Digital growth, verified Meta Ads ROI, and full-stack web engineering.",
     images: ["/og.png"],
+  },
+  other: {
+    "geo.region": "IN-HR",
+    "geo.placename": "Gurugram, Haryana",
+    "geo.position": "28.5033;77.0396",
+    "ICBM": "28.5033, 77.0396",
   },
 };
 

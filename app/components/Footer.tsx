@@ -86,9 +86,11 @@ export function Footer() {
                 <a href={`mailto:${companyConfig.contact.email}`} className="contact-link">
                   {companyConfig.contact.email}
                 </a>
-                <a href={contactInfo.phones[0].href} className="contact-link">
-                  {contactInfo.phones[0].display}
-                </a>
+                {contactInfo.phones.map((phone) => (
+                  <a key={phone.href} href={phone.href} className="contact-link">
+                    {phone.display}
+                  </a>
+                ))}
                 <a
                   href={`${contactInfo.whatsapp.href}?text=${encodeURIComponent("Hi Digitrust Solutions, I would like to enquire about your services.")}`}
                   target="_blank"

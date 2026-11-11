@@ -10,6 +10,7 @@ export const companyConfig = {
   contact: {
     email: "digitrustsolutions@gmail.com",
     phone: "+91 92117 34699",
+    phoneSecondary: "+91 92172 13181",
     whatsapp: "+91 92117 34699",
     address: "Palam Vihar, Gurugram, Haryana - 122017",
     city: "Gurugram",

@@ -1,6 +1,7 @@
-
+import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
+import { companyConfig } from "@/config/company";
 import { ContactForm } from "./components/ContactForm";
 import { ScrollLink } from "./components/ScrollLink";
 import { Testimonials } from "./components/Testimonials";
@@ -13,6 +14,31 @@ import { Reveal } from "./components/Reveal";
 import { featuredTestimonials } from "../content/testimonials";
 import { services } from "../content/services";
 import { contactInfo } from "../content/contact";
+
+export const metadata: Metadata = {
+  title: "Digitrust Solutions | Digital Growth & Full-Stack Development Agency Gurugram",
+  description:
+    "Digitrust Solutions is a premier digital growth agency in Gurugram, Haryana. We build high-converting Meta Ads campaigns, custom full-stack web applications, technical SEO, and e-commerce marketplace scaling.",
+  alternates: {
+    canonical: "https://digitrustsolutions.com",
+  },
+  openGraph: {
+    title: "Digitrust Solutions | Digital Growth & Full-Stack Development Agency Gurugram",
+    description:
+      "Strategy, high-converting Meta Ads, and full-stack software development for ambitious businesses.",
+    url: "https://digitrustsolutions.com",
+    siteName: "Digitrust Solutions",
+    images: [{ url: "/og.png", width: 1734, height: 907, alt: "Digitrust Solutions" }],
+    locale: "en_IN",
+    type: "website",
+  },
+  other: {
+    "geo.region": "IN-HR",
+    "geo.placename": "Gurugram, Haryana",
+    "geo.position": "28.5033;77.0396",
+    "ICBM": "28.5033, 77.0396",
+  },
+};
 
 const stackGroups = [
   {
@@ -57,8 +83,158 @@ const process = [
 ];
 
 export default function Home() {
+  const siteUrl = companyConfig.seo.siteUrl;
+
+  const structuredData = {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": ["ProfessionalService", "Organization"],
+        "@id": `${siteUrl}/#organization`,
+        name: "Digitrust Solutions",
+        alternateName: ["Digitrust", "Digitrust Solutions Gurugram"],
+        url: siteUrl,
+        logo: `${siteUrl}/brand/logo.png`,
+        image: `${siteUrl}/og.png`,
+        description:
+          "Premier digital growth, Meta advertising, technical SEO, and full-stack engineering agency based in Gurugram, Haryana, India.",
+        telephone: [contactInfo.phones[0].display, contactInfo.phones[1].display],
+        email: contactInfo.email.display,
+        taxID: "06DUYPD9228L1ZT",
+        priceRange: "₹₹",
+        currenciesAccepted: "INR, USD",
+        paymentAccepted: "Bank Transfer, UPI, Credit Card, Debit Card",
+        openingHours: "Mo,Tu,We,Th,Fr,Sa 09:00-19:00",
+        address: {
+          "@type": "PostalAddress",
+          streetAddress: "Palam Vihar",
+          addressLocality: "Gurugram",
+          addressRegion: "Haryana",
+          postalCode: "122017",
+          addressCountry: "IN",
+        },
+        geo: {
+          "@type": "GeoCoordinates",
+          latitude: 28.5033,
+          longitude: 77.0396,
+        },
+        areaServed: [
+          { "@type": "City", name: "Gurugram" },
+          { "@type": "City", name: "Delhi NCR" },
+          { "@type": "State", name: "Haryana" },
+          { "@type": "Country", name: "India" },
+          { "@type": "AdministrativeArea", name: "Global" },
+        ],
+        sameAs: [
+          contactInfo.instagram.href,
+        ],
+        hasOfferCatalog: {
+          "@type": "OfferCatalog",
+          name: "Digital Growth & Engineering Services",
+          itemListElement: [
+            {
+              "@type": "Offer",
+              itemOffered: {
+                "@type": "Service",
+                name: "Meta Ads Management & 7-Day Trial",
+                description: "Structured Meta advertising campaigns with verified CPL and ₹1,999 7-day trial.",
+                url: `${siteUrl}/services/meta-ads`,
+              },
+            },
+            {
+              "@type": "Offer",
+              itemOffered: {
+                "@type": "Service",
+                name: "Full-Stack Development",
+                description: "Next.js, React, Node.js, and cloud application engineering.",
+                url: `${siteUrl}/services/full-stack-development`,
+              },
+            },
+            {
+              "@type": "Offer",
+              itemOffered: {
+                "@type": "Service",
+                name: "E-Commerce Account Management",
+                description: "End-to-end management for Amazon, Flipkart, and Meesho starting at ₹3,999/mo.",
+                url: `${siteUrl}/services/ecommerce-account-management`,
+              },
+            },
+            {
+              "@type": "Offer",
+              itemOffered: {
+                "@type": "Service",
+                name: "Technical SEO & Search Authority",
+                description: "Data-driven organic search strategy, Core Web Vitals optimization, and keyword rankings.",
+                url: `${siteUrl}/services/seo`,
+              },
+            },
+          ],
+        },
+      },
+      {
+        "@type": "WebSite",
+        "@id": `${siteUrl}/#website`,
+        url: siteUrl,
+        name: "Digitrust Solutions",
+        description: "Digital Growth, Strategic Meta Advertising, and Full-Stack Web Engineering",
+        publisher: { "@id": `${siteUrl}/#organization` },
+        inLanguage: "en-IN",
+      },
+      {
+        "@type": "FAQPage",
+        "@id": `${siteUrl}/#faq`,
+        mainEntity: [
+          {
+            "@type": "Question",
+            name: "What digital services does Digitrust Solutions provide?",
+            acceptedAnswer: {
+              "@type": "Answer",
+              text: "Digitrust Solutions provides end-to-end digital services including Meta Ads management, full-stack web and mobile application development, e-commerce marketplace account management (Amazon, Flipkart, Meesho), technical SEO, social media marketing, and custom brand engineering.",
+            },
+          },
+          {
+            "@type": "Question",
+            name: "How much does Meta Ads campaign management cost with Digitrust Solutions?",
+            acceptedAnswer: {
+              "@type": "Answer",
+              text: "We offer an introductory 7-day trial for ₹1,999 with full campaign setup, audience research, and ad creatives. If you continue, the ₹1,999 is adjusted against Month 1, and you pay just ₹3,001 balance for the full ₹5,000/month management retainer.",
+            },
+          },
+          {
+            "@type": "Question",
+            name: "Where is Digitrust Solutions located?",
+            acceptedAnswer: {
+              "@type": "Answer",
+              text: "Digitrust Solutions is headquartered in Palam Vihar, Gurugram, Haryana - 122017, India. We serve clients across Gurugram, Delhi NCR, PAN India, and internationally.",
+            },
+          },
+          {
+            "@type": "Question",
+            name: "How can I contact Digitrust Solutions?",
+            acceptedAnswer: {
+              "@type": "Answer",
+              text: "You can reach Digitrust Solutions directly on WhatsApp at +91 92117 34699, call us on +91 92117 34699 or +91 92172 13181, or email digitrustsolutions@gmail.com.",
+            },
+          },
+          {
+            "@type": "Question",
+            name: "What proven results has Digitrust Solutions achieved for businesses?",
+            acceptedAnswer: {
+              "@type": "Answer",
+              text: "Across verified client accounts, Digitrust Solutions has delivered 1,606 leads at ₹12.90 CPL for Ayurveda brands, 152 distributor inquiries at ₹14.68 CPL for LED lighting manufacturers, 74 B2B leads at ₹6 CPL for roofing contractors, and 57 appointment calls at ₹8 each for dental clinics.",
+            },
+          },
+        ],
+      },
+    ],
+  };
+
   return (
     <main>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }}
+      />
       <ScrollProgress />
       <Navbar />
 

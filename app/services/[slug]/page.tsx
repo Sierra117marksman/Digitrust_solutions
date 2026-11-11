@@ -34,6 +34,12 @@ export async function generateMetadata({ params }: ServicePageProps): Promise<Me
       type: "website",
       images: [{ url: "/og.png", width: 1734, height: 907, alt: service.title }],
     },
+    other: {
+      "geo.region": "IN-HR",
+      "geo.placename": "Gurugram, Haryana",
+      "geo.position": "28.5033;77.0396",
+      "ICBM": "28.5033, 77.0396",
+    },
   };
 }
 
@@ -44,7 +50,7 @@ export default async function ServicePage({ params }: ServicePageProps) {
 
   const reviews = getTestimonialsForService(service.slug);
   const relatedServices = services.filter((item) => item.slug !== service.slug).slice(0, 3);
-  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000";
+  const siteUrl = companyConfig.seo.siteUrl;
   const pageUrl = `${siteUrl}/services/${service.slug}`;
 
   const structuredData = {
@@ -60,7 +66,7 @@ export default async function ServicePage({ params }: ServicePageProps) {
           "@type": "Organization",
           name: companyConfig.company.name,
           email: contactInfo.email.display,
-          telephone: contactInfo.phones[0].display,
+          telephone: [contactInfo.phones[0].display, contactInfo.phones[1].display],
           sameAs: [contactInfo.instagram.href],
           address: {
             "@type": "PostalAddress",

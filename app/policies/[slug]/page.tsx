@@ -29,7 +29,7 @@ export default async function PolicyPage({ params }: PolicyPageProps) {
   const policy = getPolicy(slug);
   if (!policy) notFound();
 
-  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000";
+  const siteUrl = companyConfig.seo.siteUrl;
   const updated = "12 July 2026";
   const structuredData = {
     "@context": "https://schema.org",

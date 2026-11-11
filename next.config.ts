@@ -21,6 +21,39 @@ const nextConfig: NextConfig = {
   async redirects() {
     return [
       {
+        source: "/:path*",
+        has: [
+          {
+            type: "host",
+            value: "www.digitrustsolutions.com",
+          },
+        ],
+        destination: "https://digitrustsolutions.com/:path*",
+        permanent: true,
+      },
+      {
+        source: "/:path*",
+        has: [
+          {
+            type: "host",
+            value: "www.digitrustsolutions.in",
+          },
+        ],
+        destination: "https://digitrustsolutions.com/:path*",
+        permanent: true,
+      },
+      {
+        source: "/:path*",
+        has: [
+          {
+            type: "host",
+            value: "digitrustsolutions.in",
+          },
+        ],
+        destination: "https://digitrustsolutions.com/:path*",
+        permanent: true,
+      },
+      {
         source: "/results",
         destination: "/proof",
         permanent: true,
@@ -28,7 +61,7 @@ const nextConfig: NextConfig = {
       {
         source: "/case-studies",
         destination: "/proof",
-        permanent: false,
+        permanent: true,
       },
     ];
   },
