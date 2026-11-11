@@ -107,6 +107,42 @@ const CAMPAIGNS: CampaignItem[] = [
     ],
     campaignNote: "Admission & course lead pipelines",
     whatsappMessage: "Hi Digitrust Solutions, I saw your Education & Academy walkthrough. Want to discuss student intake lead campaigns."
+  },
+  {
+    id: "textile",
+    name: "Textile & Garment Manufacturing",
+    emoji: "🧵",
+    industry: "B2B Apparel & Textiles",
+    videoSrc: "/videos/proof/textile-manufacturing.mp4",
+    posterSrc: "/videos/proof/poster-textile.jpg",
+    duration: "17s Recording",
+    accountName: "Digitrust Client Account (Textiles)",
+    opportunityScore: 100,
+    deliveryStatus: "Wholesale Inquiries",
+    campaigns: [
+      "Digitrust || Messaging Conversations",
+      "Digitrust || Wholesale Inquiries"
+    ],
+    campaignNote: "15 messaging inquiries @ ₹5.65 CPL",
+    whatsappMessage: "Hi Digitrust Solutions, I watched your Textile & Manufacturing campaign walkthrough (₹5.65 cost/lead). Let's discuss wholesale lead generation for my business."
+  },
+  {
+    id: "wellness-scaling",
+    name: "Natural Health & Wellness",
+    emoji: "🌱",
+    industry: "Ayurveda & D2C Health",
+    videoSrc: "/videos/proof/wellness-campaigns.mp4",
+    posterSrc: "/videos/proof/poster-wellness.jpg",
+    duration: "21s Recording",
+    accountName: "Digitrust Client Account (Wellness)",
+    opportunityScore: 100,
+    deliveryStatus: "Multi-City Inquiries",
+    campaigns: [
+      "Digitrust || Multi-City Targeting",
+      "Digitrust || Leads Scaling"
+    ],
+    campaignNote: "213+ inquiries across 5 active ad sets",
+    whatsappMessage: "Hi Digitrust Solutions, I saw your Natural Health & Wellness campaign walkthrough with 213+ inquiries. Let's discuss scaling leads for my brand."
   }
 ];
 
@@ -234,7 +270,7 @@ export function ProofDossierClient() {
           </div>
           <div className="proof-status-pill">
             <span className="proof-dot" aria-hidden="true" />
-            <span>4 VIDEO RECORDINGS • 5 VERIFIED CASE STUDIES</span>
+            <span>6 VIDEO RECORDINGS • 5 VERIFIED CASE STUDIES</span>
           </div>
         </div>
 

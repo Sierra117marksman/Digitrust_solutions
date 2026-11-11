@@ -5153,16 +5153,16 @@ a {
   word-break: break-word;
 }
 
-/* Multi-Video Showcase Grid */
+/* Multi-Video Showcase Grid (6 Uncut Video Walkthroughs in 3x2 Grid) */
 .proof-video-grid {
   display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
-  gap: 18px;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 20px;
   width: 100%;
   min-width: 0;
 }
 
-@media (max-width: 1100px) {
+@media (max-width: 1024px) {
   .proof-video-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: 18px;
