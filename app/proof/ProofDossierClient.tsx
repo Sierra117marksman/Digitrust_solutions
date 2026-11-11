@@ -148,23 +148,8 @@ const CAMPAIGNS: CampaignItem[] = [
 
 const SCREENSHOT_CASE_STUDIES: ScreenshotCaseStudy[] = [
   {
-    id: "roofing-b2b",
-    industry: "Roofing Business (B2B)",
-    title: "Commercial & Industrial Roofing Leads",
-    emoji: "🏗️",
-    badge: "B2B Lead Generation",
-    imageSrc: "/images/proof/roofing-b2b.png",
-    totalLeads: "74 Leads",
-    costPerLead: "₹6.00",
-    leadsConverted: "7 Clients",
-    conversionRate: "9.4%",
-    accountShown: "Digitrust Account (13869...) • Score: 83",
-    campaignShown: "Digitrust || Awareness Campaign",
-    whatsappMessage: "Hi Digitrust Solutions, I saw your B2B Roofing case study (74 leads, ₹6 CPL, 9.4% conversion). Let's discuss B2B commercial leads for my business."
-  },
-  {
     id: "dental-clinic",
-    industry: "Dentist — Dental Clinic",
+    industry: "Dental Clinic",
     title: "Clinic Patient Inbound Appointment Calls",
     emoji: "🦷",
     badge: "Healthcare & Clinic",
@@ -178,8 +163,23 @@ const SCREENSHOT_CASE_STUDIES: ScreenshotCaseStudy[] = [
     whatsappMessage: "Hi Digitrust Solutions, I saw your Dental Clinic campaign results (57 appointment calls, ₹8 cost/call, 11% conversion). Let's discuss clinic patient bookings."
   },
   {
+    id: "roofing-b2b",
+    industry: "ROOFING BUSINESS",
+    title: "Commercial & Industrial Roofing Leads",
+    emoji: "🏗️",
+    badge: "B2B Lead Generation",
+    imageSrc: "/images/proof/roofing-b2b.png",
+    totalLeads: "74 Leads",
+    costPerLead: "₹6.00",
+    leadsConverted: "7 Clients",
+    conversionRate: "9.4%",
+    accountShown: "Digitrust Account (13869...) • Score: 83",
+    campaignShown: "Digitrust || Awareness Campaign",
+    whatsappMessage: "Hi Digitrust Solutions, I saw your ROOFING BUSINESS case study (74 leads, ₹6 CPL, 9.4% conversion). Let's discuss B2B commercial leads for my business."
+  },
+  {
     id: "furniture-business",
-    industry: "Furniture Business",
+    industry: "Furniture Shop",
     title: "High-Ticket Furniture Store Inquiries",
     emoji: "🛋️",
     badge: "Retail & Showroom",
@@ -189,28 +189,28 @@ const SCREENSHOT_CASE_STUDIES: ScreenshotCaseStudy[] = [
     leadsConverted: "5 Buyers",
     conversionRate: "11%",
     accountShown: "Digitrust Client Account (Furniture)",
-    campaignShown: "Digitrust || Leads campaign",
-    whatsappMessage: "Hi Digitrust Solutions, I saw your Furniture business case study (55 leads, ₹18.49 CPL, 11% conversion). Let's discuss lead generation for my store."
+    campaignShown: "Digitrust || Showroom Leads",
+    whatsappMessage: "Hi Digitrust Solutions, I saw your Furniture Shop case study (55 leads, ₹18.49 CPL, 11% conversion). Let's discuss lead generation for my store."
   },
   {
     id: "coaching-institute",
-    industry: "Professional Coaching Institute",
-    title: "Digital Academy Student Admissions",
+    industry: "Digital Academy",
+    title: "Digital Marketing Academy Student Admissions",
     emoji: "📚",
-    badge: "Education & Coaching",
+    badge: "Education & Academy",
     imageSrc: "/images/proof/coaching-institute.png",
     totalLeads: "34 Leads",
     costPerLead: "₹53.00",
     leadsConverted: "4 Admissions",
     conversionRate: "~12%",
-    accountShown: "Digitrust Client Account (Education)",
+    accountShown: "Digitrust Client Account (Digital Academy)",
     campaignShown: "Digitrust || Admissions Campaign 1",
-    whatsappMessage: "Hi Digitrust Solutions, I saw your Coaching Institute campaign results (34 leads, ₹53 CPL, 12% conversion). Let's discuss student leads for my institute."
+    whatsappMessage: "Hi Digitrust Solutions, I saw your Digital Academy campaign results (34 leads, ₹53 CPL, 12% conversion). Let's discuss student leads for my academy."
   },
   {
     id: "real-estate",
-    industry: "Real Estate Properties",
-    title: "High-Ticket Real Estate Buyer Leads",
+    industry: "Real Estate",
+    title: "High-Ticket Property & Plot Buyer Leads",
     emoji: "🏢",
     badge: "Property & Construction",
     imageSrc: "/images/proof/real-estate-leads.png",
@@ -218,9 +218,54 @@ const SCREENSHOT_CASE_STUDIES: ScreenshotCaseStudy[] = [
     costPerLead: "₹65.00",
     leadsConverted: "1 Closed Buyer",
     conversionRate: "7%",
-    accountShown: "Digitrust Client Account (1438...)",
-    campaignShown: "Digitrust || Property Leads",
+    accountShown: "Digitrust Client Account (Real Estate)",
+    campaignShown: "Digitrust || Real Estate Leads",
     whatsappMessage: "Hi Digitrust Solutions, I saw your Real Estate campaign numbers (14 leads, ₹65 CPL, 7% conversion). Let's discuss high-ticket buyer leads."
+  },
+  {
+    id: "led-light",
+    industry: "Led light",
+    title: "LED Lighting Manufacturer & Distributor Inquiries",
+    emoji: "💡",
+    badge: "Manufacturing & Retail",
+    imageSrc: "/images/proof/led-light.png",
+    totalLeads: "152 Inquiries",
+    costPerLead: "₹14.68 avg",
+    leadsConverted: "15+ Retailers",
+    conversionRate: "~10%",
+    accountShown: "Digitrust Client Account (LED Lighting) • Score: 100",
+    campaignShown: "Digitrust || LED Lighting Leads 1 (76 leads @ ₹15.36)",
+    whatsappMessage: "Hi Digitrust Solutions, I saw your Led light manufacturing campaign (152 inquiries, ₹14.68 avg CPL). Let's discuss distributor and retailer leads for my business."
+  },
+  {
+    id: "ayurveda-wellness",
+    industry: "Ayurveda (Wellness & Herbal)",
+    title: "D2C Ayurvedic Remedies & Scaled Health Inquiries",
+    emoji: "🌿",
+    badge: "Healthcare & D2C",
+    imageSrc: "/images/proof/ayurveda-wellness.png",
+    totalLeads: "1,606 Leads",
+    costPerLead: "₹12.90 avg",
+    leadsConverted: "160+ Orders",
+    conversionRate: "~10%",
+    accountShown: "Digitrust Client Account (Ayurveda Wellness)",
+    campaignShown: "Digitrust || Wellness Leads (918 leads @ ₹10.59)",
+    whatsappMessage: "Hi Digitrust Solutions, I saw your Ayurveda D2C campaign results (1,606 leads at ₹12.90 CPL). Let's discuss scaling customer orders for my health brand."
+  },
+  {
+    id: "ayurveda-consultation",
+    industry: "Ayurveda (Clinic Consultations)",
+    title: "Specialist Ayurvedic Clinic & Joint Care Bookings",
+    emoji: "🩺",
+    badge: "Clinic & Patient Consultations",
+    imageSrc: "/images/proof/ayurveda-consultation.png",
+    totalLeads: "24 Consultations",
+    costPerLead: "₹49.70 avg",
+    leadsConverted: "4 Bookings",
+    conversionRate: "16.7%",
+    accountShown: "Digitrust Client Account (Ayurveda Care)",
+    campaignShown: "Digitrust || Herbal Joint Care Leads (16 chats @ ₹42.30)",
+    whatsappMessage: "Hi Digitrust Solutions, I saw your Ayurveda Clinic campaign results (24 patient consultation leads). Let's discuss inbound bookings for my clinic."
   }
 ];
 
@@ -270,7 +315,7 @@ export function ProofDossierClient() {
           </div>
           <div className="proof-status-pill">
             <span className="proof-dot" aria-hidden="true" />
-            <span>FOUNDER SPOTLIGHT • 6 VIDEO RECORDINGS • 5 CASE STUDIES</span>
+            <span>FOUNDER SPOTLIGHT • 6 VIDEO RECORDINGS • 8 VERIFIED CASE STUDIES</span>
           </div>
         </div>
 
@@ -478,7 +523,7 @@ export function ProofDossierClient() {
             <div className="proof-section-tag">TIER 2 • DASHBOARD DATA &amp; UNIT ECONOMICS</div>
             <h2 className="proof-main-title">Verified Lead Acquisition &amp; Cost Metrics</h2>
             <p className="proof-main-desc">
-              Real performance data and backend dashboard exports across 5 distinct industries — showing exact lead counts, verified Cost Per Lead (CPL), and confirmed conversion ratios.
+              Real performance data and backend dashboard exports across 8 distinct industries — showing exact lead counts, verified Cost Per Lead (CPL), and confirmed conversion ratios.
             </p>
           </div>
 
