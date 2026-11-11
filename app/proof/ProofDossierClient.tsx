@@ -270,12 +270,103 @@ export function ProofDossierClient() {
           </div>
           <div className="proof-status-pill">
             <span className="proof-dot" aria-hidden="true" />
-            <span>6 VIDEO RECORDINGS • 5 VERIFIED CASE STUDIES</span>
+            <span>FOUNDER SPOTLIGHT • 6 VIDEO RECORDINGS • 5 CASE STUDIES</span>
           </div>
         </div>
 
+        {/* Special Spotlight: Founder's Message from Tarun Yadav */}
+        <section id="founder-briefing" className="proof-founder-spotlight" aria-label="Founder Spotlight Briefing">
+          <div className="proof-founder-spotlight-inner">
+            
+            {/* Left Column: Vertical Video Showcase */}
+            <div className="proof-founder-video-col">
+              <div className="proof-founder-video-frame">
+                <span className="proof-founder-video-tag">FOUNDER BRIEFING • 29s</span>
+                <video
+                  ref={(el) => {
+                    videoRefs.current["tarun-founder"] = el;
+                  }}
+                  src="/videos/proof/tarun-founder-reel.mp4"
+                  poster="/videos/proof/poster-tarun-founder.jpg"
+                  controls
+                  playsInline
+                  preload="metadata"
+                  onPlay={() => handlePlay("tarun-founder")}
+                  className="proof-founder-video-element"
+                  aria-label="Tarun Yadav CEO & Founder explaining Meta Ads 7-day trial"
+                >
+                  Your browser does not support HTML5 video playback.
+                </video>
+              </div>
+            </div>
+
+            {/* Right Column: Narrative & Key Points */}
+            <div className="proof-founder-copy-col">
+              <div className="proof-founder-badge-row">
+                <span className="proof-founder-badge">⭐ FEATURED FOUNDER SPOTLIGHT</span>
+                <span className="proof-founder-role">TARUN YADAV • FOUNDER &amp; CEO</span>
+              </div>
+              
+              <h2 className="proof-founder-headline">
+                &ldquo;Pehle 7 Din Kaam Test Karo, Fir Decide Karo.&rdquo;
+              </h2>
+              
+              <p className="proof-founder-lead">
+                Hear directly from our Founder on why Digitrust Solutions offers a <strong>₹1,999 7-day trial</strong>, how we optimize campaigns for actual customer inquiries, and our transparent <strong>₹5,000/month</strong> management model.
+              </p>
+
+              <div className="proof-founder-points-grid">
+                <div className="proof-founder-point">
+                  <span className="point-icon">⚡</span>
+                  <div>
+                    <strong>₹1,999 7-Day Trial:</strong>
+                    <span>Test campaign setup, messaging &amp; targeting with zero lock-in. ₹1,999 is adjusted against Month 1.</span>
+                  </div>
+                </div>
+
+                <div className="proof-founder-point">
+                  <span className="point-icon">🎯</span>
+                  <div>
+                    <strong>Focus on Enquiries &amp; Conversions:</strong>
+                    <span>Ads built to generate real customer calls and messaging leads, not empty vanity clicks.</span>
+                  </div>
+                </div>
+
+                <div className="proof-founder-point">
+                  <span className="point-icon">💼</span>
+                  <div>
+                    <strong>₹5,000 Monthly Retainer:</strong>
+                    <span>If satisfied with trial results, pay just ₹3,001 balance to continue for your first full month.</span>
+                  </div>
+                </div>
+              </div>
+
+              <div className="proof-founder-cta-group">
+                <a
+                  href={`${waBaseUrl}?text=${encodeURIComponent("Hi Tarun, I watched your video reel on the ₹1,999 Meta Ads 7-day trial. Let's discuss starting for my business.")}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="proof-founder-wa-btn"
+                  aria-label="Talk directly with Tarun Yadav on WhatsApp"
+                >
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                    <path d="M12.031 6.172c-3.181 0-5.767 2.586-5.768 5.766-.001 1.298.38 2.27 1.019 3.287l-.711 2.598 2.669-.699c.969.54 1.777.82 2.791.82 3.181 0 5.767-2.586 5.768-5.766 0-3.18-2.586-5.766-5.768-5.766zm9.969 5.766c0 5.514-4.486 10-10 10-1.764 0-3.421-.462-4.869-1.268l-7.131 1.868 1.898-6.945c-.908-1.516-1.428-3.29-1.428-5.187 0-5.514 4.486-10 10-10 5.514 0 10 4.486 10 10z"/>
+                  </svg>
+                  <span>Talk with Tarun on WhatsApp (₹1,999 Trial) →</span>
+                </a>
+
+                <a href="#campaign-vault" className="proof-founder-jump-link">
+                  See 6 Uncut Client Walkthroughs Below ↓
+                </a>
+              </div>
+
+            </div>
+
+          </div>
+        </section>
+
         {/* Section 1: Video Proof Vault */}
-        <div className="proof-section-block">
+        <div id="campaign-vault" className="proof-section-block">
           <div className="proof-title-area">
             <div className="proof-section-tag">TIER 1 • RECORDED VIDEO PROOF</div>
             <h1 className="proof-main-title">Uncut Meta Ads Manager Video Walkthroughs</h1>
@@ -500,6 +591,10 @@ export function ProofDossierClient() {
             <p className="proof-main-desc">
               A structured Meta advertising service built to help your business reach the right audience, attract relevant enquiries, and make smarter use of your advertising budget.
             </p>
+            <div className="proof-pricing-founder-callout">
+              <span className="callout-icon">🎬</span>
+              <span><strong>Watch Tarun Yadav (Founder &amp; CEO):</strong> <a href="#founder-briefing">Hear how the ₹1,999 trial &amp; ₹5,000 retainer works in our Founder Briefing Reel ↑</a></span>
+            </div>
           </div>
 
           {/* Pricing Cards Grid */}
