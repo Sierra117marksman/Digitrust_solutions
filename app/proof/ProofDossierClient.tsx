@@ -274,7 +274,7 @@ export function ProofDossierClient() {
           </div>
         </div>
 
-        {/* Special Spotlight: Founder's Message from Tarun Yadav */}
+        {/* Special Spotlight: Founder's Message */}
         <section id="founder-briefing" className="proof-founder-spotlight" aria-label="Founder Spotlight Briefing">
           <div className="proof-founder-spotlight-inner">
             
@@ -284,16 +284,16 @@ export function ProofDossierClient() {
                 <span className="proof-founder-video-tag">FOUNDER BRIEFING • 29s</span>
                 <video
                   ref={(el) => {
-                    videoRefs.current["tarun-founder"] = el;
+                    videoRefs.current["founder-spotlight"] = el;
                   }}
-                  src="/videos/proof/tarun-founder-reel.mp4"
-                  poster="/videos/proof/poster-tarun-founder.jpg"
+                  src="/videos/proof/founder-reel.mp4"
+                  poster="/videos/proof/poster-founder.jpg"
                   controls
                   playsInline
                   preload="metadata"
-                  onPlay={() => handlePlay("tarun-founder")}
+                  onPlay={() => handlePlay("founder-spotlight")}
                   className="proof-founder-video-element"
-                  aria-label="Tarun Yadav CEO & Founder explaining Meta Ads 7-day trial"
+                  aria-label="Founder &amp; CEO explaining Meta Ads 7-day trial"
                 >
                   Your browser does not support HTML5 video playback.
                 </video>
@@ -304,7 +304,7 @@ export function ProofDossierClient() {
             <div className="proof-founder-copy-col">
               <div className="proof-founder-badge-row">
                 <span className="proof-founder-badge">⭐ FEATURED FOUNDER SPOTLIGHT</span>
-                <span className="proof-founder-role">TARUN YADAV • FOUNDER &amp; CEO</span>
+                <span className="proof-founder-role">FOUNDER &amp; CEO</span>
               </div>
               
               <h2 className="proof-founder-headline">
@@ -343,16 +343,16 @@ export function ProofDossierClient() {
 
               <div className="proof-founder-cta-group">
                 <a
-                  href={`${waBaseUrl}?text=${encodeURIComponent("Hi Tarun, I watched your video reel on the ₹1,999 Meta Ads 7-day trial. Let's discuss starting for my business.")}`}
+                  href={`${waBaseUrl}?text=${encodeURIComponent("Hi Digitrust Solutions, I watched your Founder's video reel on the ₹1,999 Meta Ads 7-day trial. Let's discuss starting for my business.")}`}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="proof-founder-wa-btn"
-                  aria-label="Talk directly with Tarun Yadav on WhatsApp"
+                  aria-label="Talk directly with our Founder on WhatsApp"
                 >
                   <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
                     <path d="M12.031 6.172c-3.181 0-5.767 2.586-5.768 5.766-.001 1.298.38 2.27 1.019 3.287l-.711 2.598 2.669-.699c.969.54 1.777.82 2.791.82 3.181 0 5.767-2.586 5.768-5.766 0-3.18-2.586-5.766-5.768-5.766zm9.969 5.766c0 5.514-4.486 10-10 10-1.764 0-3.421-.462-4.869-1.268l-7.131 1.868 1.898-6.945c-.908-1.516-1.428-3.29-1.428-5.187 0-5.514 4.486-10 10-10 5.514 0 10 4.486 10 10z"/>
                   </svg>
-                  <span>Talk with Tarun on WhatsApp (₹1,999 Trial) →</span>
+                  <span>Talk with Founder on WhatsApp (₹1,999 Trial) →</span>
                 </a>
 
                 <a href="#campaign-vault" className="proof-founder-jump-link">
@@ -593,7 +593,7 @@ export function ProofDossierClient() {
             </p>
             <div className="proof-pricing-founder-callout">
               <span className="callout-icon">🎬</span>
-              <span><strong>Watch Tarun Yadav (Founder &amp; CEO):</strong> <a href="#founder-briefing">Hear how the ₹1,999 trial &amp; ₹5,000 retainer works in our Founder Briefing Reel ↑</a></span>
+              <span><strong>Watch Our Founder &amp; CEO:</strong> <a href="#founder-briefing">Hear how the ₹1,999 trial &amp; ₹5,000 retainer works in our Founder Briefing Reel ↑</a></span>
             </div>
           </div>
 

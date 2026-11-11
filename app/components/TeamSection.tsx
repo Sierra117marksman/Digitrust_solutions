@@ -17,12 +17,12 @@ export default function TeamSection() {
           {/* CEO Card */}
           <article className="team-card ceo-card">
             <div className="team-photo-wrap">
-              <Image src="/team-ceo.webp" alt="Tarun Yadav - CEO & Founder" fill sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 350px" className="team-photo" />
+              <Image src="/team-ceo.webp" alt="Founder - CEO & Founder" fill sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 350px" className="team-photo" />
               <div className="team-accent founder-accent">★ Founder</div>
             </div>
             <div className="team-content">
-              <h3>Tarun Yadav</h3>
-              <p className="team-role">CEO &amp; Founder</p>
+              <h3>Founder</h3>
+              <p className="team-role">CEO &amp; Strategy</p>
               <p className="team-focus">Vision, business strategy, and client relationships.</p>
               <p className="team-bio">&quot;Leading DigiTrust with a commitment to delivering innovative digital solutions and long-term client success.&quot;</p>
               <ul className="team-highlights">
