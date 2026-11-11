@@ -1,19 +1,17 @@
 "use client";
 
-import { useState } from "react";
+import { useRef } from "react";
 import Link from "next/link";
 
 interface CampaignItem {
   id: string;
   name: string;
   emoji: string;
-  title: string;
-  description: string;
+  industry: string;
   videoSrc: string;
   posterSrc: string;
   duration: string;
   accountName: string;
-  accountSnippet?: string;
   opportunityScore?: number;
   deliveryStatus: string;
   campaigns: string[];
@@ -26,15 +24,13 @@ const CAMPAIGNS: CampaignItem[] = [
     id: "ayurved",
     name: "Aayurvira Wellness",
     emoji: "🌿",
-    title: "Aayurvira Wellness — Meta Ads Backend Walkthrough",
-    description: "Unedited screen recording showing active campaigns, opportunity scores, and backend delivery metrics directly inside Meta Ads Manager.",
+    industry: "Health & Ayurveda",
     videoSrc: "/videos/proof/ayurved-wellness.mp4",
     posterSrc: "/videos/proof/poster-ayurved.jpg",
     duration: "23s Recording",
-    accountName: "Aayurvira Wellness",
-    accountSnippet: "Account ID: (9509...)",
+    accountName: "Aayurvira Wellness (9509...)",
     opportunityScore: 89,
-    deliveryStatus: "Active Ads Delivery",
+    deliveryStatus: "Active Delivery",
     campaigns: [
       "Digitrust || campaign || 2 October 2026",
       "neuro vira leads"
@@ -46,33 +42,31 @@ const CAMPAIGNS: CampaignItem[] = [
     id: "furniture",
     name: "Valmont Furniture",
     emoji: "🛋️",
-    title: "Valmont Furniture — Meta Ads Lead Generation",
-    description: "Live Ads Manager screen recording displaying Valmont luxury furniture lead generation and messaging campaigns with 100 Opportunity Score.",
+    industry: "Luxury Furniture",
     videoSrc: "/videos/proof/furniture-shop.mp4",
     posterSrc: "/videos/proof/poster-furniture.jpg",
     duration: "26s Recording",
     accountName: "Digitrust x Valmont furniture",
     opportunityScore: 100,
-    deliveryStatus: "Messaging Conversations",
+    deliveryStatus: "Messaging Leads",
     campaigns: [
       "Digitrust x Valmont || Leads Campaign",
       "Digitrust || Leads campaign"
     ],
-    campaignNote: "Results from 2 campaigns",
+    campaignNote: "Results from 2 active campaigns",
     whatsappMessage: "Hi Digitrust Solutions, I watched the Valmont Furniture campaign walkthrough. Let's discuss lead generation for my business."
   },
   {
     id: "realestate",
     name: "Livewell Real Estate",
     emoji: "🏢",
-    title: "Livewell Real Estate — High-Ticket Property Leads",
-    description: "Direct verification of live real estate lead generation campaigns with messaging conversations and qualified buyer inquiries.",
+    industry: "Real Estate Properties",
     videoSrc: "/videos/proof/real-estate.mp4",
     posterSrc: "/videos/proof/poster-realestate.jpg",
     duration: "20s Recording",
     accountName: "LivewellRealEstate",
     opportunityScore: 97,
-    deliveryStatus: "Messaging Conversions",
+    deliveryStatus: "Buyer Conversations",
     campaigns: [
       "Digitrust x Live well || Leads - Copy",
       "Digitrust x Live well || Leads"
@@ -84,13 +78,12 @@ const CAMPAIGNS: CampaignItem[] = [
     id: "academy",
     name: "Multimedia Academy",
     emoji: "🎓",
-    title: "Multimedia Academy — Creative Education Growth",
-    description: "Screen recording showcasing student portfolio work, engagement, and education lead generation across social channels.",
+    industry: "Creative Education",
     videoSrc: "/videos/proof/marketing-academy.mp4",
     posterSrc: "/videos/proof/poster-academy.jpg",
     duration: "25s Recording",
     accountName: "SAM Multimedia Academy",
-    deliveryStatus: "Student Creative Portfolios",
+    deliveryStatus: "Student Portfolios",
     campaigns: [
       "Student creative portfolios",
       "Event & Workshop promotions"
@@ -101,11 +94,17 @@ const CAMPAIGNS: CampaignItem[] = [
 ];
 
 export function ProofDossierClient() {
-  const [activeId, setActiveId] = useState("ayurved");
-  const active = CAMPAIGNS.find(c => c.id === activeId) || CAMPAIGNS[0];
+  const videoRefs = useRef<Record<string, HTMLVideoElement | null>>({});
+
+  const handlePlay = (playingId: string) => {
+    Object.entries(videoRefs.current).forEach(([id, videoEl]) => {
+      if (id !== playingId && videoEl && !videoEl.paused) {
+        videoEl.pause();
+      }
+    });
+  };
 
   const waBaseUrl = "https://wa.me/919211734699";
-  const waUrl = `${waBaseUrl}?text=${encodeURIComponent(active.whatsappMessage)}`;
 
   return (
     <div className="proof-dossier-wrapper">
@@ -121,126 +120,143 @@ export function ProofDossierClient() {
           </div>
           <div className="proof-status-pill">
             <span className="proof-dot" aria-hidden="true" />
-            <span>UNCUT ADS MANAGER RECORDINGS</span>
+            <span>4 UNCUT ADS MANAGER RECORDINGS</span>
           </div>
         </div>
 
-        {/* 4 Campaign Tabs */}
-        <div className="proof-tabs-list" role="tablist" aria-label="Client Case Studies">
-          {CAMPAIGNS.map(camp => {
-            const isSelected = camp.id === activeId;
+        {/* Title & Introduction */}
+        <div className="proof-title-area">
+          <h1 className="proof-main-title">Live Meta Ads Performance &amp; Backend Walkthroughs</h1>
+          <p className="proof-main-desc">
+            Direct unedited phone recordings inside active client Meta Ads Manager accounts — real Opportunity Scores, campaign delivery structures, and messaging lead flows.
+          </p>
+        </div>
+
+        {/* Showcase Box: All 4 Videos in One Place */}
+        <div className="proof-video-grid" role="region" aria-label="Verified Video Proof Vault">
+          {CAMPAIGNS.map((camp) => {
+            const cardWaUrl = `${waBaseUrl}?text=${encodeURIComponent(camp.whatsappMessage)}`;
+
             return (
-              <button
-                key={camp.id}
-                role="tab"
-                aria-selected={isSelected}
-                className={`proof-tab-btn ${isSelected ? "is-active" : ""}`}
-                onClick={() => setActiveId(camp.id)}
-              >
-                <span className="proof-tab-emoji">{camp.emoji}</span>
-                <span>{camp.name}</span>
-              </button>
+              <article key={camp.id} className="proof-video-card">
+                
+                {/* Video Card Top Header */}
+                <div className="proof-video-card-top">
+                  <div className="proof-card-top-row">
+                    <span className="proof-card-emoji">{camp.emoji}</span>
+                    <h2 className="proof-card-client-name">{camp.name}</h2>
+                  </div>
+                  <div className="proof-card-badge-row">
+                    <span className="proof-card-industry">{camp.industry}</span>
+                    {typeof camp.opportunityScore === "number" ? (
+                      <span className="proof-chip proof-chip-score" title="Meta Ads Manager Opportunity Score">
+                        Score: {camp.opportunityScore}
+                      </span>
+                    ) : (
+                      <span className="proof-chip" title="Campaign Delivery Status">
+                        {camp.deliveryStatus}
+                      </span>
+                    )}
+                  </div>
+                </div>
+
+                {/* 9:16 Vertical Video Player Box */}
+                <div className="proof-video-box">
+                  <div className="proof-video-frame">
+                    <video
+                      ref={(el) => {
+                        videoRefs.current[camp.id] = el;
+                      }}
+                      src={camp.videoSrc}
+                      poster={camp.posterSrc}
+                      controls
+                      playsInline
+                      preload="metadata"
+                      onPlay={() => handlePlay(camp.id)}
+                      className="proof-video-element"
+                      aria-label={`${camp.name} Meta Ads Manager video walkthrough`}
+                    >
+                      Your browser does not support HTML5 video playback.
+                    </video>
+                  </div>
+                  <div className="proof-video-meta">
+                    <span><strong>FEED:</strong> Screen Capture</span>
+                    <span>{camp.duration}</span>
+                    <span className="proof-quality-badge">1080p HD</span>
+                  </div>
+                </div>
+
+                {/* Video Evidence Summary */}
+                <div className="proof-video-card-body">
+                  <div className="proof-card-account-line">
+                    <span className="proof-sub-label">Account on Screen:</span>
+                    <strong className="proof-account-name">{camp.accountName}</strong>
+                  </div>
+
+                  <div className="proof-card-campaigns-block">
+                    <span className="proof-sub-label">Campaigns Shown:</span>
+                    <div className="proof-campaign-chips">
+                      {camp.campaigns.map((cName, idx) => (
+                        <code key={idx} className="proof-campaign-pill">
+                          {cName}
+                        </code>
+                      ))}
+                    </div>
+                    <span className="proof-campaign-note">({camp.campaignNote})</span>
+                  </div>
+                </div>
+
+                {/* Individual Direct WhatsApp Action */}
+                <div className="proof-video-card-footer">
+                  <a
+                    href={cardWaUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="proof-card-wa-btn"
+                    aria-label={`Discuss ${camp.name} results with Digitrust Solutions on WhatsApp`}
+                  >
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                      <path d="M12.031 6.172c-3.181 0-5.767 2.586-5.768 5.766-.001 1.298.38 2.27 1.019 3.287l-.711 2.598 2.669-.699c.969.54 1.777.82 2.791.82 3.181 0 5.767-2.586 5.768-5.766 0-3.18-2.586-5.766-5.768-5.766zm9.969 5.766c0 5.514-4.486 10-10 10-1.764 0-3.421-.462-4.869-1.268l-7.131 1.868 1.898-6.945c-.908-1.516-1.428-3.29-1.428-5.187 0-5.514 4.486-10 10-10 5.514 0 10 4.486 10 10z"/>
+                    </svg>
+                    <span>Discuss on WhatsApp →</span>
+                  </a>
+                </div>
+
+              </article>
             );
           })}
         </div>
 
-        {/* Active Title & Description */}
-        <div className="proof-title-area">
-          <h1 className="proof-main-title">{active.title}</h1>
-          <p className="proof-main-desc">{active.description}</p>
-        </div>
-
-        {/* Two-Column Responsive Split */}
-        <div className="proof-content-grid">
-          
-          {/* Left Column: 9:16 Vertical Video Player */}
-          <div className="proof-video-col">
-            <div className="proof-video-box">
-              <div className="proof-video-frame">
-                <video
-                  key={active.videoSrc}
-                  src={active.videoSrc}
-                  poster={active.posterSrc}
-                  controls
-                  playsInline
-                  preload="metadata"
-                  className="proof-video-element"
-                >
-                  Your browser does not support HTML5 video playback.
-                </video>
-              </div>
-              <div className="proof-video-meta">
-                <span><strong>FEED:</strong> Screen Capture</span>
-                <span>{active.duration}</span>
-                <span className="proof-quality-badge">1080p HD Web</span>
-              </div>
+        {/* Global Bottom Banner: Direct Consultation & Service Navigation */}
+        <div className="proof-bottom-banner">
+          <div className="proof-banner-content">
+            <h3 className="proof-banner-title">Want to scale your brand with proven Meta Ads?</h3>
+            <p className="proof-banner-desc">
+              Send your current website or ad account on WhatsApp for an unvarnished audit with zero sales pressure.
+            </p>
+            <div className="proof-banner-actions">
+              <a
+                href={`${waBaseUrl}?text=${encodeURIComponent("Hi Digitrust Solutions, I reviewed your verified campaign proof recordings. I want to discuss advertising for my business.")}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="proof-whatsapp-btn"
+                aria-label="Discuss your campaign with Digitrust Solutions on WhatsApp"
+              >
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                  <path d="M12.031 6.172c-3.181 0-5.767 2.586-5.768 5.766-.001 1.298.38 2.27 1.019 3.287l-.711 2.598 2.669-.699c.969.54 1.777.82 2.791.82 3.181 0 5.767-2.586 5.768-5.766 0-3.18-2.586-5.766-5.768-5.766zm9.969 5.766c0 5.514-4.486 10-10 10-1.764 0-3.421-.462-4.869-1.268l-7.131 1.868 1.898-6.945c-.908-1.516-1.428-3.29-1.428-5.187 0-5.514 4.486-10 10-10 5.514 0 10 4.486 10 10z"/>
+                </svg>
+                <span>Discuss Your Campaign on WhatsApp (+91 92117 34699)</span>
+              </a>
+            </div>
+            <div className="proof-links-row">
+              <Link href="/services/meta-ads" className="proof-service-link">
+                Explore Meta Ads Management Service →
+              </Link>
+              <Link href="/services/ecommerce-account-management" className="proof-service-link">
+                Explore Marketplace Services (Amazon, Flipkart &amp; Meesho) →
+              </Link>
             </div>
           </div>
-
-          {/* Right Column: Authentic Details & Direct CTA */}
-          <div className="proof-details-col">
-            <div className="proof-details-card">
-              
-              <div className="proof-meta-row">
-                <div className="proof-meta-label">Verified Account on Screen:</div>
-                <div className="proof-meta-content">
-                  <strong>{active.accountName}</strong>
-                  <div className="proof-chips-row">
-                    {active.accountSnippet && (
-                      <span className="proof-chip">{active.accountSnippet}</span>
-                    )}
-                    {typeof active.opportunityScore === "number" && (
-                      <span className="proof-chip proof-chip-score">
-                        Opportunity Score: {active.opportunityScore}
-                      </span>
-                    )}
-                    <span className="proof-chip">{active.deliveryStatus}</span>
-                  </div>
-                </div>
-              </div>
-
-              <div className="proof-meta-row">
-                <div className="proof-meta-label">Campaign Structure Shown in Video:</div>
-                <div className="proof-meta-content">
-                  <ul className="proof-campaigns-list">
-                    {active.campaigns.map((name, i) => (
-                      <li key={i}>
-                        <code>{name}</code>
-                      </li>
-                    ))}
-                  </ul>
-                  <div className="proof-campaign-note">({active.campaignNote})</div>
-                </div>
-              </div>
-
-              <div className="proof-cta-block">
-                <a
-                  href={waUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="proof-whatsapp-btn"
-                  aria-label="Discuss your campaign with Digitrust Solutions on WhatsApp"
-                >
-                  <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
-                    <path d="M12.031 6.172c-3.181 0-5.767 2.586-5.768 5.766-.001 1.298.38 2.27 1.019 3.287l-.711 2.598 2.669-.699c.969.54 1.777.82 2.791.82 3.181 0 5.767-2.586 5.768-5.766 0-3.18-2.586-5.766-5.768-5.766zm9.969 5.766c0 5.514-4.486 10-10 10-1.764 0-3.421-.462-4.869-1.268l-7.131 1.868 1.898-6.945c-.908-1.516-1.428-3.29-1.428-5.187 0-5.514 4.486-10 10-10 5.514 0 10 4.486 10 10z"/>
-                  </svg>
-                  <span>Discuss Your Campaign with Digitrust Solutions on WhatsApp</span>
-                </a>
-                <p className="proof-cta-subtext">Direct WhatsApp chat • Zero sales pressure</p>
-              </div>
-
-              <div className="proof-links-row">
-                <Link href="/services/meta-ads" className="proof-service-link">
-                  Explore Meta Ads Management Service →
-                </Link>
-                <Link href="/services/ecommerce-account-management" className="proof-service-link">
-                  Explore Marketplace Services (Amazon, Flipkart &amp; Meesho) →
-                </Link>
-              </div>
-
-            </div>
-          </div>
-
         </div>
 
       </div>
