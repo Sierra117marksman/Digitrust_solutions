@@ -36,7 +36,13 @@ export function StickyCTA() {
         <span className="icon">📞</span>
         Call
       </a>
-      <a href={contactInfo.whatsapp.href} className="sticky-btn wa-btn">
+      <a
+        href={`${contactInfo.whatsapp.href}?text=${encodeURIComponent("Hi Digitrust Solutions, I would like to discuss a project for my business.")}`}
+        target="_blank"
+        rel="noopener noreferrer"
+        aria-label="Chat with Digitrust Solutions on WhatsApp"
+        className="sticky-btn wa-btn"
+      >
         <span className="icon">💬</span>
         WhatsApp
       </a>

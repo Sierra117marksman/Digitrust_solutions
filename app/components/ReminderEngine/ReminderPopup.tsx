@@ -20,7 +20,9 @@ const SingleReminder = ({ r, callNow, snoozeReminder, completeReminder, acknowle
   const handleWhatsApp = () => {
     acknowledgeReminder(r.id);
     if (r.subtitle) {
-      window.open(`https://wa.me/${r.subtitle.replace(/\D/g, '')}`, '_blank');
+      const digits = r.subtitle.replace(/\D/g, '');
+      const waPhone = digits.startsWith('91') ? digits : (digits.length === 10 ? `91${digits}` : digits);
+      window.open(`https://wa.me/${waPhone}`, '_blank');
     }
   };
 

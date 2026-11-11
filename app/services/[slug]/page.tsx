@@ -369,8 +369,8 @@ export default async function ServicePage({ params }: ServicePageProps) {
                 </p>
               </div>
               <div><span>Email</span><p><a href={contactInfo.email.href}>{contactInfo.email.display}</a></p></div>
-              <div><span>WhatsApp leads</span><p><Link href={contactInfo.whatsapp.href}>Message {contactInfo.whatsapp.display}</Link></p></div>
-              <div><span>Instagram</span><p><Link href={contactInfo.instagram.href}>{contactInfo.instagram.label}</Link></p></div>
+              <div><span>WhatsApp leads</span><p><a href={`${contactInfo.whatsapp.href}?text=${encodeURIComponent("Hi Digitrust Solutions, I would like to enquire about your digital growth services.")}`} target="_blank" rel="noopener noreferrer">Message {contactInfo.whatsapp.display}</a></p></div>
+              <div><span>Instagram</span><p><a href={contactInfo.instagram.href} target="_blank" rel="noopener noreferrer">{contactInfo.instagram.label}</a></p></div>
             </div>
           </div>
           <ContactForm services={serviceTitles} defaultService={service.title} />

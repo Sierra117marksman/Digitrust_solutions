@@ -469,11 +469,11 @@ export default function Home() {
                 </div>
                 <div>
                   <span>WhatsApp leads</span>
-                  <p><Link href={contactInfo.whatsapp.href}>Message {contactInfo.whatsapp.display}</Link></p>
+                  <p><a href={`${contactInfo.whatsapp.href}?text=${encodeURIComponent("Hi Digitrust Solutions, I would like to enquire about your digital growth services.")}`} target="_blank" rel="noopener noreferrer">Message {contactInfo.whatsapp.display}</a></p>
                 </div>
                 <div>
                   <span>Instagram</span>
-                  <p><Link href={contactInfo.instagram.href}>{contactInfo.instagram.label}</Link></p>
+                  <p><a href={contactInfo.instagram.href} target="_blank" rel="noopener noreferrer">{contactInfo.instagram.label}</a></p>
                 </div>
               </div>
             </div>

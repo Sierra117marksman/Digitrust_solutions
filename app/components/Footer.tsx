@@ -89,6 +89,14 @@ export function Footer() {
                 <a href={contactInfo.phones[0].href} className="contact-link">
                   {contactInfo.phones[0].display}
                 </a>
+                <a
+                  href={`${contactInfo.whatsapp.href}?text=${encodeURIComponent("Hi Digitrust Solutions, I would like to enquire about your services.")}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="contact-link"
+                >
+                  WhatsApp: {contactInfo.whatsapp.display}
+                </a>
               </address>
             </div>
           </div>
