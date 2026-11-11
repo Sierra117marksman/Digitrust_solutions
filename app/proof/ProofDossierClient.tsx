@@ -39,74 +39,74 @@ interface ScreenshotCaseStudy {
 const CAMPAIGNS: CampaignItem[] = [
   {
     id: "ayurved",
-    name: "Aayurvira Wellness",
+    name: "Ayurvedic Healthcare",
     emoji: "🌿",
     industry: "Health & Ayurveda",
     videoSrc: "/videos/proof/ayurved-wellness.mp4",
     posterSrc: "/videos/proof/poster-ayurved.jpg",
     duration: "23s Recording",
-    accountName: "Aayurvira Wellness (9509...)",
+    accountName: "Digitrust Client Account (9509...)",
     opportunityScore: 89,
     deliveryStatus: "Active Delivery",
     campaigns: [
-      "Digitrust || campaign || 2 October 2026",
-      "neuro vira leads"
+      "Digitrust || Healthcare Campaign",
+      "Digitrust || Leads Campaign"
     ],
     campaignNote: "3 active campaigns in delivery",
-    whatsappMessage: "Hi Digitrust Solutions, I watched the Aayurvira Wellness Meta Ads walkthrough. Let's discuss marketing for my business."
+    whatsappMessage: "Hi Digitrust Solutions, I watched your Ayurvedic Healthcare Meta Ads walkthrough. Let's discuss marketing for my business."
   },
   {
     id: "furniture",
-    name: "Valmont Furniture",
+    name: "Furniture & Home Decor",
     emoji: "🛋️",
     industry: "Luxury Furniture",
     videoSrc: "/videos/proof/furniture-shop.mp4",
     posterSrc: "/videos/proof/poster-furniture.jpg",
     duration: "26s Recording",
-    accountName: "Digitrust x Valmont furniture",
+    accountName: "Digitrust Client Account (Furniture)",
     opportunityScore: 100,
     deliveryStatus: "Messaging Leads",
     campaigns: [
-      "Digitrust x Valmont || Leads Campaign",
+      "Digitrust || Store Leads Campaign",
       "Digitrust || Leads campaign"
     ],
     campaignNote: "Results from 2 active campaigns",
-    whatsappMessage: "Hi Digitrust Solutions, I watched the Valmont Furniture campaign walkthrough. Let's discuss lead generation for my business."
+    whatsappMessage: "Hi Digitrust Solutions, I watched your Furniture campaign walkthrough. Let's discuss lead generation for my business."
   },
   {
     id: "realestate",
-    name: "Livewell Real Estate",
+    name: "Real Estate Properties",
     emoji: "🏢",
-    industry: "Real Estate Properties",
+    industry: "Property & Construction",
     videoSrc: "/videos/proof/real-estate.mp4",
     posterSrc: "/videos/proof/poster-realestate.jpg",
     duration: "20s Recording",
-    accountName: "LivewellRealEstate",
+    accountName: "Digitrust Client Account (Real Estate)",
     opportunityScore: 97,
     deliveryStatus: "Buyer Conversations",
     campaigns: [
-      "Digitrust x Live well || Leads - Copy",
-      "Digitrust x Live well || Leads"
+      "Digitrust || Property Leads - Copy",
+      "Digitrust || Buyer Leads"
     ],
     campaignNote: "Results from 4 campaigns",
-    whatsappMessage: "Hi Digitrust Solutions, I saw the Livewell Real Estate walkthrough. Can we talk about real estate buyer lead generation?"
+    whatsappMessage: "Hi Digitrust Solutions, I saw your Real Estate campaign walkthrough. Can we talk about buyer lead generation?"
   },
   {
     id: "academy",
-    name: "Multimedia Academy",
+    name: "Creative Media Academy",
     emoji: "🎓",
-    industry: "Creative Education",
+    industry: "Education & Training",
     videoSrc: "/videos/proof/marketing-academy.mp4",
     posterSrc: "/videos/proof/poster-academy.jpg",
     duration: "25s Recording",
-    accountName: "SAM Multimedia Academy",
+    accountName: "Digitrust Client Account (Education)",
     deliveryStatus: "Student Portfolios",
     campaigns: [
-      "Student creative portfolios",
-      "Event & Workshop promotions"
+      "Digitrust || Student Creative Portfolios",
+      "Digitrust || Workshop Admissions"
     ],
     campaignNote: "Admission & course lead pipelines",
-    whatsappMessage: "Hi Digitrust Solutions, I saw your Multimedia Academy walkthrough. Want to discuss education & student intake lead campaigns."
+    whatsappMessage: "Hi Digitrust Solutions, I saw your Education & Academy walkthrough. Want to discuss student intake lead campaigns."
   }
 ];
 
@@ -122,7 +122,7 @@ const SCREENSHOT_CASE_STUDIES: ScreenshotCaseStudy[] = [
     costPerLead: "₹6.00",
     leadsConverted: "7 Clients",
     conversionRate: "9.4%",
-    accountShown: "Digitrust (138692528659...) • Opportunity Score: 83",
+    accountShown: "Digitrust Account (13869...) • Score: 83",
     campaignShown: "Digitrust || Awareness Campaign",
     whatsappMessage: "Hi Digitrust Solutions, I saw your B2B Roofing case study (74 leads, ₹6 CPL, 9.4% conversion). Let's discuss B2B commercial leads for my business."
   },
@@ -137,8 +137,8 @@ const SCREENSHOT_CASE_STUDIES: ScreenshotCaseStudy[] = [
     costPerLead: "₹8.00 / call",
     leadsConverted: "6 Appointments",
     conversionRate: "~11%",
-    accountShown: "Dental clinic (109960139...) • Opportunity Score: 100",
-    campaignShown: "Digitrust|| New Leads|| Lucknow Targetting",
+    accountShown: "Digitrust Client Account (10996...) • Score: 100",
+    campaignShown: "Digitrust || Inbound Patient Calls",
     whatsappMessage: "Hi Digitrust Solutions, I saw your Dental Clinic campaign results (57 appointment calls, ₹8 cost/call, 11% conversion). Let's discuss clinic patient bookings."
   },
   {
@@ -152,7 +152,7 @@ const SCREENSHOT_CASE_STUDIES: ScreenshotCaseStudy[] = [
     costPerLead: "₹18.49",
     leadsConverted: "5 Buyers",
     conversionRate: "11%",
-    accountShown: "Digitrust x Valmont furniture",
+    accountShown: "Digitrust Client Account (Furniture)",
     campaignShown: "Digitrust || Leads campaign",
     whatsappMessage: "Hi Digitrust Solutions, I saw your Furniture business case study (55 leads, ₹18.49 CPL, 11% conversion). Let's discuss lead generation for my store."
   },
@@ -167,8 +167,8 @@ const SCREENSHOT_CASE_STUDIES: ScreenshotCaseStudy[] = [
     costPerLead: "₹53.00",
     leadsConverted: "4 Admissions",
     conversionRate: "~12%",
-    accountShown: "Saffron Digital Academy ...",
-    campaignShown: "Digitrust x SAM Leads Campaign 1",
+    accountShown: "Digitrust Client Account (Education)",
+    campaignShown: "Digitrust || Admissions Campaign 1",
     whatsappMessage: "Hi Digitrust Solutions, I saw your Coaching Institute campaign results (34 leads, ₹53 CPL, 12% conversion). Let's discuss student leads for my institute."
   },
   {
@@ -182,8 +182,8 @@ const SCREENSHOT_CASE_STUDIES: ScreenshotCaseStudy[] = [
     costPerLead: "₹65.00",
     leadsConverted: "1 Closed Buyer",
     conversionRate: "7%",
-    accountShown: "LiveWellRealEstate (1438...)",
-    campaignShown: "Digitrust x Live well || Leads",
+    accountShown: "Digitrust Client Account (1438...)",
+    campaignShown: "Digitrust || Property Leads",
     whatsappMessage: "Hi Digitrust Solutions, I saw your Real Estate campaign numbers (14 leads, ₹65 CPL, 7% conversion). Let's discuss high-ticket buyer leads."
   }
 ];
