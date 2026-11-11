@@ -454,6 +454,161 @@ export function ProofDossierClient() {
           </div>
         </div>
 
+        {/* Section 3: Transparent Pricing & 7-Day Trial Proposal */}
+        <div className="proof-section-block proof-pricing-section">
+          <div className="proof-section-divider" aria-hidden="true" />
+          
+          <div className="proof-title-area">
+            <div className="proof-section-tag">TIER 3 • TRANSPARENT PRICING &amp; 7-DAY TRIAL</div>
+            <h2 className="proof-main-title">Turn Your Ads Into Growth Opportunities</h2>
+            <p className="proof-main-desc">
+              A structured Meta advertising service built to help your business reach the right audience, attract relevant enquiries, and make smarter use of your advertising budget.
+            </p>
+          </div>
+
+          {/* Pricing Cards Grid */}
+          <div className="proof-pricing-plans-grid">
+            
+            {/* Plan 1: 7-Day Trial */}
+            <div className="proof-plan-card proof-plan-trial">
+              <div className="proof-plan-badge">START RISK-FREE</div>
+              <div className="proof-plan-header">
+                <span className="proof-plan-tagline">Start With a 7-Day Trial</span>
+                <div className="proof-plan-price-wrap">
+                  <span className="proof-plan-currency">₹</span>
+                  <span className="proof-plan-price">1,999</span>
+                  <span className="proof-plan-period">/ 7 days</span>
+                </div>
+                <p className="proof-plan-sub">Try our service for 7 days</p>
+                <div className="proof-plan-callout">
+                  <span className="callout-icon">✨</span>
+                  <span><strong>₹1,999 is adjusted</strong> against your first month</span>
+                </div>
+              </div>
+
+              <div className="proof-plan-features-list">
+                <h4>What&apos;s Included in Your Trial:</h4>
+                <ul>
+                  <li><span>✓</span> <strong>01 Full Campaign Setup:</strong> Objectives, ad set structure, placements &amp; launch config.</li>
+                  <li><span>✓</span> <strong>02 Targeted Audience Research:</strong> Audience strategy based on customer profile, location &amp; goals.</li>
+                  <li><span>✓</span> <strong>03 Ad Creative &amp; Copy Support:</strong> Messaging guidance designed to communicate your offer clearly.</li>
+                  <li><span>✓</span> <strong>04 Campaign Monitoring:</strong> Performance checks &amp; optimization focused on CPC, CTR &amp; efficiency.</li>
+                  <li><span>✓</span> <strong>05 Lead Generation Focus:</strong> Campaigns designed to attract relevant enquiries &amp; reduce wasted spend.</li>
+                  <li><span>✓</span> <strong>06 Performance Insights:</strong> Clear updates &amp; practical recommendations based on data.</li>
+                </ul>
+              </div>
+
+              <div className="proof-plan-cta">
+                <a
+                  href={`${waBaseUrl}?text=${encodeURIComponent("Hi Digitrust Solutions, I want to start the 7-Day Meta Ads Trial for ₹1,999.")}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="proof-plan-btn proof-plan-btn-trial"
+                >
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                    <path d="M12.031 6.172c-3.181 0-5.767 2.586-5.768 5.766-.001 1.298.38 2.27 1.019 3.287l-.711 2.598 2.669-.699c.969.54 1.777.82 2.791.82 3.181 0 5.767-2.586 5.768-5.766 0-3.18-2.586-5.766-5.768-5.766zm9.969 5.766c0 5.514-4.486 10-10 10-1.764 0-3.421-.462-4.869-1.268l-7.131 1.868 1.898-6.945c-.908-1.516-1.428-3.29-1.428-5.187 0-5.514 4.486-10 10-10 5.514 0 10 4.486 10 10z"/>
+                  </svg>
+                  <span>Start 7-Day Trial on WhatsApp (₹1,999) →</span>
+                </a>
+              </div>
+            </div>
+
+            {/* Plan 2: Monthly Campaign Management */}
+            <div className="proof-plan-card proof-plan-monthly">
+              <div className="proof-plan-badge proof-badge-monthly">REGULAR RETAINER</div>
+              <div className="proof-plan-header">
+                <span className="proof-plan-tagline">Monthly Campaign Management</span>
+                <div className="proof-plan-price-wrap">
+                  <span className="proof-plan-currency">₹</span>
+                  <span className="proof-plan-price">5,000</span>
+                  <span className="proof-plan-period">/ month</span>
+                </div>
+                <p className="proof-plan-sub">Regular monthly service fee</p>
+                <div className="proof-plan-callout proof-callout-monthly">
+                  <span className="callout-icon">💳</span>
+                  <span>Pay just <strong>₹3,001 balance</strong> to continue after trial</span>
+                </div>
+              </div>
+
+              <div className="proof-plan-features-list">
+                <h4>What&apos;s Included in Monthly Management:</h4>
+                <ul>
+                  <li><span>✓</span> <strong>Ongoing Campaign Scaling:</strong> Dynamic budget allocation, bidding control &amp; scaling.</li>
+                  <li><span>✓</span> <strong>Continuous Audience Refinement:</strong> Custom audiences, retargeting pools &amp; negative lists.</li>
+                  <li><span>✓</span> <strong>Creative &amp; Copy Variations:</strong> Ongoing testing of hooks, angles, formats &amp; copy refreshes.</li>
+                  <li><span>✓</span> <strong>Lead Quality &amp; Conversion Tracking:</strong> Form optimization, CRM sync &amp; lead validation.</li>
+                  <li><span>✓</span> <strong>Weekly Strategy Updates:</strong> Comprehensive performance analytics &amp; next step roadmaps.</li>
+                  <li><span>✓</span> <strong>Dedicated WhatsApp Support:</strong> Direct communication with your campaign strategist.</li>
+                </ul>
+              </div>
+
+              <div className="proof-plan-cta">
+                <a
+                  href={`${waBaseUrl}?text=${encodeURIComponent("Hi Digitrust Solutions, I want to discuss Monthly Meta Ads Campaign Management for ₹5,000/mo.")}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="proof-plan-btn proof-plan-btn-monthly"
+                >
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                    <path d="M12.031 6.172c-3.181 0-5.767 2.586-5.768 5.766-.001 1.298.38 2.27 1.019 3.287l-.711 2.598 2.669-.699c.969.54 1.777.82 2.791.82 3.181 0 5.767-2.586 5.768-5.766 0-3.18-2.586-5.766-5.768-5.766zm9.969 5.766c0 5.514-4.486 10-10 10-1.764 0-3.421-.462-4.869-1.268l-7.131 1.868 1.898-6.945c-.908-1.516-1.428-3.29-1.428-5.187 0-5.514 4.486-10 10-10 5.514 0 10 4.486 10 10z"/>
+                  </svg>
+                  <span>Book Monthly Management (₹5,000) →</span>
+                </a>
+              </div>
+            </div>
+
+          </div>
+
+          {/* 3-Step "How the Trial Works" Timeline */}
+          <div className="proof-trial-steps-box">
+            <h3 className="proof-trial-steps-title">How the 7-Day Trial Works</h3>
+            <div className="proof-trial-steps-grid">
+              
+              <div className="proof-trial-step">
+                <div className="proof-step-badge">1</div>
+                <div className="proof-step-body">
+                  <h4>START</h4>
+                  <p>Pay <strong>₹1,999</strong> to begin your 7-day trial and launch onboarding.</p>
+                </div>
+              </div>
+
+              <div className="proof-step-arrow" aria-hidden="true">→</div>
+
+              <div className="proof-trial-step">
+                <div className="proof-step-badge">2</div>
+                <div className="proof-step-body">
+                  <h4>TEST &amp; REVIEW</h4>
+                  <p>We launch the agreed campaign and review available performance data together.</p>
+                </div>
+              </div>
+
+              <div className="proof-step-arrow" aria-hidden="true">→</div>
+
+              <div className="proof-trial-step">
+                <div className="proof-step-badge">3</div>
+                <div className="proof-step-body">
+                  <h4>CONTINUE</h4>
+                  <p>If you continue, ₹1,999 is deducted from ₹5,000. <strong>First-month balance: ₹3,001</strong>.</p>
+                </div>
+              </div>
+
+            </div>
+          </div>
+
+          {/* Transparent Disclaimers Box from the Flyer */}
+          <div className="proof-scope-notes">
+            <div className="proof-scope-note-item">
+              <span className="scope-bullet">🎯</span>
+              <p><strong>Ad spend is separate:</strong> We aim to improve campaign efficiency and attract relevant leads, but CPC, lead volume, and sales are not guaranteed.</p>
+            </div>
+            <div className="proof-scope-note-item">
+              <span className="scope-bullet">📋</span>
+              <p><strong>Budget &amp; Assets:</strong> Advertising budget paid to Meta is not included. Client provides business information, approvals, and required assets. Photo/video shoots, influencer fees, premium tools, and website work are excluded unless agreed separately.</p>
+            </div>
+          </div>
+
+        </div>
+
         {/* Global Bottom Banner: Direct Consultation & Service Navigation */}
         <div className="proof-bottom-banner">
           <div className="proof-banner-content">

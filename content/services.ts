@@ -81,6 +81,41 @@ export const services: Service[] = [
     seoTitle: "Meta Ads Management for Facebook & Instagram",
     seoDescription: "Meta Ads strategy, campaign management, tracking, retargeting, creative testing, landing pages, optimisation, and reporting.",
     featured: true,
+    pricing: {
+      tagline: "Start with a 7-day trial at ₹1,999 or regular monthly management at ₹5,000/mo.",
+      plans: [
+        {
+          name: "Start With a 7-Day Trial",
+          price: "₹1,999",
+          period: "7 days",
+          description: "Try our service for 7 days with zero long-term lock-in. The ₹1,999 trial fee is fully adjusted against your first month.",
+          features: [
+            "Full campaign setup (objectives, ad set structure, placements)",
+            "Targeted audience research based on customer profile & location",
+            "Ad creative & copy messaging guidance",
+            "Daily performance checks & CPC/CTR optimization",
+            "Lead generation focus designed to attract relevant enquiries",
+            "Performance insights & actionable recommendations",
+          ],
+          isPopular: true,
+        },
+        {
+          name: "Monthly Campaign Management",
+          price: "₹5,000",
+          period: "month",
+          description: "Structured Meta advertising service to scale reach, attract qualified leads, and maximize advertising budget efficiency.",
+          features: [
+            "Ongoing Meta ad scaling & budget distribution",
+            "Continuous multi-angle creative testing & copy refreshes",
+            "Dedicated audience refinement, retargeting & exclusions",
+            "Active lead flow monitoring & enquiry quality tracking",
+            "Regular reporting with data-backed growth recommendations",
+            "Direct strategy & support on WhatsApp and Call",
+          ],
+          isPopular: false,
+        },
+      ],
+    },
   },
   {
     slug: "full-stack-development",
