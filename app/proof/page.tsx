@@ -5,17 +5,17 @@ import { Footer } from "../components/Footer";
 import { ProofDossierClient } from "./ProofDossierClient";
 
 export const metadata: Metadata = {
-  title: "Verified Meta Ads Campaign Proof & Video Walkthroughs",
+  title: "Client Results & Verified Campaign Data",
   description:
-    "Watch unedited backend Meta Ads Manager walkthroughs showing real client accounts, Opportunity Scores, and verified lead acquisition across LED lighting, ayurveda, dental clinics, roofing, furniture, real estate, and education.",
+    "Real client results, unedited backend Meta Ads Manager walkthroughs, and verified lead acquisition data across LED lighting, ayurveda, dental clinics, roofing, furniture, real estate, and education.",
   alternates: { canonical: "/proof" },
   openGraph: {
-    title: `Verified Meta Ads Campaign Proof | ${companyConfig.company.name}`,
+    title: `Client Results & Verified Campaign Data | ${companyConfig.company.name}`,
     description:
-      "Watch unedited backend Meta Ads Manager walkthroughs showing real client accounts, Opportunity Scores, and verified lead acquisition across 8 industries.",
+      "Real client results, unedited backend Meta Ads Manager walkthroughs, and verified lead acquisition across 8 industries.",
     url: "/proof",
     type: "website",
-    images: [{ url: "/og.png", width: 1734, height: 907, alt: "Digitrust Solutions Meta Ads Proof" }],
+    images: [{ url: "/og.png", width: 1734, height: 907, alt: "Digitrust Solutions Client Results" }],
   },
   other: {
     "geo.region": "IN-HR",
@@ -33,10 +33,10 @@ export default function ProofPage() {
     "@graph": [
       {
         "@type": "WebPage",
-        name: "Verified Meta Ads Campaign Proof & Walkthroughs",
+        name: "Client Results & Verified Campaign Data",
         url: `${siteUrl}/proof`,
         description:
-          "Watch unedited backend Meta Ads Manager walkthroughs showing real client accounts, Opportunity Scores, and lead acquisition across 8 distinct industries.",
+          "Real client results, unedited backend Meta Ads Manager walkthroughs, and verified lead acquisition across 8 distinct industries.",
         publisher: {
           "@type": "Organization",
           name: companyConfig.company.name,
@@ -66,7 +66,7 @@ export default function ProofPage() {
           {
             "@type": "ListItem",
             position: 2,
-            name: "Client Proof & Results",
+            name: "Client Results",
             item: `${siteUrl}/proof`,
           },
         ],

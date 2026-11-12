@@ -174,7 +174,7 @@ export function Navbar() {
             );
           })}
           <Link href="/proof" className="nav-item">
-            Proof
+            Client Results
           </Link>
           <ScrollLink targetId="contact" className="nav-cta premium-cta">
             Let&apos;s discuss your project
@@ -214,7 +214,7 @@ export function Navbar() {
                 style={{ padding: "10px 0", fontWeight: 700, color: "var(--blue-dark)", display: "flex", alignItems: "center", gap: "6px" }}
               >
                 <span>⚡</span>
-                <span>Verified Proof &amp; Results</span>
+                <span>Client Results</span>
               </Link>
               {NAV_LINKS.map((link) => (
                 <ScrollLink

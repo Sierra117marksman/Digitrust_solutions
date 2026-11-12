@@ -263,7 +263,7 @@ export default function Home() {
                 Discuss your project <span aria-hidden="true">↗</span>
               </ScrollLink>
               <Link href="/proof" className="button button-secondary" style={{ display: "inline-flex", alignItems: "center", gap: "6px" }}>
-                Verified Proof <span aria-hidden="true">▶</span>
+                Client Results <span aria-hidden="true">▶</span>
               </Link>
               <ScrollLink className="text-link" targetId="services">
                 Explore our services <span aria-hidden="true">↓</span>

@@ -315,7 +315,7 @@ export function ProofDossierClient() {
           </div>
           <div className="proof-status-pill">
             <span className="proof-dot" aria-hidden="true" />
-            <span>FOUNDER SPOTLIGHT • 6 VIDEO RECORDINGS • 8 VERIFIED CASE STUDIES</span>
+            <span>FOUNDER SPOTLIGHT • 6 VIDEO WALKTHROUGHS • 8 CLIENT RESULTS</span>
           </div>
         </div>
 
@@ -401,7 +401,7 @@ export function ProofDossierClient() {
                 </a>
 
                 <a href="#campaign-vault" className="proof-founder-jump-link">
-                  See 6 Uncut Client Walkthroughs Below ↓
+                  See 6 Client Video Results Below ↓
                 </a>
               </div>
 
@@ -410,10 +410,10 @@ export function ProofDossierClient() {
           </div>
         </section>
 
-        {/* Section 1: Video Proof Vault */}
+        {/* Section 1: Video Results Vault */}
         <div id="campaign-vault" className="proof-section-block">
           <div className="proof-title-area">
-            <div className="proof-section-tag">TIER 1 • RECORDED VIDEO PROOF</div>
+            <div className="proof-section-tag">TIER 1 • RECORDED CLIENT RESULTS</div>
             <h1 className="proof-main-title">Uncut Meta Ads Manager Video Walkthroughs</h1>
             <p className="proof-main-desc">
               Direct unedited phone recordings inside active client Meta Ads Manager accounts — real Opportunity Scores, campaign delivery structures, and messaging lead flows.
@@ -520,8 +520,8 @@ export function ProofDossierClient() {
           <div className="proof-section-divider" aria-hidden="true" />
           
           <div className="proof-title-area">
-            <div className="proof-section-tag">TIER 2 • DASHBOARD DATA &amp; UNIT ECONOMICS</div>
-            <h2 className="proof-main-title">Verified Lead Acquisition &amp; Cost Metrics</h2>
+            <div className="proof-section-tag">TIER 2 • VERIFIED DASHBOARD RESULTS</div>
+            <h2 className="proof-main-title">Client Results &amp; Cost Metrics Across 8 Industries</h2>
             <p className="proof-main-desc">
               Real performance data and backend dashboard exports across 8 distinct industries — showing exact lead counts, verified Cost Per Lead (CPL), and confirmed conversion ratios.
             </p>
@@ -794,7 +794,7 @@ export function ProofDossierClient() {
             </p>
             <div className="proof-banner-actions">
               <a
-                href={`${waBaseUrl}?text=${encodeURIComponent("Hi Digitrust Solutions, I reviewed your verified campaign proof recordings and dashboard results. I want to discuss advertising for my business.")}`}
+                href={`${waBaseUrl}?text=${encodeURIComponent("Hi Digitrust Solutions, I reviewed your verified client results and dashboard metrics. I want to discuss advertising for my business.")}`}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="proof-whatsapp-btn"
