@@ -62,7 +62,7 @@ export function Footer() {
             <div className="footer-col">
               <h4>Case Studies</h4>
               <nav aria-label="Case Studies links">
-                <Link href="/proof" style={{ fontWeight: 650, color: "var(--blue)" }}>
+                <Link href="/client-results" style={{ fontWeight: 650, color: "var(--blue)" }}>
                   Client Results ↗
                 </Link>
                 <ScrollLink targetId="testimonials">Client Reviews</ScrollLink>

@@ -173,7 +173,7 @@ export function Navbar() {
               </ScrollLink>
             );
           })}
-          <Link href="/proof" className="nav-item">
+          <Link href="/client-results" className="nav-item">
             Client Results
           </Link>
           <ScrollLink targetId="contact" className="nav-cta premium-cta">
@@ -209,7 +209,7 @@ export function Navbar() {
             
             <nav className="mobile-panel-nav" aria-label="Mobile navigation">
               <Link 
-                href="/proof" 
+                href="/client-results" 
                 onClick={() => setIsMobileMenuOpen(false)}
                 style={{ padding: "10px 0", fontWeight: 700, color: "var(--blue-dark)", display: "flex", alignItems: "center", gap: "6px" }}
               >

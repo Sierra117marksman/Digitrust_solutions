@@ -54,18 +54,18 @@ const nextConfig: NextConfig = {
         permanent: true,
       },
       {
-        source: "/results",
-        destination: "/proof",
+        source: "/proof",
+        destination: "/client-results",
         permanent: true,
       },
       {
-        source: "/client-results",
-        destination: "/proof",
+        source: "/results",
+        destination: "/client-results",
         permanent: true,
       },
       {
         source: "/case-studies",
-        destination: "/proof",
+        destination: "/client-results",
         permanent: true,
       },
     ];

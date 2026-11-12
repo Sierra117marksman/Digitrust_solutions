@@ -8,12 +8,12 @@ export const metadata: Metadata = {
   title: "Client Results & Verified Campaign Data",
   description:
     "Real client results, unedited backend Meta Ads Manager walkthroughs, and verified lead acquisition data across LED lighting, ayurveda, dental clinics, roofing, furniture, real estate, and education.",
-  alternates: { canonical: "/proof" },
+  alternates: { canonical: "/client-results" },
   openGraph: {
     title: `Client Results & Verified Campaign Data | ${companyConfig.company.name}`,
     description:
       "Real client results, unedited backend Meta Ads Manager walkthroughs, and verified lead acquisition across 8 industries.",
-    url: "/proof",
+    url: "/client-results",
     type: "website",
     images: [{ url: "/og.png", width: 1734, height: 907, alt: "Digitrust Solutions Client Results" }],
   },
@@ -34,7 +34,7 @@ export default function ProofPage() {
       {
         "@type": "WebPage",
         name: "Client Results & Verified Campaign Data",
-        url: `${siteUrl}/proof`,
+        url: `${siteUrl}/client-results`,
         description:
           "Real client results, unedited backend Meta Ads Manager walkthroughs, and verified lead acquisition across 8 distinct industries.",
         publisher: {
@@ -67,7 +67,7 @@ export default function ProofPage() {
             "@type": "ListItem",
             position: 2,
             name: "Client Results",
-            item: `${siteUrl}/proof`,
+            item: `${siteUrl}/client-results`,
           },
         ],
       },
