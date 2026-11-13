@@ -2,6 +2,7 @@
 
 import { FormEvent, useState, useRef, useMemo } from "react";
 import toast from "react-hot-toast";
+import * as fpixel from "@/lib/fpixel";
 import { logError } from "../utils/logger";
 import { useProgressiveValidation, ValidationResult, Severity } from "../hooks/useProgressiveValidation";
 
@@ -125,6 +126,7 @@ export function ContactForm({
       });
       
       setStatus("success");
+      fpixel.event("Lead", { content_name: payload.service });
       toast.success("Thank you. Your enquiry has been received.", { id: loadingToast });
     } catch (error) {
       setStatus("error");
