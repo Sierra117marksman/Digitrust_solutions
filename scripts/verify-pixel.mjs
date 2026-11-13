@@ -12,13 +12,13 @@ for (const page of pages) {
   const html = fs.readFileSync(page.path, 'utf8');
 
   const checks = {
-    'Contains Pixel ID 2173995326809385': html.includes('2173995326809385'),
+    'Contains Pixel ID 1140245098411541': html.includes('1140245098411541'),
     'Contains fbevents.js source URL': html.includes('connect.facebook.net/en_US/fbevents.js'),
-    'Contains fbq init call': html.includes("fbq('init', '2173995326809385')"),
+    'Contains fbq init call': html.includes("fbq('init', '1140245098411541')"),
     'Contains fbq PageView track call': html.includes("fbq('track', 'PageView')"),
     'Contains noscript tracking pixel img':
-      html.includes('https://www.facebook.com/tr?id=2173995326809385&amp;ev=PageView&amp;noscript=1') ||
-      html.includes('https://www.facebook.com/tr?id=2173995326809385&ev=PageView&noscript=1')
+      html.includes('https://www.facebook.com/tr?id=1140245098411541&amp;ev=PageView&amp;noscript=1') ||
+      html.includes('https://www.facebook.com/tr?id=1140245098411541&ev=PageView&noscript=1')
   };
 
   for (const [desc, passed] of Object.entries(checks)) {

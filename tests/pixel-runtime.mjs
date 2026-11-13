@@ -83,7 +83,7 @@ async function run() {
     });
     console.log(`✓ Noscript fallback inner content: ${noscriptContent}`);
 
-    if (!noscriptContent || !noscriptContent.includes('2173995326809385')) {
+    if (!noscriptContent || !noscriptContent.includes('1140245098411541')) {
       throw new Error(`Invalid or missing noscript pixel img: ${noscriptContent}`);
     }
 
