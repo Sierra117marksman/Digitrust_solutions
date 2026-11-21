@@ -1,5 +1,4 @@
 import { Resend } from "resend";
-import { companyConfig } from "@/config/company";
 
 const resendApiKey = process.env.RESEND_API_KEY;
 export const resend = resendApiKey ? new Resend(resendApiKey) : null;
@@ -9,10 +8,12 @@ export const SENDER_EMAIL =
 export const FROM_NAME = "Digitrust Solutions";
 export const FROM_HEADER = `${FROM_NAME} <${SENDER_EMAIL}>`;
 
-export const ADMIN_EMAIL =
-  process.env.ADMIN_NOTIFICATION_EMAIL ||
-  companyConfig.contact.email ||
-  "digitrustsolutions@gmail.com";
+export const ADMIN_EMAILS = (
+  process.env.ADMIN_NOTIFICATION_EMAIL || "adybaba03@gmail.com"
+)
+  .split(",")
+  .map((e) => e.trim())
+  .filter(Boolean);
 
 export interface EnquiryEmailData {
   name: string;
@@ -119,7 +120,7 @@ export async function sendLeadNotificationToAdmin(enquiry: EnquiryEmailData) {
   try {
     const result = await resend.emails.send({
       from: FROM_HEADER,
-      to: ADMIN_EMAIL,
+      to: ADMIN_EMAILS.length === 1 ? ADMIN_EMAILS[0] : ADMIN_EMAILS,
       replyTo: enquiry.email,
       subject,
       html,
