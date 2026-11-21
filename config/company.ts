@@ -8,7 +8,7 @@ export const companyConfig = {
     foundedYear: 2024,
   },
   contact: {
-    email: "digitrustsolutions@gmail.com",
+    email: "support@digitrustsolutions.com",
     phone: "+91 92117 34699",
     phoneSecondary: "+91 92172 13181",
     whatsapp: "+91 92117 34699",

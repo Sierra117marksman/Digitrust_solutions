@@ -6,8 +6,8 @@ export const contactInfo = {
     { label: "Secondary", display: "+91 92172 13181", href: "tel:+919217213181" },
   ],
   email: {
-    display: "digitrustsolutions@gmail.com",
-    href: "mailto:digitrustsolutions@gmail.com",
+    display: "support@digitrustsolutions.com",
+    href: "mailto:support@digitrustsolutions.com",
   },
   whatsapp: {
     display: "+91 92117 34699",

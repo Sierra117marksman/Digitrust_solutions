@@ -213,7 +213,7 @@ export default function Home() {
             name: "How can I contact Digitrust Solutions?",
             acceptedAnswer: {
               "@type": "Answer",
-              text: "You can reach Digitrust Solutions directly on WhatsApp at +91 92117 34699, call us on +91 92117 34699 or +91 92172 13181, or email digitrustsolutions@gmail.com.",
+              text: "You can reach Digitrust Solutions directly on WhatsApp at +91 92117 34699, call us on +91 92117 34699 or +91 92172 13181, or email support@digitrustsolutions.com.",
             },
           },
           {

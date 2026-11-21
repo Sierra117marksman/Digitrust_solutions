@@ -43,7 +43,7 @@ export default function ProofPage() {
           url: siteUrl,
           logo: `${siteUrl}/brand/logo.png`,
           telephone: ["+91 92117 34699", "+91 92172 13181"],
-          email: "digitrustsolutions@gmail.com",
+          email: "support@digitrustsolutions.com",
           address: {
             "@type": "PostalAddress",
             streetAddress: "Palam Vihar",
