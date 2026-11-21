@@ -1,6 +1,10 @@
 import { NextResponse } from "next/server";
 import { getMongoClient } from "@/lib/mongodb";
 import { serviceTitles } from "@/content/services";
+import {
+  sendLeadNotificationToAdmin,
+  sendClientConfirmation,
+} from "@/lib/email";
 
 export const runtime = "nodejs";
 
@@ -47,12 +51,24 @@ export async function POST(request: Request) {
 
     const client = await getMongoClient();
     const database = client.db(process.env.MONGODB_DB || "adybabacrm");
-    await database.collection("website_enquiries").insertOne({
+    const record = {
       ...enquiry,
       status: "new",
       source: "website",
       createdAt: new Date(),
-    });
+    };
+
+    await database.collection("website_enquiries").insertOne(record);
+
+    // Send email notifications via Resend (Admin notification + Client confirmation)
+    try {
+      await Promise.allSettled([
+        sendLeadNotificationToAdmin(enquiry),
+        sendClientConfirmation(enquiry),
+      ]);
+    } catch (emailError) {
+      console.error("Non-blocking email delivery error:", emailError);
+    }
 
     return NextResponse.json(
       { message: "Thank you. Your enquiry has been received." },
