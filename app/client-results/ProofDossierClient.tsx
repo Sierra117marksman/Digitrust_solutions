@@ -3,6 +3,14 @@
 import { useState, useRef, useEffect } from "react";
 import Link from "next/link";
 import Image from "next/image";
+import { PAYMENT_RECEIPTS, type PaymentReceipt } from "@/content/payment-receipts";
+
+type ProofTab = "all" | "payments" | "dashboards" | "videos";
+
+type ActiveModalItem =
+  | { type: "dashboard"; item: ScreenshotCaseStudy }
+  | { type: "payment"; item: PaymentReceipt }
+  | null;
 
 interface CampaignItem {
   id: string;
@@ -271,7 +279,8 @@ const SCREENSHOT_CASE_STUDIES: ScreenshotCaseStudy[] = [
 
 export function ProofDossierClient() {
   const videoRefs = useRef<Record<string, HTMLVideoElement | null>>({});
-  const [activeModalItem, setActiveModalItem] = useState<ScreenshotCaseStudy | null>(null);
+  const [activeTab, setActiveTab] = useState<ProofTab>("all");
+  const [activeModalItem, setActiveModalItem] = useState<ActiveModalItem>(null);
 
   const handlePlay = (playingId: string) => {
     Object.entries(videoRefs.current).forEach(([id, videoEl]) => {
@@ -315,316 +324,488 @@ export function ProofDossierClient() {
           </div>
           <div className="proof-status-pill">
             <span className="proof-dot" aria-hidden="true" />
-            <span>FOUNDER SPOTLIGHT • 6 VIDEO WALKTHROUGHS • 8 CLIENT RESULTS</span>
+            <span>FOUNDER SPOTLIGHT • 6 VIDEOS • 8 DASHBOARDS • 6 VERIFIED PAYMENTS</span>
           </div>
+        </div>
+
+        {/* Interactive Proof Tabs Filter */}
+        <div className="proof-tabs-bar" role="tablist" aria-label="Proof category switcher">
+          <button
+            type="button"
+            role="tab"
+            aria-selected={activeTab === "all"}
+            className={`proof-tab-btn ${activeTab === "all" ? "active" : ""}`}
+            onClick={() => setActiveTab("all")}
+          >
+            <span>✨ All Proof</span>
+            <span className="proof-tab-count">20</span>
+          </button>
+          <button
+            type="button"
+            role="tab"
+            aria-selected={activeTab === "payments"}
+            className={`proof-tab-btn ${activeTab === "payments" ? "active" : ""}`}
+            onClick={() => setActiveTab("payments")}
+          >
+            <span>💳 Verified Client Payments</span>
+            <span className="proof-tab-count">6</span>
+          </button>
+          <button
+            type="button"
+            role="tab"
+            aria-selected={activeTab === "dashboards"}
+            className={`proof-tab-btn ${activeTab === "dashboards" ? "active" : ""}`}
+            onClick={() => setActiveTab("dashboards")}
+          >
+            <span>📊 Campaign Dashboards</span>
+            <span className="proof-tab-count">8</span>
+          </button>
+          <button
+            type="button"
+            role="tab"
+            aria-selected={activeTab === "videos"}
+            className={`proof-tab-btn ${activeTab === "videos" ? "active" : ""}`}
+            onClick={() => setActiveTab("videos")}
+          >
+            <span>🎬 Video Walkthroughs</span>
+            <span className="proof-tab-count">6</span>
+          </button>
         </div>
 
         {/* Special Spotlight: Founder's Message */}
-        <section id="founder-briefing" className="proof-founder-spotlight" aria-label="Founder Spotlight Briefing">
-          <div className="proof-founder-spotlight-inner">
+        {(activeTab === "all" || activeTab === "videos") && (
+          <section id="founder-briefing" className="proof-founder-spotlight" aria-label="Founder Spotlight Briefing">
+            <div className="proof-founder-spotlight-inner">
+              
+              {/* Left Column: Vertical Video Showcase */}
+              <div className="proof-founder-video-col">
+                <div className="proof-founder-video-frame">
+                  <span className="proof-founder-video-tag">FOUNDER BRIEFING • 29s</span>
+                  <video
+                    ref={(el) => {
+                      videoRefs.current["founder-spotlight"] = el;
+                    }}
+                    src="/videos/proof/founder-reel.mp4"
+                    poster="/videos/proof/poster-founder.jpg"
+                    controls
+                    playsInline
+                    preload="metadata"
+                    onPlay={() => handlePlay("founder-spotlight")}
+                    className="proof-founder-video-element"
+                    aria-label="Founder &amp; CEO explaining Meta Ads 7-day trial"
+                  >
+                    Your browser does not support HTML5 video playback.
+                  </video>
+                </div>
+              </div>
+
+              {/* Right Column: Narrative & Key Points */}
+              <div className="proof-founder-copy-col">
+                <div className="proof-founder-badge-row">
+                  <span className="proof-founder-badge">⭐ FEATURED FOUNDER SPOTLIGHT</span>
+                  <span className="proof-founder-role">FOUNDER &amp; CEO</span>
+                </div>
+                
+                <h2 className="proof-founder-headline">
+                  &ldquo;Pehle 7 Din Kaam Test Karo, Fir Decide Karo.&rdquo;
+                </h2>
+                
+                <p className="proof-founder-lead">
+                  Hear directly from our Founder on why Digitrust Solutions offers a <strong>₹1,999 7-day trial</strong>, how we optimize campaigns for actual customer inquiries, and our transparent <strong>₹5,000/month</strong> management model.
+                </p>
+
+                <div className="proof-founder-points-grid">
+                  <div className="proof-founder-point">
+                    <span className="point-icon">⚡</span>
+                    <div>
+                      <strong>₹1,999 7-Day Trial:</strong>
+                      <span>Test campaign setup, messaging &amp; targeting with zero lock-in. ₹1,999 is adjusted against Month 1.</span>
+                    </div>
+                  </div>
+
+                  <div className="proof-founder-point">
+                    <span className="point-icon">🎯</span>
+                    <div>
+                      <strong>Focus on Enquiries &amp; Conversions:</strong>
+                      <span>Ads built to generate real customer calls and messaging leads, not empty vanity clicks.</span>
+                    </div>
+                  </div>
+
+                  <div className="proof-founder-point">
+                    <span className="point-icon">💼</span>
+                    <div>
+                      <strong>₹5,000 Monthly Retainer:</strong>
+                      <span>If satisfied with trial results, pay just ₹3,001 balance to continue for your first full month.</span>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="proof-founder-cta-group">
+                  <a
+                    href={`${waBaseUrl}?text=${encodeURIComponent("Hi Digitrust Solutions, I watched your Founder's video reel on the ₹1,999 Meta Ads 7-day trial. Let's discuss starting for my business.")}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="proof-founder-wa-btn"
+                    aria-label="Talk directly with our Founder on WhatsApp"
+                  >
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                      <path d="M12.031 6.172c-3.181 0-5.767 2.586-5.768 5.766-.001 1.298.38 2.27 1.019 3.287l-.711 2.598 2.669-.699c.969.54 1.777.82 2.791.82 3.181 0 5.767-2.586 5.768-5.766 0-3.18-2.586-5.766-5.768-5.766zm9.969 5.766c0 5.514-4.486 10-10 10-1.764 0-3.421-.462-4.869-1.268l-7.131 1.868 1.898-6.945c-.908-1.516-1.428-3.29-1.428-5.187 0-5.514 4.486-10 10-10 5.514 0 10 4.486 10 10z"/>
+                    </svg>
+                    <span>Talk with Founder on WhatsApp (₹1,999 Trial) →</span>
+                  </a>
+
+                  <a href="#campaign-vault" className="proof-founder-jump-link">
+                    See 6 Client Video Results Below ↓
+                  </a>
+                </div>
+
+              </div>
+
+            </div>
+          </section>
+        )}
+
+        {/* Section 0: Verified Client Payments */}
+        {(activeTab === "all" || activeTab === "payments") && (
+          <section id="verified-payments" className="proof-section-block" aria-label="Verified Client Payment Receipts">
+            {activeTab === "all" && <div className="proof-section-divider" aria-hidden="true" />}
             
-            {/* Left Column: Vertical Video Showcase */}
-            <div className="proof-founder-video-col">
-              <div className="proof-founder-video-frame">
-                <span className="proof-founder-video-tag">FOUNDER BRIEFING • 29s</span>
-                <video
-                  ref={(el) => {
-                    videoRefs.current["founder-spotlight"] = el;
-                  }}
-                  src="/videos/proof/founder-reel.mp4"
-                  poster="/videos/proof/poster-founder.jpg"
-                  controls
-                  playsInline
-                  preload="metadata"
-                  onPlay={() => handlePlay("founder-spotlight")}
-                  className="proof-founder-video-element"
-                  aria-label="Founder &amp; CEO explaining Meta Ads 7-day trial"
-                >
-                  Your browser does not support HTML5 video playback.
-                </video>
-              </div>
-            </div>
-
-            {/* Right Column: Narrative & Key Points */}
-            <div className="proof-founder-copy-col">
-              <div className="proof-founder-badge-row">
-                <span className="proof-founder-badge">⭐ FEATURED FOUNDER SPOTLIGHT</span>
-                <span className="proof-founder-role">FOUNDER &amp; CEO</span>
-              </div>
-              
-              <h2 className="proof-founder-headline">
-                &ldquo;Pehle 7 Din Kaam Test Karo, Fir Decide Karo.&rdquo;
-              </h2>
-              
-              <p className="proof-founder-lead">
-                Hear directly from our Founder on why Digitrust Solutions offers a <strong>₹1,999 7-day trial</strong>, how we optimize campaigns for actual customer inquiries, and our transparent <strong>₹5,000/month</strong> management model.
+            <div className="proof-title-area">
+              <div className="proof-section-tag">TIER 0 • CONFIRMED CLIENT TRANSACTIONS</div>
+              <h2 className="proof-main-title">Verified Client Payments &amp; Campaign Clearances</h2>
+              <p className="proof-main-desc">
+                Real UPI payment receipts and transaction records from active clients paying trial fees, advance milestones, and monthly retainers. All sensitive personal details are sanitized for confidentiality while preserving genuine transaction amounts, timestamps, and rapid execution speed.
               </p>
-
-              <div className="proof-founder-points-grid">
-                <div className="proof-founder-point">
-                  <span className="point-icon">⚡</span>
-                  <div>
-                    <strong>₹1,999 7-Day Trial:</strong>
-                    <span>Test campaign setup, messaging &amp; targeting with zero lock-in. ₹1,999 is adjusted against Month 1.</span>
-                  </div>
-                </div>
-
-                <div className="proof-founder-point">
-                  <span className="point-icon">🎯</span>
-                  <div>
-                    <strong>Focus on Enquiries &amp; Conversions:</strong>
-                    <span>Ads built to generate real customer calls and messaging leads, not empty vanity clicks.</span>
-                  </div>
-                </div>
-
-                <div className="proof-founder-point">
-                  <span className="point-icon">💼</span>
-                  <div>
-                    <strong>₹5,000 Monthly Retainer:</strong>
-                    <span>If satisfied with trial results, pay just ₹3,001 balance to continue for your first full month.</span>
-                  </div>
-                </div>
-              </div>
-
-              <div className="proof-founder-cta-group">
-                <a
-                  href={`${waBaseUrl}?text=${encodeURIComponent("Hi Digitrust Solutions, I watched your Founder's video reel on the ₹1,999 Meta Ads 7-day trial. Let's discuss starting for my business.")}`}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="proof-founder-wa-btn"
-                  aria-label="Talk directly with our Founder on WhatsApp"
-                >
-                  <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
-                    <path d="M12.031 6.172c-3.181 0-5.767 2.586-5.768 5.766-.001 1.298.38 2.27 1.019 3.287l-.711 2.598 2.669-.699c.969.54 1.777.82 2.791.82 3.181 0 5.767-2.586 5.768-5.766 0-3.18-2.586-5.766-5.768-5.766zm9.969 5.766c0 5.514-4.486 10-10 10-1.764 0-3.421-.462-4.869-1.268l-7.131 1.868 1.898-6.945c-.908-1.516-1.428-3.29-1.428-5.187 0-5.514 4.486-10 10-10 5.514 0 10 4.486 10 10z"/>
-                  </svg>
-                  <span>Talk with Founder on WhatsApp (₹1,999 Trial) →</span>
-                </a>
-
-                <a href="#campaign-vault" className="proof-founder-jump-link">
-                  See 6 Client Video Results Below ↓
-                </a>
-              </div>
-
             </div>
 
-          </div>
-        </section>
+            {/* Trust Metrics Bar */}
+            <div className="proof-payments-trust-bar">
+              <div className="proof-trust-stat">
+                <span className="proof-trust-icon">🛡️</span>
+                <div>
+                  <span className="proof-trust-val">6 Verified Clearances</span>
+                  <span className="proof-trust-label">Direct Client Bank Clearances</span>
+                </div>
+              </div>
+              <div className="proof-trust-stat">
+                <span className="proof-trust-icon">₹</span>
+                <div>
+                  <span className="proof-trust-val">₹13,798+ Sample Pool</span>
+                  <span className="proof-trust-label">₹999 to ₹5,000 Verified Range</span>
+                </div>
+              </div>
+              <div className="proof-trust-stat">
+                <span className="proof-trust-icon">⚡</span>
+                <div>
+                  <span className="proof-trust-val">Immediate Execution</span>
+                  <span className="proof-trust-label">&ldquo;Already started sir&rdquo; Speed</span>
+                </div>
+              </div>
+              <div className="proof-trust-stat">
+                <span className="proof-trust-icon">🔒</span>
+                <div>
+                  <span className="proof-trust-val">100% Privacy-Preserved</span>
+                  <span className="proof-trust-label">Client Names &amp; Details Sanitized</span>
+                </div>
+              </div>
+            </div>
+
+            {/* 6 Receipt Cards Grid */}
+            <div className="proof-payments-grid" role="region" aria-label="Verified Client Payment Receipts Grid">
+              {PAYMENT_RECEIPTS.map((receipt) => {
+                const receiptWaUrl = `${waBaseUrl}?text=${encodeURIComponent(receipt.whatsappMessage)}`;
+
+                return (
+                  <article key={receipt.id} className="proof-payment-card">
+                    <div className="proof-payment-card-header">
+                      <span className="proof-payment-badge">{receipt.badge}</span>
+                      <span className="proof-payment-platform">{receipt.platform}</span>
+                    </div>
+
+                    <div className="proof-payment-amount-row">
+                      <div className="proof-payment-amount">
+                        <span>{receipt.amount}</span>
+                        <span className="proof-verified-tick" title="Payment Verified &amp; Cleared">✓</span>
+                      </div>
+                      <span className="proof-payment-date">{receipt.date.split(",")[0]}</span>
+                    </div>
+
+                    <div className="proof-payment-client-meta">
+                      <h3 className="proof-payment-title">{receipt.milestoneTitle}</h3>
+                      <span className="proof-payment-client-type">{receipt.clientType} • {receipt.serviceCategory}</span>
+                    </div>
+
+                    {/* Authentic Chat Quote */}
+                    <div className="proof-payment-chat-quote">
+                      <span className="proof-chat-quote-text">{receipt.chatQuote}</span>
+                      <span className="proof-chat-quote-note">{receipt.dialogueNote}</span>
+                    </div>
+
+                    {/* Click-to-Zoom Receipt Thumbnail */}
+                    <div
+                      className="proof-payment-thumb-wrap"
+                      onClick={() => setActiveModalItem({ type: "payment", item: receipt })}
+                      role="button"
+                      tabIndex={0}
+                      onKeyDown={(e) => {
+                        if (e.key === "Enter" || e.key === " ") {
+                          e.preventDefault();
+                          setActiveModalItem({ type: "payment", item: receipt });
+                        }
+                      }}
+                      aria-label={`Inspect verified ${receipt.amount} payment receipt for ${receipt.milestoneTitle}`}
+                    >
+                      <Image
+                        src={receipt.imageSrc}
+                        alt={`Verified ${receipt.amount} ${receipt.platform} receipt`}
+                        width={750}
+                        height={640}
+                        className="proof-payment-thumb"
+                      />
+                      <span className="proof-payment-zoom-badge">🔍 Click to inspect receipt</span>
+                    </div>
+
+                    {/* WhatsApp Button */}
+                    <div className="proof-case-footer">
+                      <a
+                        href={receiptWaUrl}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="proof-card-wa-btn"
+                        aria-label={`Inquire about ${receipt.milestoneTitle} on WhatsApp`}
+                      >
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                          <path d="M12.031 6.172c-3.181 0-5.767 2.586-5.768 5.766-.001 1.298.38 2.27 1.019 3.287l-.711 2.598 2.669-.699c.969.54 1.777.82 2.791.82 3.181 0 5.767-2.586 5.768-5.766 0-3.18-2.586-5.766-5.768-5.766zm9.969 5.766c0 5.514-4.486 10-10 10-1.764 0-3.421-.462-4.869-1.268l-7.131 1.868 1.898-6.945c-.908-1.516-1.428-3.29-1.428-5.187 0-5.514 4.486-10 10-10 5.514 0 10 4.486 10 10z"/>
+                        </svg>
+                        <span>Inquire on WhatsApp →</span>
+                      </a>
+                    </div>
+                  </article>
+                );
+              })}
+            </div>
+          </section>
+        )}
 
         {/* Section 1: Video Results Vault */}
-        <div id="campaign-vault" className="proof-section-block">
-          <div className="proof-title-area">
-            <div className="proof-section-tag">TIER 1 • RECORDED CLIENT RESULTS</div>
-            <h1 className="proof-main-title">Uncut Meta Ads Manager Video Walkthroughs</h1>
-            <p className="proof-main-desc">
-              Direct unedited phone recordings inside active client Meta Ads Manager accounts — real Opportunity Scores, campaign delivery structures, and messaging lead flows.
-            </p>
-          </div>
+        {(activeTab === "all" || activeTab === "videos") && (
+          <div id="campaign-vault" className="proof-section-block">
+            <div className="proof-title-area">
+              <div className="proof-section-tag">TIER 1 • RECORDED CLIENT RESULTS</div>
+              <h1 className="proof-main-title">Uncut Meta Ads Manager Video Walkthroughs</h1>
+              <p className="proof-main-desc">
+                Direct unedited phone recordings inside active client Meta Ads Manager accounts — real Opportunity Scores, campaign delivery structures, and messaging lead flows.
+              </p>
+            </div>
 
-          <div className="proof-video-grid" role="region" aria-label="Verified Video Proof Vault">
-            {CAMPAIGNS.map((camp) => {
-              const cardWaUrl = `${waBaseUrl}?text=${encodeURIComponent(camp.whatsappMessage)}`;
+            <div className="proof-video-grid" role="region" aria-label="Verified Video Proof Vault">
+              {CAMPAIGNS.map((camp) => {
+                const cardWaUrl = `${waBaseUrl}?text=${encodeURIComponent(camp.whatsappMessage)}`;
 
-              return (
-                <article key={camp.id} className="proof-video-card">
-                  
-                  {/* Video Card Top Header */}
-                  <div className="proof-video-card-top">
-                    <div className="proof-card-top-row">
-                      <span className="proof-card-emoji">{camp.emoji}</span>
-                      <h2 className="proof-card-client-name">{camp.name}</h2>
-                    </div>
-                    <div className="proof-card-badge-row">
-                      <span className="proof-card-industry">{camp.industry}</span>
-                      {typeof camp.opportunityScore === "number" ? (
-                        <span className="proof-chip proof-chip-score" title="Meta Ads Manager Opportunity Score">
-                          Score: {camp.opportunityScore}
-                        </span>
-                      ) : (
-                        <span className="proof-chip" title="Campaign Delivery Status">
-                          {camp.deliveryStatus}
-                        </span>
-                      )}
-                    </div>
-                  </div>
-
-                  {/* 9:16 Vertical Video Player Box */}
-                  <div className="proof-video-box">
-                    <div className="proof-video-frame">
-                      <video
-                        ref={(el) => {
-                          videoRefs.current[camp.id] = el;
-                        }}
-                        src={camp.videoSrc}
-                        poster={camp.posterSrc}
-                        controls
-                        playsInline
-                        preload="metadata"
-                        onPlay={() => handlePlay(camp.id)}
-                        className="proof-video-element"
-                        aria-label={`${camp.name} Meta Ads Manager video walkthrough`}
-                      >
-                        Your browser does not support HTML5 video playback.
-                      </video>
-                    </div>
-                    <div className="proof-video-meta">
-                      <span><strong>FEED:</strong> Screen Capture</span>
-                      <span>{camp.duration}</span>
-                      <span className="proof-quality-badge">1080p HD</span>
-                    </div>
-                  </div>
-
-                  {/* Video Evidence Summary */}
-                  <div className="proof-video-card-body">
-                    <div className="proof-card-account-line">
-                      <span className="proof-sub-label">Account on Screen:</span>
-                      <strong className="proof-account-name">{camp.accountName}</strong>
-                    </div>
-
-                    <div className="proof-card-campaigns-block">
-                      <span className="proof-sub-label">Campaigns Shown:</span>
-                      <div className="proof-campaign-chips">
-                        {camp.campaigns.map((cName, idx) => (
-                          <code key={idx} className="proof-campaign-pill">
-                            {cName}
-                          </code>
-                        ))}
+                return (
+                  <article key={camp.id} className="proof-video-card">
+                    
+                    {/* Video Card Top Header */}
+                    <div className="proof-video-card-top">
+                      <div className="proof-card-top-row">
+                        <span className="proof-card-emoji">{camp.emoji}</span>
+                        <h2 className="proof-card-client-name">{camp.name}</h2>
                       </div>
-                      <span className="proof-campaign-note">({camp.campaignNote})</span>
+                      <div className="proof-card-badge-row">
+                        <span className="proof-card-industry">{camp.industry}</span>
+                        {typeof camp.opportunityScore === "number" ? (
+                          <span className="proof-chip proof-chip-score" title="Meta Ads Manager Opportunity Score">
+                            Score: {camp.opportunityScore}
+                          </span>
+                        ) : (
+                          <span className="proof-chip" title="Campaign Delivery Status">
+                            {camp.deliveryStatus}
+                          </span>
+                        )}
+                      </div>
                     </div>
-                  </div>
 
-                  {/* Individual Direct WhatsApp Action */}
-                  <div className="proof-video-card-footer">
-                    <a
-                      href={cardWaUrl}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="proof-card-wa-btn"
-                      aria-label={`Discuss ${camp.name} results with Digitrust Solutions on WhatsApp`}
-                    >
-                      <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
-                        <path d="M12.031 6.172c-3.181 0-5.767 2.586-5.768 5.766-.001 1.298.38 2.27 1.019 3.287l-.711 2.598 2.669-.699c.969.54 1.777.82 2.791.82 3.181 0 5.767-2.586 5.768-5.766 0-3.18-2.586-5.766-5.768-5.766zm9.969 5.766c0 5.514-4.486 10-10 10-1.764 0-3.421-.462-4.869-1.268l-7.131 1.868 1.898-6.945c-.908-1.516-1.428-3.29-1.428-5.187 0-5.514 4.486-10 10-10 5.514 0 10 4.486 10 10z"/>
-                      </svg>
-                      <span>Discuss on WhatsApp →</span>
-                    </a>
-                  </div>
+                    {/* 9:16 Vertical Video Player Box */}
+                    <div className="proof-video-box">
+                      <div className="proof-video-frame">
+                        <video
+                          ref={(el) => {
+                            videoRefs.current[camp.id] = el;
+                          }}
+                          src={camp.videoSrc}
+                          poster={camp.posterSrc}
+                          controls
+                          playsInline
+                          preload="metadata"
+                          onPlay={() => handlePlay(camp.id)}
+                          className="proof-video-element"
+                          aria-label={`${camp.name} Meta Ads Manager video walkthrough`}
+                        >
+                          Your browser does not support HTML5 video playback.
+                        </video>
+                      </div>
+                      <div className="proof-video-meta">
+                        <span><strong>FEED:</strong> Screen Capture</span>
+                        <span>{camp.duration}</span>
+                        <span className="proof-quality-badge">1080p HD</span>
+                      </div>
+                    </div>
 
-                </article>
-              );
-            })}
+                    {/* Video Evidence Summary */}
+                    <div className="proof-video-card-body">
+                      <div className="proof-card-account-line">
+                        <span className="proof-sub-label">Account on Screen:</span>
+                        <strong className="proof-account-name">{camp.accountName}</strong>
+                      </div>
+
+                      <div className="proof-card-campaigns-block">
+                        <span className="proof-sub-label">Campaigns Shown:</span>
+                        <div className="proof-campaign-chips">
+                          {camp.campaigns.map((cName, idx) => (
+                            <code key={idx} className="proof-campaign-pill">
+                              {cName}
+                            </code>
+                          ))}
+                        </div>
+                        <span className="proof-campaign-note">({camp.campaignNote})</span>
+                      </div>
+                    </div>
+
+                    {/* Individual Direct WhatsApp Action */}
+                    <div className="proof-video-card-footer">
+                      <a
+                        href={cardWaUrl}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="proof-card-wa-btn"
+                        aria-label={`Discuss ${camp.name} results with Digitrust Solutions on WhatsApp`}
+                      >
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                          <path d="M12.031 6.172c-3.181 0-5.767 2.586-5.768 5.766-.001 1.298.38 2.27 1.019 3.287l-.711 2.598 2.669-.699c.969.54 1.777.82 2.791.82 3.181 0 5.767-2.586 5.768-5.766 0-3.18-2.586-5.766-5.768-5.766zm9.969 5.766c0 5.514-4.486 10-10 10-1.764 0-3.421-.462-4.869-1.268l-7.131 1.868 1.898-6.945c-.908-1.516-1.428-3.29-1.428-5.187 0-5.514 4.486-10 10-10 5.514 0 10 4.486 10 10z"/>
+                        </svg>
+                        <span>Discuss on WhatsApp →</span>
+                      </a>
+                    </div>
+
+                  </article>
+                );
+              })}
+            </div>
           </div>
-        </div>
+        )}
 
         {/* Section 2: Verified Screenshots & Unit Economics */}
-        <div className="proof-section-block proof-screenshots-section">
-          <div className="proof-section-divider" aria-hidden="true" />
-          
-          <div className="proof-title-area">
-            <div className="proof-section-tag">TIER 2 • VERIFIED DASHBOARD RESULTS</div>
-            <h2 className="proof-main-title">Client Results &amp; Cost Metrics Across 8 Industries</h2>
-            <p className="proof-main-desc">
-              Real performance data and backend dashboard exports across 8 distinct industries — showing exact lead counts, verified Cost Per Lead (CPL), and confirmed conversion ratios.
-            </p>
-          </div>
+        {(activeTab === "all" || activeTab === "dashboards") && (
+          <div className="proof-section-block proof-screenshots-section">
+            <div className="proof-section-divider" aria-hidden="true" />
+            
+            <div className="proof-title-area">
+              <div className="proof-section-tag">TIER 2 • VERIFIED DASHBOARD RESULTS</div>
+              <h2 className="proof-main-title">Client Results &amp; Cost Metrics Across 8 Industries</h2>
+              <p className="proof-main-desc">
+                Real performance data and backend dashboard exports across 8 distinct industries — showing exact lead counts, verified Cost Per Lead (CPL), and confirmed conversion ratios.
+              </p>
+            </div>
 
-          <div className="proof-cases-grid" role="region" aria-label="Verified Client Case Studies">
-            {SCREENSHOT_CASE_STUDIES.map((study) => {
-              const studyWaUrl = `${waBaseUrl}?text=${encodeURIComponent(study.whatsappMessage)}`;
+            <div className="proof-cases-grid" role="region" aria-label="Verified Client Case Studies">
+              {SCREENSHOT_CASE_STUDIES.map((study) => {
+                const studyWaUrl = `${waBaseUrl}?text=${encodeURIComponent(study.whatsappMessage)}`;
 
-              return (
-                <article key={study.id} className="proof-case-card">
-                  
-                  {/* Case Card Top Header */}
-                  <div className="proof-case-header">
-                    <div className="proof-case-title-row">
-                      <span className="proof-case-emoji">{study.emoji}</span>
-                      <div>
-                        <h3 className="proof-case-industry">{study.industry}</h3>
-                        <p className="proof-case-subtitle">{study.title}</p>
+                return (
+                  <article key={study.id} className="proof-case-card">
+                    
+                    {/* Case Card Top Header */}
+                    <div className="proof-case-header">
+                      <div className="proof-case-title-row">
+                        <span className="proof-case-emoji">{study.emoji}</span>
+                        <div>
+                          <h3 className="proof-case-industry">{study.industry}</h3>
+                          <p className="proof-case-subtitle">{study.title}</p>
+                        </div>
+                      </div>
+                      <span className="proof-chip">{study.badge}</span>
+                    </div>
+
+                    {/* 4-Stat Metric Summary Matrix */}
+                    <div className="proof-metrics-grid">
+                      <div className="proof-metric-cell">
+                        <span className="proof-metric-label">Total Leads</span>
+                        <strong className="proof-metric-val">{study.totalLeads}</strong>
+                      </div>
+                      <div className="proof-metric-cell">
+                        <span className="proof-metric-label">Avg. Cost / Lead</span>
+                        <strong className="proof-metric-val proof-val-highlight">{study.costPerLead}</strong>
+                      </div>
+                      <div className="proof-metric-cell">
+                        <span className="proof-metric-label">Converted</span>
+                        <strong className="proof-metric-val">{study.leadsConverted}</strong>
+                      </div>
+                      <div className="proof-metric-cell">
+                        <span className="proof-metric-label">Conversion Rate</span>
+                        <strong className="proof-metric-val proof-val-success">{study.conversionRate}</strong>
                       </div>
                     </div>
-                    <span className="proof-chip">{study.badge}</span>
-                  </div>
 
-                  {/* 4-Stat Metric Summary Matrix */}
-                  <div className="proof-metrics-grid">
-                    <div className="proof-metric-cell">
-                      <span className="proof-metric-label">Total Leads</span>
-                      <strong className="proof-metric-val">{study.totalLeads}</strong>
-                    </div>
-                    <div className="proof-metric-cell">
-                      <span className="proof-metric-label">Avg. Cost / Lead</span>
-                      <strong className="proof-metric-val proof-val-highlight">{study.costPerLead}</strong>
-                    </div>
-                    <div className="proof-metric-cell">
-                      <span className="proof-metric-label">Converted</span>
-                      <strong className="proof-metric-val">{study.leadsConverted}</strong>
-                    </div>
-                    <div className="proof-metric-cell">
-                      <span className="proof-metric-label">Conversion Rate</span>
-                      <strong className="proof-metric-val proof-val-success">{study.conversionRate}</strong>
-                    </div>
-                  </div>
-
-                  {/* Dashboard Screenshot Preview with Lightbox trigger */}
-                  <div 
-                    className="proof-case-image-box"
-                    onClick={() => setActiveModalItem(study)}
-                    role="button"
-                    tabIndex={0}
-                    onKeyDown={(e) => {
-                      if (e.key === "Enter" || e.key === " ") {
-                        e.preventDefault();
-                        setActiveModalItem(study);
-                      }
-                    }}
-                    aria-label={`View full size Ads Manager dashboard screenshot for ${study.industry}`}
-                  >
-                    <Image
-                      src={study.imageSrc}
-                      alt={`${study.industry} Meta Ads Manager Dashboard`}
-                      width={1000}
-                      height={480}
-                      className="proof-case-thumbnail"
-                    />
-                    <div className="proof-case-overlay">
-                      <span className="proof-overlay-badge">🔍 Click to inspect full dashboard</span>
-                    </div>
-                  </div>
-
-                  {/* Account & Campaign Info on Screen */}
-                  <div className="proof-case-account-info">
-                    <div className="proof-case-line">
-                      <span className="proof-sub-label">Account on Screen:</span>
-                      <code>{study.accountShown}</code>
-                    </div>
-                    <div className="proof-case-line">
-                      <span className="proof-sub-label">Primary Campaign:</span>
-                      <span className="proof-campaign-name">{study.campaignShown}</span>
-                    </div>
-                  </div>
-
-                  {/* Individual WhatsApp Action */}
-                  <div className="proof-case-footer">
-                    <a
-                      href={studyWaUrl}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="proof-card-wa-btn"
-                      aria-label={`Inquire about ${study.industry} marketing with Digitrust Solutions on WhatsApp`}
+                    {/* Dashboard Screenshot Preview with Lightbox trigger */}
+                    <div 
+                      className="proof-case-image-box"
+                      onClick={() => setActiveModalItem({ type: "dashboard", item: study })}
+                      role="button"
+                      tabIndex={0}
+                      onKeyDown={(e) => {
+                        if (e.key === "Enter" || e.key === " ") {
+                          e.preventDefault();
+                          setActiveModalItem({ type: "dashboard", item: study });
+                        }
+                      }}
+                      aria-label={`View full size Ads Manager dashboard screenshot for ${study.industry}`}
                     >
-                      <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
-                        <path d="M12.031 6.172c-3.181 0-5.767 2.586-5.768 5.766-.001 1.298.38 2.27 1.019 3.287l-.711 2.598 2.669-.699c.969.54 1.777.82 2.791.82 3.181 0 5.767-2.586 5.768-5.766 0-3.18-2.586-5.766-5.768-5.766zm9.969 5.766c0 5.514-4.486 10-10 10-1.764 0-3.421-.462-4.869-1.268l-7.131 1.868 1.898-6.945c-.908-1.516-1.428-3.29-1.428-5.187 0-5.514 4.486-10 10-10 5.514 0 10 4.486 10 10z"/>
-                      </svg>
-                      <span>Discuss {study.industry.split("—")[0].trim()} on WhatsApp →</span>
-                    </a>
-                  </div>
+                      <Image
+                        src={study.imageSrc}
+                        alt={`${study.industry} Meta Ads Manager Dashboard`}
+                        width={1000}
+                        height={480}
+                        className="proof-case-thumbnail"
+                      />
+                      <div className="proof-case-overlay">
+                        <span className="proof-overlay-badge">🔍 Click to inspect full dashboard</span>
+                      </div>
+                    </div>
 
-                </article>
-              );
-            })}
+                    {/* Account & Campaign Info on Screen */}
+                    <div className="proof-case-account-info">
+                      <div className="proof-case-line">
+                        <span className="proof-sub-label">Account on Screen:</span>
+                        <code>{study.accountShown}</code>
+                      </div>
+                      <div className="proof-case-line">
+                        <span className="proof-sub-label">Primary Campaign:</span>
+                        <span className="proof-campaign-name">{study.campaignShown}</span>
+                      </div>
+                    </div>
+
+                    {/* Individual WhatsApp Action */}
+                    <div className="proof-case-footer">
+                      <a
+                        href={studyWaUrl}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="proof-card-wa-btn"
+                        aria-label={`Inquire about ${study.industry} marketing with Digitrust Solutions on WhatsApp`}
+                      >
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                          <path d="M12.031 6.172c-3.181 0-5.767 2.586-5.768 5.766-.001 1.298.38 2.27 1.019 3.287l-.711 2.598 2.669-.699c.969.54 1.777.82 2.791.82 3.181 0 5.767-2.586 5.768-5.766 0-3.18-2.586-5.766-5.768-5.766zm9.969 5.766c0 5.514-4.486 10-10 10-1.764 0-3.421-.462-4.869-1.268l-7.131 1.868 1.898-6.945c-.908-1.516-1.428-3.29-1.428-5.187 0-5.514 4.486-10 10-10 5.514 0 10 4.486 10 10z"/>
+                        </svg>
+                        <span>Discuss {study.industry.split("—")[0].trim()} on WhatsApp →</span>
+                      </a>
+                    </div>
+
+                  </article>
+                );
+              })}
+            </div>
           </div>
-        </div>
+        )}
 
         {/* Section 3: Transparent Pricing & 7-Day Trial Proposal */}
         <div className="proof-section-block proof-pricing-section">
@@ -826,56 +1007,114 @@ export function ProofDossierClient() {
           onClick={() => setActiveModalItem(null)}
           role="dialog"
           aria-modal="true"
-          aria-label={`${activeModalItem.industry} Dashboard Inspection`}
+          aria-label={
+            activeModalItem.type === "payment"
+              ? `Verified ${activeModalItem.item.amount} Payment Receipt Inspection`
+              : `${activeModalItem.item.industry} Dashboard Inspection`
+          }
         >
           <div className="proof-lightbox-content" onClick={(e) => e.stopPropagation()}>
-            <div className="proof-lightbox-header">
-              <div>
-                <span className="proof-lightbox-tag">{activeModalItem.industry}</span>
-                <h4 className="proof-lightbox-title">{activeModalItem.title}</h4>
-                <div className="proof-lightbox-metrics-row">
-                  <span>{activeModalItem.totalLeads}</span>
-                  <span>•</span>
-                  <span>CPL: {activeModalItem.costPerLead}</span>
-                  <span>•</span>
-                  <span>{activeModalItem.leadsConverted}</span>
-                  <span>•</span>
-                  <span style={{ color: "#34d399", fontWeight: 700 }}>Conversion: {activeModalItem.conversionRate}</span>
+            {activeModalItem.type === "payment" ? (
+              <>
+                <div className="proof-lightbox-header">
+                  <div>
+                    <span className="proof-lightbox-tag">VERIFIED CLIENT PAYMENT • {activeModalItem.item.platform}</span>
+                    <h4 className="proof-lightbox-title">{activeModalItem.item.milestoneTitle}</h4>
+                    <div className="proof-lightbox-metrics-row">
+                      <span style={{ color: "#34d399", fontWeight: 800 }}>{activeModalItem.item.amount} Cleared</span>
+                      <span>•</span>
+                      <span>{activeModalItem.item.badge}</span>
+                      <span>•</span>
+                      <span>{activeModalItem.item.date}</span>
+                      <span>•</span>
+                      <span>{activeModalItem.item.clientType}</span>
+                    </div>
+                  </div>
+                  <button 
+                    className="proof-lightbox-close"
+                    onClick={() => setActiveModalItem(null)}
+                    aria-label="Close payment receipt inspection"
+                  >
+                    ✕
+                  </button>
                 </div>
-              </div>
-              <button 
-                className="proof-lightbox-close"
-                onClick={() => setActiveModalItem(null)}
-                aria-label="Close dashboard inspection"
-              >
-                ✕
-              </button>
-            </div>
 
-            <div className="proof-lightbox-image-wrap">
-              <Image
-                src={activeModalItem.imageSrc}
-                alt={`${activeModalItem.industry} Dashboard Screenshot`}
-                width={1920}
-                height={1080}
-                className="proof-lightbox-full-img"
-              />
-            </div>
+                <div className="proof-lightbox-image-wrap" style={{ display: "flex", justifyContent: "center", padding: "16px 12px", background: "#060d16" }}>
+                  <Image
+                    src={activeModalItem.item.imageSrc}
+                    alt={`Verified ${activeModalItem.item.amount} payment receipt for ${activeModalItem.item.milestoneTitle}`}
+                    width={750}
+                    height={1000}
+                    className="proof-lightbox-payment-img"
+                  />
+                </div>
 
-            <div className="proof-lightbox-footer">
-              <div className="proof-lightbox-account">
-                <strong>Account on Screen:</strong> {activeModalItem.accountShown}
-              </div>
-              <a
-                href={`${waBaseUrl}?text=${encodeURIComponent(activeModalItem.whatsappMessage)}`}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="proof-card-wa-btn"
-                style={{ maxWidth: "260px" }}
-              >
-                Discuss on WhatsApp →
-              </a>
-            </div>
+                <div className="proof-lightbox-footer">
+                  <div className="proof-lightbox-account">
+                    <strong>Client Dialogue:</strong> &ldquo;{activeModalItem.item.chatQuote}&rdquo; — {activeModalItem.item.dialogueNote}
+                  </div>
+                  <a
+                    href={`${waBaseUrl}?text=${encodeURIComponent(activeModalItem.item.whatsappMessage)}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="proof-card-wa-btn"
+                    style={{ maxWidth: "260px" }}
+                  >
+                    Inquire on WhatsApp →
+                  </a>
+                </div>
+              </>
+            ) : (
+              <>
+                <div className="proof-lightbox-header">
+                  <div>
+                    <span className="proof-lightbox-tag">{activeModalItem.item.industry}</span>
+                    <h4 className="proof-lightbox-title">{activeModalItem.item.title}</h4>
+                    <div className="proof-lightbox-metrics-row">
+                      <span>{activeModalItem.item.totalLeads}</span>
+                      <span>•</span>
+                      <span>CPL: {activeModalItem.item.costPerLead}</span>
+                      <span>•</span>
+                      <span>{activeModalItem.item.leadsConverted}</span>
+                      <span>•</span>
+                      <span style={{ color: "#34d399", fontWeight: 700 }}>Conversion: {activeModalItem.item.conversionRate}</span>
+                    </div>
+                  </div>
+                  <button 
+                    className="proof-lightbox-close"
+                    onClick={() => setActiveModalItem(null)}
+                    aria-label="Close dashboard inspection"
+                  >
+                    ✕
+                  </button>
+                </div>
+
+                <div className="proof-lightbox-image-wrap">
+                  <Image
+                    src={activeModalItem.item.imageSrc}
+                    alt={`${activeModalItem.item.industry} Dashboard Screenshot`}
+                    width={1920}
+                    height={1080}
+                    className="proof-lightbox-full-img"
+                  />
+                </div>
+
+                <div className="proof-lightbox-footer">
+                  <div className="proof-lightbox-account">
+                    <strong>Account on Screen:</strong> {activeModalItem.item.accountShown}
+                  </div>
+                  <a
+                    href={`${waBaseUrl}?text=${encodeURIComponent(activeModalItem.item.whatsappMessage)}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="proof-card-wa-btn"
+                    style={{ maxWidth: "260px" }}
+                  >
+                    Discuss on WhatsApp →
+                  </a>
+                </div>
+              </>
+            )}
           </div>
         </div>
       )}
