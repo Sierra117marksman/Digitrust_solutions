@@ -322,10 +322,6 @@ export function ProofDossierClient() {
             </div>
             <p className="proof-brand-sub">Client Campaign Case Studies &amp; Verified Results</p>
           </div>
-          <div className="proof-status-pill">
-            <span className="proof-dot" aria-hidden="true" />
-            <span>FOUNDER SPOTLIGHT • 6 VIDEOS • 8 DASHBOARDS • 6 VERIFIED PAYMENTS</span>
-          </div>
         </div>
 
         {/* Interactive Proof Tabs Filter */}
@@ -471,10 +467,9 @@ export function ProofDossierClient() {
             {activeTab === "all" && <div className="proof-section-divider" aria-hidden="true" />}
             
             <div className="proof-title-area">
-              <div className="proof-section-tag">TIER 0 • CONFIRMED CLIENT TRANSACTIONS</div>
-              <h2 className="proof-main-title">Verified Client Payments &amp; Campaign Clearances</h2>
+              <h2 className="proof-main-title">Verified Client Payments</h2>
               <p className="proof-main-desc">
-                Real UPI payment receipts and transaction records from active clients paying trial fees, advance milestones, and monthly retainers. All sensitive personal details are sanitized for confidentiality while preserving genuine transaction amounts, timestamps, and rapid execution speed.
+                Real UPI receipts and bank transfers from active clients. Names and phone numbers are hidden for client privacy; transaction amounts, dates, and chats are 100% genuine.
               </p>
             </div>
 
@@ -483,29 +478,29 @@ export function ProofDossierClient() {
               <div className="proof-trust-stat">
                 <span className="proof-trust-icon">🛡️</span>
                 <div>
-                  <span className="proof-trust-val">6 Verified Clearances</span>
-                  <span className="proof-trust-label">Direct Client Bank Clearances</span>
+                  <span className="proof-trust-val">6 Verified Payments</span>
+                  <span className="proof-trust-label">UPI &amp; Bank Clearances</span>
                 </div>
               </div>
               <div className="proof-trust-stat">
                 <span className="proof-trust-icon">₹</span>
                 <div>
-                  <span className="proof-trust-val">₹13,798+ Sample Pool</span>
-                  <span className="proof-trust-label">₹999 to ₹5,000 Verified Range</span>
+                  <span className="proof-trust-val">₹999 – ₹5,000</span>
+                  <span className="proof-trust-label">Trial Fees to Retainers</span>
                 </div>
               </div>
               <div className="proof-trust-stat">
                 <span className="proof-trust-icon">⚡</span>
                 <div>
-                  <span className="proof-trust-val">Immediate Execution</span>
-                  <span className="proof-trust-label">&ldquo;Already started sir&rdquo; Speed</span>
+                  <span className="proof-trust-val">Instant Execution</span>
+                  <span className="proof-trust-label">Work Starts Same Day</span>
                 </div>
               </div>
               <div className="proof-trust-stat">
                 <span className="proof-trust-icon">🔒</span>
                 <div>
-                  <span className="proof-trust-val">100% Privacy-Preserved</span>
-                  <span className="proof-trust-label">Client Names &amp; Details Sanitized</span>
+                  <span className="proof-trust-val">Privacy Protected</span>
+                  <span className="proof-trust-label">Client Details Sanitized</span>
                 </div>
               </div>
             </div>
@@ -591,10 +586,9 @@ export function ProofDossierClient() {
         {(activeTab === "all" || activeTab === "videos") && (
           <div id="campaign-vault" className="proof-section-block">
             <div className="proof-title-area">
-              <div className="proof-section-tag">TIER 1 • RECORDED CLIENT RESULTS</div>
-              <h1 className="proof-main-title">Uncut Meta Ads Manager Video Walkthroughs</h1>
+              <h1 className="proof-main-title">Meta Ads Manager Video Walkthroughs</h1>
               <p className="proof-main-desc">
-                Direct unedited phone recordings inside active client Meta Ads Manager accounts — real Opportunity Scores, campaign delivery structures, and messaging lead flows.
+                Unedited screen recordings inside active client Ads Manager accounts — real opportunity scores, campaign delivery structures, and incoming lead conversations.
               </p>
             </div>
 
@@ -700,10 +694,9 @@ export function ProofDossierClient() {
             <div className="proof-section-divider" aria-hidden="true" />
             
             <div className="proof-title-area">
-              <div className="proof-section-tag">TIER 2 • VERIFIED DASHBOARD RESULTS</div>
-              <h2 className="proof-main-title">Client Results &amp; Cost Metrics Across 8 Industries</h2>
+              <h2 className="proof-main-title">Campaign Dashboards Across 8 Industries</h2>
               <p className="proof-main-desc">
-                Real performance data and backend dashboard exports across 8 distinct industries — showing exact lead counts, verified Cost Per Lead (CPL), and confirmed conversion ratios.
+                Verified performance numbers from active accounts — lead volume, cost per lead (CPL), and confirmed customer conversions.
               </p>
             </div>
 
@@ -812,14 +805,13 @@ export function ProofDossierClient() {
           <div className="proof-section-divider" aria-hidden="true" />
           
           <div className="proof-title-area">
-            <div className="proof-section-tag">TIER 3 • TRANSPARENT PRICING &amp; 7-DAY TRIAL</div>
-            <h2 className="proof-main-title">Turn Your Ads Into Growth Opportunities</h2>
+            <h2 className="proof-main-title">Simple, Transparent Pricing</h2>
             <p className="proof-main-desc">
-              A structured Meta advertising service built to help your business reach the right audience, attract relevant enquiries, and make smarter use of your advertising budget.
+              Start with a 7-day trial for ₹1,999 to see real campaign performance first. If satisfied, continue with our ₹5,000/month flat retainer.
             </p>
             <div className="proof-pricing-founder-callout">
               <span className="callout-icon">🎬</span>
-              <span><strong>Watch Our Founder &amp; CEO:</strong> <a href="#founder-briefing">Hear how the ₹1,999 trial &amp; ₹5,000 retainer works in our Founder Briefing Reel ↑</a></span>
+              <span><strong>Watch Our Founder:</strong> <a href="#founder-briefing">Hear how the ₹1,999 trial &amp; ₹5,000 retainer works in our Founder Reel ↑</a></span>
             </div>
           </div>
 
@@ -1018,7 +1010,7 @@ export function ProofDossierClient() {
               <>
                 <div className="proof-lightbox-header">
                   <div>
-                    <span className="proof-lightbox-tag">VERIFIED CLIENT PAYMENT • {activeModalItem.item.platform}</span>
+                    <span className="proof-lightbox-tag">Verified Payment • {activeModalItem.item.platform}</span>
                     <h4 className="proof-lightbox-title">{activeModalItem.item.milestoneTitle}</h4>
                     <div className="proof-lightbox-metrics-row">
                       <span style={{ color: "#34d399", fontWeight: 800 }}>{activeModalItem.item.amount} Cleared</span>
